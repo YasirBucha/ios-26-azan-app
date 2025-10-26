@@ -12,7 +12,7 @@ let package = Package(
             targets: ["MyAzan"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/batoulapps/adhan-swift", from: "2.0.0")
+        .package(url: "https://github.com/batoulapps/adhan-swift", from: "1.4.0")
     ],
     targets: [
         .target(

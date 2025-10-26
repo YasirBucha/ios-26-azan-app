@@ -3,17 +3,24 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var settingsManager: SettingsManager
     @EnvironmentObject var notificationManager: NotificationManager
+    @StateObject private var audioFileManager = AudioFileManager.shared
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
+    
+    @State private var showingAudioManagement = false
+    
+    private var bgColors: [Color] {
+        colorScheme == .dark 
+            ? [Color.black, Color.blue.opacity(0.1)]
+            : [Color.white, Color.blue.opacity(0.05)]
+    }
     
     var body: some View {
         NavigationStack {
             ZStack {
                 // Background gradient
                 LinearGradient(
-                    colors: colorScheme == .dark ? 
-                        [Color.black, Color.blue.opacity(0.1)] :
-                        [Color.white, Color.blue.opacity(0.05)],
+                    colors: bgColors,
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -40,20 +47,49 @@ struct SettingsView: View {
                                     .tint(.blue)
                                 }
                                 
-                                // Voice Selection
+                                // Audio File Selection
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text("Azan Voice")
+                                    Text("Selected Audio")
                                         .font(.body)
                                     
-                                    Picker("Voice", selection: Binding(
-                                        get: { settingsManager.settings.selectedVoice },
-                                        set: { settingsManager.updateSelectedVoice($0) }
+                                    Picker("Audio File", selection: Binding(
+                                        get: { 
+                                            if settingsManager.settings.useDefaultAudio {
+                                                return "default"
+                                            } else if let id = settingsManager.settings.selectedAudioFileId {
+                                                return id.uuidString
+                                            }
+                                            return "default"
+                                        },
+                                        set: { value in
+                                            if value == "default" {
+                                                settingsManager.updateUseDefaultAudio(true)
+                                            } else if let id = UUID(uuidString: value) {
+                                                settingsManager.updateSelectedAudioFile(id)
+                                                settingsManager.updateUseDefaultAudio(false)
+                                            }
+                                        }
                                     )) {
-                                        ForEach(AzanVoice.allCases, id: \.self) { voice in
-                                            Text(voice.displayName).tag(voice)
+                                        Text(audioFileManager.getDefaultAudioName()).tag("default")
+                                        ForEach(audioFileManager.customAudioFiles) { file in
+                                            Text(file.displayName).tag(file.id.uuidString)
                                         }
                                     }
-                                    .pickerStyle(SegmentedPickerStyle())
+                                }
+                                
+                                // Manage Audio Files Button
+                                Button(action: {
+                                    showingAudioManagement = true
+                                }) {
+                                    HStack {
+                                        Image(systemName: "folder.badge.gearshape")
+                                        Text("Manage Audio Files")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.blue.opacity(0.1))
+                                    .foregroundColor(.blue)
+                                    .cornerRadius(12)
                                 }
                             }
                             .padding()
@@ -139,6 +175,9 @@ struct SettingsView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showingAudioManagement) {
+                AudioManagementView()
+            }
         }
     }
     
@@ -172,3 +211,4 @@ struct SettingsView: View {
         }
     }
 }
+

@@ -12,8 +12,12 @@ class SettingsManager: ObservableObject {
         settings.azanEnabled = enabled
     }
     
-    func updateSelectedVoice(_ voice: AzanVoice) {
-        settings.selectedVoice = voice
+    func updateSelectedAudioFile(_ fileId: UUID?) {
+        settings.selectedAudioFileId = fileId
+    }
+    
+    func updateUseDefaultAudio(_ useDefault: Bool) {
+        settings.useDefaultAudio = useDefault
     }
     
     func updateLiveActivityEnabled(_ enabled: Bool) {

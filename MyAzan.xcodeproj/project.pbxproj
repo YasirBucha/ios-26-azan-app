@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		38B846FF2EAECEA20055EDCB /* AudioManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */; };
+		38B847012EAECEAD0055EDCB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847002EAECEAD0055EDCB /* HomeView.swift */; };
+		38B847032EAECEB80055EDCB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847022EAECEB80055EDCB /* SettingsView.swift */; };
+		38B847052EAECF020055EDCB /* AudioFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847042EAECF020055EDCB /* AudioFileManager.swift */; };
+		38B847072EAECF4A0055EDCB /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847062EAECF4A0055EDCB /* NotificationManager.swift */; };
+		38B847092EAECF5B0055EDCB /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847082EAECF5B0055EDCB /* SettingsManager.swift */; };
+		38B8470B2EAECFDC0055EDCB /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B8470A2EAECFDC0055EDCB /* AudioManager.swift */; };
+		38B8470D2EAECFE50055EDCB /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B8470C2EAECFE50055EDCB /* BackgroundTaskManager.swift */; };
+		38B8470F2EAECFEF0055EDCB /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B8470E2EAECFEF0055EDCB /* LiveActivityManager.swift */; };
+		38B847112EAED0050055EDCB /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847102EAED0050055EDCB /* LocationManager.swift */; };
+		38B847132EAED0130055EDCB /* PrayerTimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847122EAED0130055EDCB /* PrayerTimeService.swift */; };
+		38B847152EAED0410055EDCB /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847142EAED0410055EDCB /* AppSettings.swift */; };
+		38B847172EAED04B0055EDCB /* PrayerTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847162EAED04B0055EDCB /* PrayerTime.swift */; };
+		38B847192EAED1430055EDCB /* PrayerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847182EAED1430055EDCB /* PrayerCard.swift */; };
 		A1234567890ABCDEF001 /* MyAzanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF002 /* MyAzanApp.swift */; };
 		A1234567890ABCDEF005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF006 /* Assets.xcassets */; };
 		A1234567890ABCDEF007 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF008 /* Preview Assets.xcassets */; };
@@ -14,10 +28,25 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A1234567890ABCDEF011 /* MyAzan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyAzan.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		38B846F92EAEC66F0055EDCB /* MyAzan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyAzan.entitlements; sourceTree = "<group>"; };
+		38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManagementView.swift; sourceTree = "<group>"; };
+		38B847002EAECEAD0055EDCB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		38B847022EAECEB80055EDCB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		38B847042EAECF020055EDCB /* AudioFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileManager.swift; sourceTree = "<group>"; };
+		38B847062EAECF4A0055EDCB /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		38B847082EAECF5B0055EDCB /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		38B8470A2EAECFDC0055EDCB /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
+		38B8470C2EAECFE50055EDCB /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
+		38B8470E2EAECFEF0055EDCB /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
+		38B847102EAED0050055EDCB /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		38B847122EAED0130055EDCB /* PrayerTimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimeService.swift; sourceTree = "<group>"; };
+		38B847142EAED0410055EDCB /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		38B847162EAED04B0055EDCB /* PrayerTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTime.swift; sourceTree = "<group>"; };
+		38B847182EAED1430055EDCB /* PrayerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerCard.swift; sourceTree = "<group>"; };
 		A1234567890ABCDEF002 /* MyAzanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAzanApp.swift; sourceTree = "<group>"; };
 		A1234567890ABCDEF006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1234567890ABCDEF008 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A1234567890ABCDEF011 /* MyAzan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyAzan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1234567890ABCDEF012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -44,8 +73,8 @@
 		A1234567890ABCDEF015 /* MyAzan */ = {
 			isa = PBXGroup;
 			children = (
+				38B846F92EAEC66F0055EDCB /* MyAzan.entitlements */,
 				A1234567890ABCDEF002 /* MyAzanApp.swift */,
-				A1234567890ABCDEF004 /* ContentView.swift */,
 				A1234567890ABCDEF017 /* Models */,
 				A1234567890ABCDEF018 /* Services */,
 				A1234567890ABCDEF019 /* Views */,
@@ -67,8 +96,8 @@
 		A1234567890ABCDEF017 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				A1234567890ABCDEF021 /* PrayerTime.swift */,
-				A1234567890ABCDEF022 /* AppSettings.swift */,
+				38B847162EAED04B0055EDCB /* PrayerTime.swift */,
+				38B847142EAED0410055EDCB /* AppSettings.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -76,13 +105,14 @@
 		A1234567890ABCDEF018 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				A1234567890ABCDEF023 /* LocationManager.swift */,
-				A1234567890ABCDEF024 /* PrayerTimeService.swift */,
-				A1234567890ABCDEF025 /* NotificationManager.swift */,
-				A1234567890ABCDEF026 /* AudioManager.swift */,
-				A1234567890ABCDEF027 /* SettingsManager.swift */,
-				A1234567890ABCDEF028 /* LiveActivityManager.swift */,
-				A1234567890ABCDEF029 /* BackgroundTaskManager.swift */,
+				38B847122EAED0130055EDCB /* PrayerTimeService.swift */,
+				38B847102EAED0050055EDCB /* LocationManager.swift */,
+				38B8470E2EAECFEF0055EDCB /* LiveActivityManager.swift */,
+				38B8470C2EAECFE50055EDCB /* BackgroundTaskManager.swift */,
+				38B8470A2EAECFDC0055EDCB /* AudioManager.swift */,
+				38B847082EAECF5B0055EDCB /* SettingsManager.swift */,
+				38B847062EAECF4A0055EDCB /* NotificationManager.swift */,
+				38B847042EAECF020055EDCB /* AudioFileManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -90,20 +120,12 @@
 		A1234567890ABCDEF019 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A1234567890ABCDEF030 /* HomeView.swift */,
-				A1234567890ABCDEF031 /* SettingsView.swift */,
+				38B847022EAECEB80055EDCB /* SettingsView.swift */,
+				38B847002EAECEAD0055EDCB /* HomeView.swift */,
+				38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */,
 				A1234567890ABCDEF032 /* Components */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		A1234567890ABCDEF032 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				A1234567890ABCDEF033 /* PrayerCard.swift */,
-				A1234567890ABCDEF034 /* LiquidGlassBackground.swift */,
-			);
-			path = Components;
 			sourceTree = "<group>";
 		};
 		A1234567890ABCDEF020 /* Preview Content */ = {
@@ -112,6 +134,14 @@
 				A1234567890ABCDEF008 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		A1234567890ABCDEF032 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				38B847182EAED1430055EDCB /* PrayerCard.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -190,7 +220,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38B847152EAED0410055EDCB /* AppSettings.swift in Sources */,
+				38B847072EAECF4A0055EDCB /* NotificationManager.swift in Sources */,
+				38B847132EAED0130055EDCB /* PrayerTimeService.swift in Sources */,
+				38B847032EAECEB80055EDCB /* SettingsView.swift in Sources */,
+				38B8470B2EAECFDC0055EDCB /* AudioManager.swift in Sources */,
+				38B847112EAED0050055EDCB /* LocationManager.swift in Sources */,
+				38B847192EAED1430055EDCB /* PrayerCard.swift in Sources */,
+				38B847012EAECEAD0055EDCB /* HomeView.swift in Sources */,
+				38B8470D2EAECFE50055EDCB /* BackgroundTaskManager.swift in Sources */,
+				38B847092EAECF5B0055EDCB /* SettingsManager.swift in Sources */,
+				38B847172EAED04B0055EDCB /* PrayerTime.swift in Sources */,
+				38B846FF2EAECEA20055EDCB /* AudioManagementView.swift in Sources */,
 				A1234567890ABCDEF001 /* MyAzanApp.swift in Sources */,
+				38B8470F2EAECFEF0055EDCB /* LiveActivityManager.swift in Sources */,
+				38B847052EAECF020055EDCB /* AudioFileManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,15 +365,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyAzan/MyAzan.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MyAzan/Preview Content\"";
+				DEVELOPMENT_TEAM = 6B73TN8L6S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyAzan/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "My Azan";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "My Azan needs access to your location to calculate accurate prayer times and send notifications even when the app is closed.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "My Azan needs access to your location to calculate accurate prayer times for your area.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -350,15 +399,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyAzan/MyAzan.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MyAzan/Preview Content\"";
+				DEVELOPMENT_TEAM = 6B73TN8L6S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyAzan/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "My Azan";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "My Azan needs access to your location to calculate accurate prayer times and send notifications even when the app is closed.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "My Azan needs access to your location to calculate accurate prayer times for your area.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -377,20 +431,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A1234567890ABCDEF040 /* Build configuration list for PBXProject "MyAzan" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A1234567890ABCDEF042 /* Debug */,
-				A1234567890ABCDEF043 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		A1234567890ABCDEF036 /* Build configuration list for PBXNativeTarget "MyAzan" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1234567890ABCDEF044 /* Debug */,
 				A1234567890ABCDEF045 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1234567890ABCDEF040 /* Build configuration list for PBXProject "MyAzan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1234567890ABCDEF042 /* Debug */,
+				A1234567890ABCDEF043 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -8,9 +8,19 @@ class AppSettings: ObservableObject {
         }
     }
     
-    @Published var selectedVoice: AzanVoice {
+    @Published var selectedAudioFileId: UUID? {
         didSet {
-            UserDefaults.standard.set(selectedVoice.rawValue, forKey: "selectedVoice")
+            if let id = selectedAudioFileId?.uuidString {
+                UserDefaults.standard.set(id, forKey: "selectedAudioFileId")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "selectedAudioFileId")
+            }
+        }
+    }
+    
+    @Published var useDefaultAudio: Bool {
+        didSet {
+            UserDefaults.standard.set(useDefaultAudio, forKey: "useDefaultAudio")
         }
     }
     
@@ -28,26 +38,14 @@ class AppSettings: ObservableObject {
     
     init() {
         self.azanEnabled = UserDefaults.standard.bool(forKey: "azanEnabled")
-        self.selectedVoice = AzanVoice(rawValue: UserDefaults.standard.string(forKey: "selectedVoice") ?? "makkah") ?? .makkah
+        self.useDefaultAudio = UserDefaults.standard.object(forKey: "useDefaultAudio") as? Bool ?? true
+        
+        if let idString = UserDefaults.standard.string(forKey: "selectedAudioFileId"),
+           let id = UUID(uuidString: idString) {
+            self.selectedAudioFileId = id
+        }
+        
         self.liveActivityEnabled = UserDefaults.standard.bool(forKey: "liveActivityEnabled")
         self.reminderEnabled = UserDefaults.standard.bool(forKey: "reminderEnabled")
-    }
-}
-
-enum AzanVoice: String, CaseIterable {
-    case makkah = "makkah"
-    case madinah = "madinah"
-    case cairo = "cairo"
-    
-    var displayName: String {
-        switch self {
-        case .makkah: return "Makkah"
-        case .madinah: return "Madinah"
-        case .cairo: return "Cairo"
-        }
-    }
-    
-    var fileName: String {
-        return "azan_\(rawValue).mp3"
     }
 }

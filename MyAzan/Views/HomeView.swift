@@ -69,12 +69,12 @@ struct HomeView: View {
                                 }
                                 .padding()
                             }
-                            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
+                            .background(Material.regular, in: RoundedRectangle(cornerRadius: 20))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 20)
-                                    .stroke(.blue.opacity(0.3), lineWidth: 2)
+                                    .stroke(Color.blue.opacity(0.3), lineWidth: 2)
                             )
-                            .shadow(color: .blue.opacity(0.2), radius: 20, x: 0, y: 10)
+                            .shadow(color: Color.blue.opacity(0.2), radius: 20, x: 0, y: 10)
                         }
                         
                         // Prayer Times List
@@ -95,6 +95,14 @@ struct HomeView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                // Request location permission when view appears
+                if locationManager.authorizationStatus == .notDetermined {
+                    locationManager.requestLocationPermission()
+                } else if locationManager.authorizationStatus == .authorizedWhenInUse || locationManager.authorizationStatus == .authorizedAlways {
+                    locationManager.startLocationUpdates()
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: SettingsView()) {

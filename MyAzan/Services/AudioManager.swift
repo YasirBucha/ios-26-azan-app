@@ -2,11 +2,13 @@ import Foundation
 import AVFoundation
 import Combine
 
-class AudioManager: ObservableObject {
+class AudioManager: NSObject, ObservableObject {
     private var audioPlayer: AVAudioPlayer?
     @Published var isPlaying = false
+    private let audioFileManager = AudioFileManager.shared
     
-    init() {
+    override init() {
+        super.init()
         setupAudioSession()
     }
     
@@ -19,16 +21,25 @@ class AudioManager: ObservableObject {
         }
     }
     
-    func playAzan(voice: AzanVoice) {
+    func playAzan(useDefault: Bool = true, customFileId: UUID? = nil) {
         guard UserDefaults.standard.bool(forKey: "azanEnabled") else { return }
         
-        guard let url = Bundle.main.url(forResource: voice.fileName.replacingOccurrences(of: ".mp3", with: ""), withExtension: "mp3") else {
-            print("Audio file not found: \(voice.fileName)")
+        var url: URL?
+        
+        if useDefault {
+            url = audioFileManager.getDefaultAudioURL()
+        } else if let fileId = customFileId,
+                  let customFile = audioFileManager.customAudioFiles.first(where: { $0.id == fileId }) {
+            url = audioFileManager.getAudioURL(for: customFile)
+        }
+        
+        guard let audioURL = url else {
+            print("Audio file not found")
             return
         }
         
         do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
             audioPlayer?.delegate = self
             audioPlayer?.play()
             
