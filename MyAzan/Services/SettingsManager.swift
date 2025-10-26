@@ -27,4 +27,34 @@ class SettingsManager: ObservableObject {
     func updateReminderEnabled(_ enabled: Bool) {
         settings.reminderEnabled = enabled
     }
+    
+    // Individual prayer sound management
+    func updateFajrSoundEnabled(_ enabled: Bool) {
+        settings.fajrSoundEnabled = enabled
+    }
+    
+    func updateDhuhrSoundEnabled(_ enabled: Bool) {
+        settings.dhuhrSoundEnabled = enabled
+    }
+    
+    func updateAsrSoundEnabled(_ enabled: Bool) {
+        settings.asrSoundEnabled = enabled
+    }
+    
+    func updateMaghribSoundEnabled(_ enabled: Bool) {
+        settings.maghribSoundEnabled = enabled
+    }
+    
+    func updateIshaSoundEnabled(_ enabled: Bool) {
+        settings.ishaSoundEnabled = enabled
+    }
+    
+    // Bulk operations
+    func enableAllPrayerSounds() {
+        settings.enableAllPrayerSounds()
+    }
+    
+    func disableAllPrayerSounds() {
+        settings.disableAllPrayerSounds()
+    }
 }

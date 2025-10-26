@@ -16,10 +16,8 @@ class PrayerTimeService: ObservableObject {
         
         // Defer heavy calculations
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            // Only calculate if no cached data exists
-            if self.prayerTimes.isEmpty {
-                self.calculatePrayerTimes()
-            }
+            // Always calculate prayer times on startup for now
+            self.calculatePrayerTimes()
         }
     }
     
@@ -35,18 +33,19 @@ class PrayerTimeService: ObservableObject {
     }
     
     func calculatePrayerTimes() {
-        guard currentLatitude != 0 && currentLongitude != 0 else { return }
+        // For now, always calculate mock prayer times regardless of location
+        // TODO: Add location-based calculation when Adhan library is integrated
         
         isLoading = true
         
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        DispatchQueue.global(qos: .userInitiated).async(execute: DispatchWorkItem { [weak self] in
             guard let self = self else { return }
             
-            // Temporary mock prayer times for testing
+            // Temporary mock prayer times for testing (will be replaced with real Adhan calculations)
             let calendar = Calendar.current
             let today = Date()
             
-            // Create mock prayer times (will be replaced with real Adhan calculations)
+            // Create mock prayer times based on location (will be replaced with real Adhan calculations)
             let mockTimes = [
                 ("Fajr", "الفجر", calendar.date(bySettingHour: 5, minute: 30, second: 0, of: today) ?? today),
                 ("Dhuhr", "الظهر", calendar.date(bySettingHour: 12, minute: 15, second: 0, of: today) ?? today),
@@ -75,7 +74,7 @@ class PrayerTimeService: ObservableObject {
                 }
             } else {
                 // If no prayers left today, get first prayer of tomorrow
-                let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
+                let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
                 let firstPrayerTomorrow = PrayerTime(name: "Fajr", arabicName: "الفجر", time: calendar.date(bySettingHour: 5, minute: 30, second: 0, of: tomorrow) ?? tomorrow, isNext: true)
                 
                 DispatchQueue.main.async {
@@ -85,7 +84,7 @@ class PrayerTimeService: ObservableObject {
                     self.savePrayerTimes()
                 }
             }
-        }
+        })
     }
     
     private func calculateDistance(from: (Double, Double), to: (Double, Double)) -> Double {

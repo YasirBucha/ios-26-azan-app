@@ -14,6 +14,18 @@ struct MyAzanApp: App {
                 .environmentObject(prayerTimeService)
                 .environmentObject(notificationManager)
                 .environmentObject(settingsManager)
+                .onReceive(locationManager.$currentLocation) { location in
+                    if let location = location {
+                        prayerTimeService.updateLocation(
+                            latitude: location.coordinate.latitude,
+                            longitude: location.coordinate.longitude
+                        )
+                    }
+                }
+                .onAppear {
+                    // Request notification permissions on app launch
+                    notificationManager.requestNotificationPermissionIfNeeded()
+                }
         }
     }
 }

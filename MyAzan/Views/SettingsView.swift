@@ -128,6 +128,78 @@ struct SettingsView: View {
                             .padding()
                         }
                         
+                        // Prayer Sound Settings
+                        LiquidGlassBackground {
+                            VStack(alignment: .leading, spacing: 16) {
+                                Text("Prayer Sound Settings")
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                                
+                                // Bulk Controls
+                                HStack(spacing: 12) {
+                                    Button("Enable All") {
+                                        settingsManager.enableAllPrayerSounds()
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .tint(.green)
+                                    
+                                    Button("Disable All") {
+                                        settingsManager.disableAllPrayerSounds()
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .tint(.red)
+                                    
+                                    Spacer()
+                                }
+                                
+                                Divider()
+                                
+                                // Individual Prayer Sound Controls
+                                VStack(spacing: 12) {
+                                    PrayerSoundToggleRow(
+                                        prayerName: "Fajr",
+                                        isEnabled: Binding(
+                                            get: { settingsManager.settings.fajrSoundEnabled },
+                                            set: { settingsManager.updateFajrSoundEnabled($0) }
+                                        )
+                                    )
+                                    
+                                    PrayerSoundToggleRow(
+                                        prayerName: "Dhuhr",
+                                        isEnabled: Binding(
+                                            get: { settingsManager.settings.dhuhrSoundEnabled },
+                                            set: { settingsManager.updateDhuhrSoundEnabled($0) }
+                                        )
+                                    )
+                                    
+                                    PrayerSoundToggleRow(
+                                        prayerName: "Asr",
+                                        isEnabled: Binding(
+                                            get: { settingsManager.settings.asrSoundEnabled },
+                                            set: { settingsManager.updateAsrSoundEnabled($0) }
+                                        )
+                                    )
+                                    
+                                    PrayerSoundToggleRow(
+                                        prayerName: "Maghrib",
+                                        isEnabled: Binding(
+                                            get: { settingsManager.settings.maghribSoundEnabled },
+                                            set: { settingsManager.updateMaghribSoundEnabled($0) }
+                                        )
+                                    )
+                                    
+                                    PrayerSoundToggleRow(
+                                        prayerName: "Isha",
+                                        isEnabled: Binding(
+                                            get: { settingsManager.settings.ishaSoundEnabled },
+                                            set: { settingsManager.updateIshaSoundEnabled($0) }
+                                        )
+                                    )
+                                }
+                            }
+                            .padding()
+                        }
+                        
                         // Notification Settings
                         LiquidGlassBackground {
                             VStack(alignment: .leading, spacing: 16) {

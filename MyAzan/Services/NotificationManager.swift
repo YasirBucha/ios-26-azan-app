@@ -12,6 +12,12 @@ class NotificationManager: ObservableObject {
         }
     }
     
+    func requestNotificationPermissionIfNeeded() {
+        if authorizationStatus == .notDetermined {
+            requestNotificationPermission()
+        }
+    }
+    
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, error in
             DispatchQueue.main.async {
@@ -32,17 +38,27 @@ class NotificationManager: ObservableObject {
         }
     }
     
-    func schedulePrayerNotifications(for prayerTimes: [PrayerTime]) {
+    func schedulePrayerNotifications(for prayerTimes: [PrayerTime], settings: AppSettings) {
         guard authorizationStatus == .authorized else { return }
         
         // Cancel existing notifications
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         
         for prayer in prayerTimes {
+            // Check if sound is enabled for this specific prayer
+            let soundEnabled = settings.isPrayerSoundEnabled(for: prayer.name)
+            
             let content = UNMutableNotificationContent()
             content.title = "Prayer Time"
             content.body = "It's time for \(prayer.name) prayer"
-            content.sound = UNNotificationSound(named: UNNotificationSoundName("azan_notification.wav"))
+            
+            // Only add sound if both global azan is enabled and this specific prayer sound is enabled
+            if settings.azanEnabled && soundEnabled {
+                content.sound = UNNotificationSound(named: UNNotificationSoundName("azan_notification.wav"))
+            } else {
+                content.sound = nil // Silent notification
+            }
+            
             content.categoryIdentifier = "PRAYER_NOTIFICATION"
             
             let calendar = Calendar.current
@@ -59,12 +75,11 @@ class NotificationManager: ObservableObject {
         }
         
         // Schedule 5-minute reminder notifications if enabled
-        scheduleReminderNotifications(for: prayerTimes)
+        scheduleReminderNotifications(for: prayerTimes, settings: settings)
     }
     
-    private func scheduleReminderNotifications(for prayerTimes: [PrayerTime]) {
-        let settings = UserDefaults.standard.bool(forKey: "reminderEnabled")
-        guard settings else { return }
+    private func scheduleReminderNotifications(for prayerTimes: [PrayerTime], settings: AppSettings) {
+        guard settings.reminderEnabled else { return }
         
         for prayer in prayerTimes {
             let reminderTime = prayer.time.addingTimeInterval(-300) // 5 minutes before
