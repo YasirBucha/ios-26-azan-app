@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# iOS 26 Azan App - Icon & Splash Screen Setup Script
+echo "🕌 iOS 26 Azan App - Icon & Splash Screen Setup"
+echo "=============================================="
+echo ""
+
+# Check if we're in the right directory
+if [ ! -f "MyAzan.xcworkspace/contents.xcworkspacedata" ]; then
+    echo "❌ Error: Please run this script from the project root directory"
+    echo "   Expected: /Users/yb/Development/Azan/"
+    exit 1
+fi
+
+echo "✅ Project structure verified"
+echo ""
+
+echo "📱 APP ICON FILES READY:"
+echo "Location: MyAzan/Assets.xcassets/AppIcon.appiconset/"
+echo ""
+echo "Required files (currently empty - replace with your resized images):"
+echo "  ✅ Icon-20@2x.png (40x40 pixels)"
+echo "  ✅ Icon-20@3x.png (60x60 pixels)"
+echo "  ✅ Icon-29@2x.png (58x58 pixels)"
+echo "  ✅ Icon-29@3x.png (87x87 pixels)"
+echo "  ✅ Icon-40@2x.png (80x80 pixels)"
+echo "  ✅ Icon-40@3x.png (120x120 pixels)"
+echo "  ✅ Icon-60@2x.png (120x120 pixels)"
+echo "  ✅ Icon-60@3x.png (180x180 pixels)"
+echo "  ✅ Icon-76@2x.png (152x152 pixels)"
+echo "  ✅ Icon-83.5@2x.png (167x167 pixels)"
+echo "  ✅ Icon-1024.png (1024x1024 pixels)"
+echo "  ✅ Icon-App-20x20@2x.png (40x40 pixels)"
+echo ""
+
+echo "🌅 SPLASH SCREEN FILES READY:"
+echo "Location: MyAzan/Assets.xcassets/LaunchScreen.imageset/"
+echo ""
+echo "Required files (currently empty - replace with your resized images):"
+echo "  ✅ LaunchScreen@1x.png (375x812 pixels - iPhone X/11/12 mini)"
+echo "  ✅ LaunchScreen@2x.png (750x1624 pixels - iPhone X/11/12)"
+echo "  ✅ LaunchScreen@3x.png (1125x2436 pixels - iPhone X/11/12 Pro Max)"
+echo "  ✅ LaunchScreen-ipad.png (1024x1366 pixels - iPad)"
+echo ""
+
+echo "🛠️ NEXT STEPS:"
+echo ""
+echo "1️⃣ RESIZE YOUR IMAGES:"
+echo "   • Use your logo to create all 12 app icon sizes"
+echo "   • Use your splash screen to create all 4 splash screen sizes"
+echo "   • See ICON_CREATION_GUIDE.md for detailed instructions"
+echo ""
+echo "2️⃣ REPLACE EMPTY FILES:"
+echo "   • Replace the empty .png files with your resized images"
+echo "   • Keep the exact same filenames"
+echo "   • Use PNG format"
+echo ""
+echo "3️⃣ TEST IN XCODE:"
+echo "   • Open MyAzan.xcworkspace"
+echo "   • Build the app (Cmd+R)"
+echo "   • Your custom icons and splash screen will appear!"
+echo ""
+
+echo "🎨 RECOMMENDED TOOLS FOR RESIZING:"
+echo "   • Online: https://appicon.co/ (for app icons)"
+echo "   • Online: https://launchscreen.co/ (for splash screens)"
+echo "   • Desktop: Photoshop, GIMP, Sketch, Figma"
+echo "   • Command line: ImageMagick (if installed)"
+echo ""
+
+echo "📚 DOCUMENTATION:"
+echo "   • ICON_CREATION_GUIDE.md - Detailed resizing instructions"
+echo "   • README.md - Complete project documentation"
+echo "   • XCODE_SETUP_GUIDE.md - Xcode configuration guide"
+echo ""
+
+echo "🎉 Your beautiful mosque icon with glassmorphism effect is ready to be implemented!"
+echo "   Once you resize and place the images, your app will have custom branding!"
+echo ""
+echo "🕌 May your app bring peace and convenience to users worldwide!"
