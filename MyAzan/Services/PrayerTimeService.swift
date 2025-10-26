@@ -9,6 +9,8 @@ class PrayerTimeService: ObservableObject {
     
     private var currentLatitude: Double = 0
     private var currentLongitude: Double = 0
+    private var notificationManager: NotificationManager?
+    private var settingsManager: SettingsManager?
     
     init() {
         // Load cached data immediately for faster startup
@@ -19,6 +21,18 @@ class PrayerTimeService: ObservableObject {
             // Always calculate prayer times on startup for now
             self.calculatePrayerTimes()
         }
+    }
+    
+    func setManagers(notificationManager: NotificationManager, settingsManager: SettingsManager) {
+        self.notificationManager = notificationManager
+        self.settingsManager = settingsManager
+    }
+    
+    private func scheduleNotifications() {
+        guard let notificationManager = notificationManager,
+              let settingsManager = settingsManager else { return }
+        
+        notificationManager.schedulePrayerNotifications(for: prayerTimes, settings: settingsManager.settings)
     }
     
     func updateLocation(latitude: Double, longitude: Double) {
@@ -71,6 +85,7 @@ class PrayerTimeService: ObservableObject {
                     self.nextPrayer = nextPrayer
                     self.isLoading = false
                     self.savePrayerTimes()
+                    self.scheduleNotifications()
                 }
             } else {
                 // If no prayers left today, get first prayer of tomorrow
@@ -82,6 +97,7 @@ class PrayerTimeService: ObservableObject {
                     self.nextPrayer = firstPrayerTomorrow
                     self.isLoading = false
                     self.savePrayerTimes()
+                    self.scheduleNotifications()
                 }
             }
         })

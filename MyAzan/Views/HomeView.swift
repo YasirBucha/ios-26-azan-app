@@ -141,12 +141,12 @@ struct HomeView: View {
         }
         .onAppear {
             if !prayerTimeService.prayerTimes.isEmpty {
-                notificationManager.schedulePrayerNotifications(for: prayerTimeService.prayerTimes)
+                notificationManager.schedulePrayerNotifications(for: prayerTimeService.prayerTimes, settings: settingsManager.settings)
             }
         }
         .onReceive(prayerTimeService.$prayerTimes) { prayers in
             if !prayers.isEmpty {
-                notificationManager.schedulePrayerNotifications(for: prayers)
+                notificationManager.schedulePrayerNotifications(for: prayers, settings: settingsManager.settings)
             }
         }
     }

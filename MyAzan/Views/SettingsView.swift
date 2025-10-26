@@ -317,3 +317,21 @@ struct SettingsView: View {
     }
 }
 
+struct PrayerSoundToggleRow: View {
+    let prayerName: String
+    @Binding var isEnabled: Bool
+    
+    var body: some View {
+        HStack {
+            Text(prayerName)
+                .font(.body)
+                .fontWeight(.medium)
+            
+            Spacer()
+            
+            Toggle("", isOn: $isEnabled)
+                .tint(.blue)
+        }
+    }
+}
+

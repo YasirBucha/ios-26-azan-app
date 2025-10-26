@@ -25,6 +25,9 @@ struct MyAzanApp: App {
                 .onAppear {
                     // Request notification permissions on app launch
                     notificationManager.requestNotificationPermissionIfNeeded()
+                    
+                    // Set managers in PrayerTimeService for notification scheduling
+                    prayerTimeService.setManagers(notificationManager: notificationManager, settingsManager: settingsManager)
                 }
         }
     }
