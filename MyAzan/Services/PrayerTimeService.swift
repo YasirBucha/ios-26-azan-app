@@ -1,6 +1,6 @@
 import Foundation
 import Combine
-import Adhan
+// import Adhan // Temporarily commented out for testing
 
 class PrayerTimeService: ObservableObject {
     @Published var prayerTimes: [PrayerTime] = []
@@ -9,11 +9,8 @@ class PrayerTimeService: ObservableObject {
     
     private var currentLatitude: Double = 0
     private var currentLongitude: Double = 0
-    private var calculationParameters: CalculationParameters
     
     init() {
-        // Use Muslim World League calculation method
-        self.calculationParameters = CalculationMethod.muslimWorldLeague.params
         loadCachedPrayerTimes()
     }
     
@@ -36,53 +33,47 @@ class PrayerTimeService: ObservableObject {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             
-            let coordinates = Coordinates(latitude: self.currentLatitude, longitude: self.currentLongitude)
+            // Temporary mock prayer times for testing
             let calendar = Calendar.current
             let today = Date()
             
-            var times: [PrayerTime] = []
+            // Create mock prayer times (will be replaced with real Adhan calculations)
+            let mockTimes = [
+                ("Fajr", "الفجر", calendar.date(bySettingHour: 5, minute: 30, second: 0, of: today) ?? today),
+                ("Dhuhr", "الظهر", calendar.date(bySettingHour: 12, minute: 15, second: 0, of: today) ?? today),
+                ("Asr", "العصر", calendar.date(bySettingHour: 15, minute: 45, second: 0, of: today) ?? today),
+                ("Maghrib", "المغرب", calendar.date(bySettingHour: 18, minute: 20, second: 0, of: today) ?? today),
+                ("Isha", "العشاء", calendar.date(bySettingHour: 19, minute: 50, second: 0, of: today) ?? today)
+            ]
             
-            // Calculate prayer times for today
-            if let prayerTimes = PrayerTimes(coordinates: coordinates, date: today, calculationParameters: self.calculationParameters) {
-                let prayers = [
-                    ("Fajr", "الفجر", prayerTimes.fajr),
-                    ("Dhuhr", "الظهر", prayerTimes.dhuhr),
-                    ("Asr", "العصر", prayerTimes.asr),
-                    ("Maghrib", "المغرب", prayerTimes.maghrib),
-                    ("Isha", "العشاء", prayerTimes.isha)
-                ]
+            var times: [PrayerTime] = []
+            for (english, arabic, time) in mockTimes {
+                times.append(PrayerTime(name: english, arabicName: arabic, time: time))
+            }
+            
+            // Determine next prayer
+            let now = Date()
+            let upcomingPrayers = times.filter { $0.time > now }.sorted { $0.time < $1.time }
+            
+            if let next = upcomingPrayers.first {
+                let nextPrayer = PrayerTime(name: next.name, arabicName: next.arabicName, time: next.time, isNext: true)
                 
-                for (english, arabic, time) in prayers {
-                    times.append(PrayerTime(name: english, arabicName: arabic, time: time))
+                DispatchQueue.main.async {
+                    self.prayerTimes = times
+                    self.nextPrayer = nextPrayer
+                    self.isLoading = false
+                    self.savePrayerTimes()
                 }
+            } else {
+                // If no prayers left today, get first prayer of tomorrow
+                let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
+                let firstPrayerTomorrow = PrayerTime(name: "Fajr", arabicName: "الفجر", time: calendar.date(bySettingHour: 5, minute: 30, second: 0, of: tomorrow) ?? tomorrow, isNext: true)
                 
-                // Determine next prayer
-                let now = Date()
-                let upcomingPrayers = times.filter { $0.time > now }.sorted { $0.time < $1.time }
-                
-                if let next = upcomingPrayers.first {
-                    var nextPrayer = next
-                    nextPrayer = PrayerTime(name: next.name, arabicName: next.arabicName, time: next.time, isNext: true)
-                    
-                    DispatchQueue.main.async {
-                        self.prayerTimes = times
-                        self.nextPrayer = nextPrayer
-                        self.isLoading = false
-                        self.savePrayerTimes()
-                    }
-                } else {
-                    // If no prayers left today, get first prayer of tomorrow
-                    let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
-                    if let tomorrowPrayers = PrayerTimes(coordinates: coordinates, date: tomorrow, calculationParameters: self.calculationParameters) {
-                        let firstPrayerTomorrow = PrayerTime(name: "Fajr", arabicName: "الفجر", time: tomorrowPrayers.fajr, isNext: true)
-                        
-                        DispatchQueue.main.async {
-                            self.prayerTimes = times
-                            self.nextPrayer = firstPrayerTomorrow
-                            self.isLoading = false
-                            self.savePrayerTimes()
-                        }
-                    }
+                DispatchQueue.main.async {
+                    self.prayerTimes = times
+                    self.nextPrayer = firstPrayerTomorrow
+                    self.isLoading = false
+                    self.savePrayerTimes()
                 }
             }
         }

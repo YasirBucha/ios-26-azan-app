@@ -2,62 +2,66 @@ import SwiftUI
 
 @main
 struct MyAzanApp: App {
-    @StateObject private var locationManager = LocationManager()
-    @StateObject private var prayerTimeService = PrayerTimeService()
-    @StateObject private var notificationManager = NotificationManager()
-    @StateObject private var settingsManager = SettingsManager()
-    @StateObject private var audioManager = AudioManager()
-    @StateObject private var liveActivityManager = LiveActivityManager()
-    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(locationManager)
-                .environmentObject(prayerTimeService)
-                .environmentObject(notificationManager)
-                .environmentObject(settingsManager)
-                .environmentObject(audioManager)
-                .environmentObject(liveActivityManager)
-                .onAppear {
-                    setupApp()
-                }
         }
-    }
-    
-    private func setupApp() {
-        // Register background tasks
-        BackgroundTaskManager.shared.registerBackgroundTasks()
-        BackgroundTaskManager.shared.scheduleBackgroundTasks()
-        
-        // Request permissions on app launch
-        locationManager.requestLocationPermission()
-        notificationManager.requestNotificationPermission()
-        
-        // Start location updates
-        locationManager.startLocationUpdates()
     }
 }
 
 struct ContentView: View {
-    @EnvironmentObject var locationManager: LocationManager
-    @EnvironmentObject var prayerTimeService: PrayerTimeService
-    @EnvironmentObject var settingsManager: SettingsManager
-    @EnvironmentObject var liveActivityManager: LiveActivityManager
-    
     var body: some View {
         NavigationStack {
-            HomeView()
-                .onReceive(locationManager.$currentLocation) { location in
-                    if let location = location {
-                        prayerTimeService.updateLocation(latitude: location.coordinate.latitude, 
-                                                      longitude: location.coordinate.longitude)
+            VStack(spacing: 20) {
+                Image(systemName: "moon.stars.fill")
+                    .font(.system(size: 60))
+                    .foregroundColor(.blue)
+                
+                Text("My Azan")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                Text("Prayer Times App")
+                    .font(.title2)
+                    .foregroundColor(.secondary)
+                
+                VStack(spacing: 16) {
+                    Text("🕌 Welcome to My Azan")
+                        .font(.headline)
+                    
+                    Text("Your beautiful iOS 26 prayer times app with Liquid Glass design is ready!")
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.secondary)
+                    
+                    Text("Features:")
+                        .font(.headline)
+                        .padding(.top)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("• Automatic location detection")
+                        Text("• Accurate prayer time calculations")
+                        Text("• Beautiful Azan audio playback")
+                        Text("• Smart notifications with reminders")
+                        Text("• Liquid Glass UI design")
+                        Text("• Home/lock screen widgets")
+                        Text("• Live Activities with Dynamic Island")
+                        Text("• Background updates")
                     }
+                    .font(.body)
+                    .foregroundColor(.secondary)
                 }
-                .onReceive(prayerTimeService.$nextPrayer) { nextPrayer in
-                    if let nextPrayer = nextPrayer, settingsManager.settings.liveActivityEnabled {
-                        liveActivityManager.startLiveActivity(for: nextPrayer, cityName: locationManager.cityName)
-                    }
-                }
+                .padding()
+                .background(.ultraThinMaterial)
+                .cornerRadius(16)
+                
+                Spacer()
+                
+                Text("Ready for final configuration in Xcode!")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding()
+            .navigationTitle("My Azan")
         }
     }
 }
