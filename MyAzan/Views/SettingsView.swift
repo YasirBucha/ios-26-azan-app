@@ -13,6 +13,11 @@ struct SettingsView: View {
     @State private var selectedAccentColor: AccentColor = .blue
     @State private var volumeLevel: Double = 0.8
     @State private var showingTestAnimation = false
+    @State private var cardsScale: [Double] = [0.95, 0.95, 0.95]
+    @State private var cardsOpacity: [Double] = [0.0, 0.0, 0.0]
+    @State private var cardsBlur: [Double] = [8.0, 8.0, 8.0]
+    @State private var contentOffset: Double = 100
+    @Namespace private var liquidBackground
     
     enum ThemeMode: String, CaseIterable {
         case light = "Light"
@@ -39,16 +44,17 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // Deep teal gradient background with soft light flare
+                // Deep teal gradient background with matched geometry
                 ZStack {
                     LinearGradient(
                         colors: [
-                            Color(red: 0.04, green: 0.23, blue: 0.29), // #0a3a4a
-                            Color(red: 0.0, green: 0.12, blue: 0.15)  // #001e26
+                            Color(red: 0.05, green: 0.29, blue: 0.36), // #0d4a5d
+                            Color(red: 0.04, green: 0.23, blue: 0.29)  // #0a3a4a
                         ],
                         startPoint: .top,
                         endPoint: .bottom
                     )
+                    .matchedGeometryEffect(id: "liquidBackground", in: liquidBackground)
                     .ignoresSafeArea()
                     
                     // Soft light flare at top center
@@ -80,7 +86,7 @@ struct SettingsView: View {
                         .padding(.bottom, 20)
                         
                         // Audio Settings Card
-                        EnhancedLiquidGlassCard {
+                        EnhancedLiquidGlassCard(cardIndex: 0, cardsScale: cardsScale, cardsOpacity: cardsOpacity, cardsBlur: cardsBlur) {
                             VStack(alignment: .leading, spacing: 20) {
                                 Text("Audio Settings")
                                     .font(.system(size: 18, weight: .semibold, design: .default))
@@ -179,7 +185,7 @@ struct SettingsView: View {
                         }
                         
                         // Notifications Card
-                        EnhancedLiquidGlassCard {
+                        EnhancedLiquidGlassCard(cardIndex: 1, cardsScale: cardsScale, cardsOpacity: cardsOpacity, cardsBlur: cardsBlur) {
                             VStack(alignment: .leading, spacing: 20) {
                                 Text("Notifications")
                                     .font(.system(size: 18, weight: .semibold, design: .default))
@@ -225,7 +231,7 @@ struct SettingsView: View {
                         }
                         
                         // Appearance Card
-                        EnhancedLiquidGlassCard {
+                        EnhancedLiquidGlassCard(cardIndex: 2, cardsScale: cardsScale, cardsOpacity: cardsOpacity, cardsBlur: cardsBlur) {
                             VStack(alignment: .leading, spacing: 20) {
                                 Text("Appearance")
                                     .font(.system(size: 18, weight: .semibold, design: .default))
@@ -320,6 +326,10 @@ struct SettingsView: View {
                     }
                     .padding(.horizontal, 20)
                 }
+                .offset(y: contentOffset)
+                .onAppear {
+                    startSettingsEntranceAnimation()
+                }
             }
             .navigationBarHidden(true)
             .sheet(isPresented: $showingAudioManagement) {
@@ -328,51 +338,119 @@ struct SettingsView: View {
         }
     }
     
-    private var notificationStatusText: String {
-        switch notificationManager.authorizationStatus {
-        case .authorized:
-            return "Enabled"
-        case .denied:
-            return "Disabled"
-        case .notDetermined:
-            return "Not Set"
-        case .provisional:
-            return "Provisional"
-        case .ephemeral:
-            return "Ephemeral"
-        @unknown default:
-            return "Unknown"
+    private func startSettingsEntranceAnimation() {
+        // Liquid rise motion - slide up from bottom
+        withAnimation(.easeInOut(duration: 0.6)) {
+            contentOffset = 0
         }
-    }
-    
-    private var notificationStatusColor: Color {
-        switch notificationManager.authorizationStatus {
-        case .authorized:
-            return .green
-        case .denied:
-            return .red
-        case .notDetermined:
-            return .orange
-        default:
-            return .gray
+        
+        // Cards settle into place with staggered bounce
+        for i in 0..<cardsScale.count {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.05) {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                    cardsScale[i] = 1.0
+                    cardsOpacity[i] = 1.0
+                    cardsBlur[i] = 3.0
+                }
+            }
+        }
+        
+        // Haptic feedback when animation completes
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+            impactFeedback.impactOccurred()
         }
     }
 }
 
-struct PrayerSoundToggleRow: View {
-    let prayerName: String
-    @Binding var isEnabled: Bool
+// Enhanced Liquid Glass Card Component
+struct EnhancedLiquidGlassCard<Content: View>: View {
+    let content: Content
+    let cardIndex: Int
+    let cardsScale: [Double]
+    let cardsOpacity: [Double]
+    let cardsBlur: [Double]
+    
+    init(cardIndex: Int = 0, cardsScale: [Double] = [1.0], cardsOpacity: [Double] = [1.0], cardsBlur: [Double] = [3.0], @ViewBuilder content: () -> Content) {
+        self.content = content()
+        self.cardIndex = cardIndex
+        self.cardsScale = cardsScale
+        self.cardsOpacity = cardsOpacity
+        self.cardsBlur = cardsBlur
+    }
     
     var body: some View {
-        HStack {
-            Text(prayerName)
-                .font(.body)
-                .fontWeight(.medium)
-            
-            Spacer()
-            
-            Toggle("", isOn: $isEnabled)
-                .tint(.blue)
+        content
+            .scaleEffect(cardsScale.indices.contains(cardIndex) ? cardsScale[cardIndex] : 1.0)
+            .opacity(cardsOpacity.indices.contains(cardIndex) ? cardsOpacity[cardIndex] : 1.0)
+            .blur(radius: cardsBlur.indices.contains(cardIndex) ? cardsBlur[cardIndex] : 3.0)
+            .background(
+                ZStack {
+                    // Base glass material
+                    RoundedRectangle(cornerRadius: 18)
+                        .fill(.ultraThinMaterial)
+                    
+                    // Inner shadow effect
+                    RoundedRectangle(cornerRadius: 18)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.black.opacity(0.15),
+                                    Color.clear
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .blur(radius: 8)
+                    
+                    // White glow on edges
+                    RoundedRectangle(cornerRadius: 18)
+                        .stroke(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.1),
+                                    Color.white.opacity(0.05)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1
+                        )
+                }
+            )
+            .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
+    }
+}
+
+// Custom iOS 26 Style Toggle
+struct CustomToggle: View {
+    @Binding var isOn: Bool
+    @State private var animationOffset: CGFloat = 0
+    
+    var body: some View {
+        Button(action: {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                isOn.toggle()
+                animationOffset = isOn ? 20 : 0
+            }
+        }) {
+            ZStack {
+                // Background capsule
+                Capsule()
+                    .fill(isOn ? Color(red: 0.3, green: 0.72, blue: 1.0) : Color(red: 0.17, green: 0.28, blue: 0.32))
+                    .frame(width: 50, height: 30)
+                
+                // Toggle knob
+                Circle()
+                    .fill(.white)
+                    .frame(width: 26, height: 26)
+                    .offset(x: animationOffset - 10)
+                    .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+            }
+        }
+        .onAppear {
+            animationOffset = isOn ? 20 : 0
         }
     }
 }

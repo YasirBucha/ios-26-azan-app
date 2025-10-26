@@ -21,42 +21,41 @@ struct LiquidGlassBackground: View {
 struct PrayerCard: View {
     let prayer: PrayerTime
     @Environment(\.colorScheme) var colorScheme
+    @State private var cardScale: Double = 1.0
     
     var body: some View {
         LiquidGlassBackground {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(prayer.arabicName)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(prayer.isNext ? .primary : .secondary)
-                    
-                    Text(prayer.name)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
+            HStack(spacing: 20) {
+                // Arabic prayer name
+                Text(prayer.arabicName)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(.white.opacity(0.7))
+                    .frame(width: 60, alignment: .leading)
                 
-                Spacer()
+                // English prayer name
+                Text(prayer.name)
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white.opacity(0.85))
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text(prayer.timeString)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundColor(prayer.isNext ? .primary : .secondary)
-                    
-                    if prayer.isNext {
-                        Text("Next Prayer")
-                            .font(.caption)
-                            .foregroundColor(.blue)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 2)
-                            .background(.blue.opacity(0.1), in: Capsule())
-                    }
+                // Time
+                Text(prayer.timeString)
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .foregroundColor(.white.opacity(0.9))
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+        }
+        .scaleEffect(cardScale)
+        .onTapGesture {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                cardScale = 0.97
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    cardScale = 1.0
                 }
             }
-            .padding()
         }
-        .scaleEffect(prayer.isNext ? 1.02 : 1.0)
-        .animation(.smooth(duration: 0.3), value: prayer.isNext)
     }
 }

@@ -9,20 +9,45 @@ struct HomeView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var breathingOpacity: Double = 0.7
     @State private var prayerCardScale: Double = 1.0
+    @State private var contentScale: Double = 0.95
+    @State private var contentOpacity: Double = 0.0
+    @State private var contentBlur: Double = 10.0
+    @State private var gearIconScale: Double = 1.0
+    @State private var rippleOpacity: Double = 0.0
+    @State private var rippleRadius: Double = 20.0
+    @State private var shimmerOffset: Double = -200.0
+    let namespace: Namespace.ID
+    @Namespace private var liquidBackground
     
     var body: some View {
         NavigationStack {
             ZStack {
-                // Deep teal gradient background
-                LinearGradient(
-                    colors: [
-                        Color(red: 0.05, green: 0.29, blue: 0.36), // #0d4a5d
-                        Color(red: 0.04, green: 0.23, blue: 0.29)  // #0a3a4a
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
+                // Deep teal gradient background with matched geometry
+                ZStack {
+                    LinearGradient(
+                        colors: [
+                            Color(red: 0.05, green: 0.29, blue: 0.36), // #0d4a5d
+                            Color(red: 0.04, green: 0.23, blue: 0.29)  // #0a3a4a
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .matchedGeometryEffect(id: "liquidBackground", in: liquidBackground)
+                    .ignoresSafeArea()
+                    
+                    // Ripple effect overlay
+                    RadialGradient(
+                        colors: [
+                            Color.white.opacity(rippleOpacity),
+                            Color.clear
+                        ],
+                        center: .center,
+                        startRadius: 0,
+                        endRadius: rippleRadius
+                    )
+                    .opacity(rippleOpacity)
+                    .ignoresSafeArea()
+                }
                 
                 // Subtle radial glow behind main prayer card
                 if let nextPrayer = prayerTimeService.nextPrayer {
@@ -47,11 +72,42 @@ struct HomeView: View {
                 
                 ScrollView {
                     VStack(spacing: 32) {
-                        // Header Section
+                        // Header Section with Logo Transition
                         VStack(spacing: 12) {
-                            Text("My Azan")
-                                .font(.system(size: 28, weight: .medium, design: .rounded))
-                                .foregroundColor(.white.opacity(0.9))
+                            // App Logo (for matched geometry effect)
+                            Image("AppIcon")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 60, height: 60)
+                                .clipShape(RoundedRectangle(cornerRadius: 13))
+                                .matchedGeometryEffect(id: "app_logo", in: namespace)
+                                .opacity(0.0) // Hidden but maintains geometry
+                            
+                            ZStack {
+                                Text("My Azan")
+                                    .font(.system(size: 28, weight: .medium, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.9))
+                                
+                                // Shimmer effect
+                                Rectangle()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [
+                                                Color.clear,
+                                                Color.white.opacity(0.3),
+                                                Color.clear
+                                            ],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                    .frame(width: 100, height: 30)
+                                    .offset(x: shimmerOffset)
+                                    .mask(
+                                        Text("My Azan")
+                                            .font(.system(size: 28, weight: .medium, design: .rounded))
+                                    )
+                            }
                             
                             VStack(spacing: 4) {
                                 Text(locationManager.cityName)
@@ -65,20 +121,71 @@ struct HomeView: View {
                         }
                         .padding(.top, 20)
                         
-                        // Next Prayer Card
+                        // Rectangular Next Prayer Card
                         if let nextPrayer = prayerTimeService.nextPrayer {
-                            PrayerCard(prayer: nextPrayer)
-                                .scaleEffect(prayerCardScale)
-                                .onTapGesture {
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        prayerCardScale = 0.97
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        withAnimation(.easeInOut(duration: 0.2)) {
-                                            prayerCardScale = 1.0
-                                        }
+                            ZStack {
+                                // Frosted glass background with soft glow
+                                RoundedRectangle(cornerRadius: 36)
+                                    .fill(.ultraThinMaterial)
+                                    .frame(width: 280, height: 280)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 36)
+                                            .stroke(
+                                                LinearGradient(
+                                                    colors: [
+                                                        Color.white.opacity(0.3),
+                                                        Color.white.opacity(0.1)
+                                                    ],
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                ),
+                                                lineWidth: 1
+                                            )
+                                    )
+                                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 3)
+                                    .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.3), radius: 20, x: 0, y: 10)
+                                
+                                VStack(spacing: 16) {
+                                    // Next Prayer caption
+                                    Text("Next Prayer")
+                                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                                        .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7)) // #C7E3E8
+                                    
+                                    // Arabic prayer name
+                                    Text(nextPrayer.arabicName)
+                                        .font(.system(size: 24, weight: .medium))
+                                        .foregroundColor(.white.opacity(0.9))
+                                    
+                                    // English prayer name
+                                    Text(nextPrayer.name)
+                                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.white.opacity(0.85))
+                                    
+                                    // Time with glow effect
+                                    Text(nextPrayer.timeString)
+                                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                                        .foregroundColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
+                                        .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.5), radius: 8, x: 0, y: 0)
+                                    
+                                    // Countdown
+                                    if nextPrayer.isUpcoming {
+                                        Text("in \(formatTimeRemaining(nextPrayer.timeRemaining))")
+                                            .font(.system(size: 14, weight: .medium, design: .rounded))
+                                            .foregroundColor(.white.opacity(0.7))
                                     }
                                 }
+                            }
+                            .scaleEffect(prayerCardScale)
+                            .onTapGesture {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    prayerCardScale = 0.97
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        prayerCardScale = 1.0
+                                    }
+                                }
+                            }
                         }
                         
                         // Prayer Times List
@@ -134,9 +241,15 @@ struct HomeView: View {
                         Spacer(minLength: 100)
                     }
                 }
+                .scaleEffect(contentScale)
+                .opacity(contentOpacity)
+                .blur(radius: contentBlur)
             }
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
+                // Start home screen entrance animation
+                startHomeEntranceAnimation()
+                
                 // Defer location services initialization
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     initializeLocationServices()
@@ -148,6 +261,32 @@ struct HomeView: View {
                         Image(systemName: "gearshape.fill")
                             .font(.system(size: 18, weight: .medium))
                             .foregroundColor(.white.opacity(0.8))
+                            .scaleEffect(gearIconScale)
+                            .onTapGesture {
+                                // Gear icon expansion animation
+                                withAnimation(.spring(response: 0.15, dampingFraction: 0.6)) {
+                                    gearIconScale = 1.15
+                                }
+                                
+                                // Trigger ripple effect
+                                withAnimation(.easeOut(duration: 0.6)) {
+                                    rippleOpacity = 0.1
+                                    rippleRadius = 200
+                                }
+                                
+                                // Reset gear icon scale
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                    withAnimation(.spring(response: 0.2, dampingFraction: 0.8)) {
+                                        gearIconScale = 1.0
+                                    }
+                                }
+                                
+                                // Reset ripple
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                                    rippleOpacity = 0.0
+                                    rippleRadius = 20
+                                }
+                            }
                     }
                 }
             }
@@ -160,6 +299,26 @@ struct HomeView: View {
         .onReceive(prayerTimeService.$prayerTimes) { prayers in
             if !prayers.isEmpty {
                 notificationManager.schedulePrayerNotifications(for: prayers, settings: settingsManager.settings)
+            }
+        }
+    }
+    
+    private func startHomeEntranceAnimation() {
+        // Home screen content fades in with scale and blur fade out (0.8s, ease out)
+        withAnimation(.easeOut(duration: 0.8)) {
+            contentScale = 1.0
+            contentOpacity = 1.0
+            contentBlur = 0.0
+        }
+        
+        // Shimmer effect on title
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            withAnimation(.easeInOut(duration: 0.8)) {
+                shimmerOffset = 200
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                shimmerOffset = -200
             }
         }
     }

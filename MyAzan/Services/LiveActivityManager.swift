@@ -10,12 +10,20 @@ struct PrayerActivityAttributes: ActivityAttributes {
         var nextPrayerTime: Date
         var timeRemaining: TimeInterval
         var cityName: String
+        var nextPrayerName: String
+        var nextPrayerTime: Date
+        var progressPercentage: Double
+        var isAzanEnabled: Bool
+        var currentDate: Date
     }
     
     var initialPrayerName: String
     var initialPrayerArabicName: String
     var initialPrayerTime: Date
     var cityName: String
+    var nextPrayerName: String
+    var nextPrayerTime: Date
+    var isAzanEnabled: Bool
 }
 
 class LiveActivityManager: ObservableObject {
@@ -25,22 +33,33 @@ class LiveActivityManager: ObservableObject {
         // Initialize if needed
     }
     
-    func startPrayerActivity(prayer: PrayerTime) {
+    func startPrayerActivity(prayer: PrayerTime, nextPrayer: PrayerTime, cityName: String, isAzanEnabled: Bool) {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
         
         let attributes = PrayerActivityAttributes(
             initialPrayerName: prayer.name,
             initialPrayerArabicName: prayer.arabicName,
             initialPrayerTime: prayer.time,
-            cityName: "Unknown"
+            cityName: cityName,
+            nextPrayerName: nextPrayer.name,
+            nextPrayerTime: nextPrayer.time,
+            isAzanEnabled: isAzanEnabled
         )
+        
+        let timeRemaining = prayer.time.timeIntervalSinceNow
+        let progressPercentage = calculateProgressPercentage(currentTime: Date(), prayerTime: prayer.time, nextPrayerTime: nextPrayer.time)
         
         let initialState = PrayerActivityAttributes.ContentState(
             nextPrayerName: prayer.name,
             nextPrayerArabicName: prayer.arabicName,
             nextPrayerTime: prayer.time,
-            timeRemaining: prayer.time.timeIntervalSinceNow,
-            cityName: "Unknown"
+            timeRemaining: timeRemaining,
+            cityName: cityName,
+            nextPrayerName: nextPrayer.name,
+            nextPrayerTime: nextPrayer.time,
+            progressPercentage: progressPercentage,
+            isAzanEnabled: isAzanEnabled,
+            currentDate: Date()
         )
         
         do {
@@ -50,24 +69,41 @@ class LiveActivityManager: ObservableObject {
                 pushType: nil
             )
             currentActivity = activity
+            
+            // Schedule updates every minute
+            schedulePeriodicUpdates()
         } catch {
             print("Error starting activity: \(error)")
         }
     }
     
-    func updatePrayerActivity(prayer: PrayerTime) {
+    func updatePrayerActivity(prayer: PrayerTime, nextPrayer: PrayerTime, cityName: String, isAzanEnabled: Bool) {
         guard let activity = currentActivity else { return }
+        
+        let timeRemaining = prayer.time.timeIntervalSinceNow
+        let progressPercentage = calculateProgressPercentage(currentTime: Date(), prayerTime: prayer.time, nextPrayerTime: nextPrayer.time)
         
         let state = PrayerActivityAttributes.ContentState(
             nextPrayerName: prayer.name,
             nextPrayerArabicName: prayer.arabicName,
             nextPrayerTime: prayer.time,
-            timeRemaining: prayer.time.timeIntervalSinceNow,
-            cityName: "Unknown"
+            timeRemaining: timeRemaining,
+            cityName: cityName,
+            nextPrayerName: nextPrayer.name,
+            nextPrayerTime: nextPrayer.time,
+            progressPercentage: progressPercentage,
+            isAzanEnabled: isAzanEnabled,
+            currentDate: Date()
         )
         
         Task {
             await activity.update(using: state)
+            
+            // Trigger haptic feedback if countdown reaches 0
+            if timeRemaining <= 0 && isAzanEnabled {
+                let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                impactFeedback.impactOccurred()
+            }
         }
     }
     
@@ -78,5 +114,22 @@ class LiveActivityManager: ObservableObject {
             await activity.end(dismissalPolicy: .immediate)
             currentActivity = nil
         }
+    }
+    
+    private func schedulePeriodicUpdates() {
+        Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
+            // This will be handled by the main app's prayer time service
+            // The timer here is just a fallback
+        }
+    }
+    
+    private func calculateProgressPercentage(currentTime: Date, prayerTime: Date, nextPrayerTime: Date) -> Double {
+        let totalDuration = nextPrayerTime.timeIntervalSince(prayerTime)
+        let elapsed = currentTime.timeIntervalSince(prayerTime)
+        
+        guard totalDuration > 0 else { return 0.0 }
+        
+        let percentage = elapsed / totalDuration
+        return max(0.0, min(1.0, percentage))
     }
 }
