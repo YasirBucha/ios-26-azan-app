@@ -33,115 +33,9 @@ struct AudioManagementView: View {
                 
                 ScrollView {
                     VStack(spacing: 20) {
-                        // Add Audio Button
-                        LiquidGlassBackground {
-                            Button(action: { showingFilePicker = true }) {
-                                HStack {
-                                    Image(systemName: "plus.circle.fill")
-                                    Text("Add Audio File")
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue.opacity(0.1))
-                                .foregroundColor(.blue)
-                                .cornerRadius(12)
-                            }
-                        }
-                        .padding()
-                        
-                        // Audio Files List
-                        LiquidGlassBackground {
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("Audio Files")
-                                    .font(.headline)
-                                    .fontWeight(.semibold)
-                                
-                                // Default Audio
-                                HStack {
-                                    Image(systemName: "star.fill")
-                                        .foregroundColor(.yellow)
-                                    Text(audioFileManager.getDefaultAudioName())
-                                    Spacer()
-                                    
-                                    // Preview Button for Default Audio
-                                    Button(action: {
-                                        if audioManager.isCurrentlyPlayingDefault() {
-                                            audioManager.stopAzan()
-                                        } else {
-                                            audioManager.previewAudio(useDefault: true)
-                                        }
-                                    }) {
-                                        Image(systemName: audioManager.isCurrentlyPlayingDefault() ? "stop.circle.fill" : "play.circle.fill")
-                                            .foregroundColor(.blue)
-                                            .font(.title2)
-                                    }
-                                    
-                                    Text("Default")
-                                        .font(.caption)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(Color.green.opacity(0.2))
-                                        .foregroundColor(.green)
-                                        .cornerRadius(8)
-                                }
-                                .padding()
-                                .background(Color.blue.opacity(0.05))
-                                .cornerRadius(12)
-                                
-                                // Custom Files
-                                ForEach(audioFileManager.customAudioFiles) { file in
-                                    HStack {
-                                        Image(systemName: "music.note")
-                                            .foregroundColor(.blue)
-                                        Text(file.displayName)
-                                        Spacer()
-                                        
-                                        // Preview Button for Custom Audio
-                                        Button(action: {
-                                            if audioManager.isCurrentlyPlaying(file.id) {
-                                                audioManager.stopAzan()
-                                            } else {
-                                                audioManager.previewAudio(useDefault: false, customFileId: file.id)
-                                            }
-                                        }) {
-                                            Image(systemName: audioManager.isCurrentlyPlaying(file.id) ? "stop.circle.fill" : "play.circle.fill")
-                                                .foregroundColor(.blue)
-                                                .font(.title2)
-                                        }
-                                        
-                                        Button(action: {
-                                            fileToRename = file
-                                            newFileName = file.displayName
-                                            showingRenameDialog = true
-                                        }) {
-                                            Image(systemName: "pencil")
-                                                .foregroundColor(.blue)
-                                        }
-                                        Button(action: {
-                                            fileToDelete = file
-                                            showingDeleteConfirmation = true
-                                        }) {
-                                            Image(systemName: "trash")
-                                                .foregroundColor(.red)
-                                        }
-                                    }
-                                    .padding()
-                                    .background(Color.gray.opacity(0.05))
-                                    .cornerRadius(12)
-                                }
-                                
-                                if audioFileManager.customAudioFiles.isEmpty {
-                                    Text("No custom audio files.")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                        .frame(maxWidth: .infinity, alignment: .center)
-                                        .padding()
-                                }
-                            }
-                            .padding()
-                        }
-                        .padding()
-                        
+                        folderStructureInfo
+                        addAudioButton
+                        audioFilesList
                         Spacer(minLength: 50)
                     }
                 }
@@ -155,7 +49,7 @@ struct AudioManagementView: View {
             }
             .fileImporter(
                 isPresented: $showingFilePicker,
-                allowedContentTypes: [.mp3, .wav],
+                allowedContentTypes: [.mp3, .wav, .audio],
                 allowsMultipleSelection: false
             ) { result in
                 if case .success(let urls) = result, let url = urls.first {
@@ -187,6 +81,166 @@ struct AudioManagementView: View {
                 Text("Are you sure you want to delete this audio file?")
             }
         }
+    }
+    
+    // MARK: - View Components
+    private var folderStructureInfo: some View {
+        LiquidGlassBackground {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: "folder.fill")
+                        .foregroundColor(.blue)
+                    Text("Audio Files Structure")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                            .font(.caption)
+                        Text("Default Audio")
+                            .font(.caption)
+                        Spacer()
+                        Text("Included in app")
+                            .font(.caption2)
+                            .foregroundColor(.green)
+                    }
+                    
+                    HStack {
+                        Image(systemName: "music.note")
+                            .foregroundColor(.blue)
+                            .font(.caption)
+                        Text("Custom Audio")
+                            .font(.caption)
+                        Spacer()
+                        Text("Stored in Documents")
+                            .font(.caption2)
+                            .foregroundColor(.blue)
+                    }
+                }
+                .padding(.leading, 20)
+            }
+            .padding()
+        }
+        .padding()
+    }
+    
+    private var addAudioButton: some View {
+        LiquidGlassBackground {
+            Button(action: { showingFilePicker = true }) {
+                HStack {
+                    Image(systemName: "plus.circle.fill")
+                    Text("Add Custom Audio File")
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.blue.opacity(0.1))
+                .foregroundColor(.blue)
+                .cornerRadius(12)
+            }
+        }
+        .padding()
+    }
+    
+    private var audioFilesList: some View {
+        LiquidGlassBackground {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Audio Files")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                
+                defaultAudioRow
+                
+                ForEach(audioFileManager.customAudioFiles) { file in
+                    customAudioRow(for: file)
+                }
+                
+                if audioFileManager.customAudioFiles.isEmpty {
+                    Text("No custom audio files.")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding()
+                }
+            }
+            .padding()
+        }
+        .padding()
+    }
+    
+    private var defaultAudioRow: some View {
+        HStack {
+            Image(systemName: "star.fill")
+                .foregroundColor(.yellow)
+            Text(audioFileManager.getDefaultAudioName())
+            Spacer()
+            
+            Button(action: {
+                if audioManager.isCurrentlyPlayingDefault() {
+                    audioManager.stopAzan()
+                } else {
+                    audioManager.previewAudio(useDefault: true)
+                }
+            }) {
+                Image(systemName: audioManager.isCurrentlyPlayingDefault() ? "stop.circle.fill" : "play.circle.fill")
+                    .foregroundColor(.blue)
+                    .font(.title2)
+            }
+            
+            Text("Default")
+                .font(.caption)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.green.opacity(0.2))
+                .foregroundColor(.green)
+                .cornerRadius(8)
+        }
+        .padding()
+        .background(Color.blue.opacity(0.05))
+        .cornerRadius(12)
+    }
+    
+    private func customAudioRow(for file: CustomAudioFile) -> some View {
+        HStack {
+            Image(systemName: "music.note")
+                .foregroundColor(.blue)
+            Text(file.displayName)
+            Spacer()
+            
+            Button(action: {
+                if audioManager.isCurrentlyPlaying(file.id) {
+                    audioManager.stopAzan()
+                } else {
+                    audioManager.previewAudio(useDefault: false, customFileId: file.id)
+                }
+            }) {
+                Image(systemName: audioManager.isCurrentlyPlaying(file.id) ? "stop.circle.fill" : "play.circle.fill")
+                    .foregroundColor(.blue)
+                    .font(.title2)
+            }
+            
+            Button(action: {
+                fileToRename = file
+                newFileName = file.displayName
+                showingRenameDialog = true
+            }) {
+                Image(systemName: "pencil")
+                    .foregroundColor(.blue)
+            }
+            
+            Button(action: {
+                fileToDelete = file
+                showingDeleteConfirmation = true
+            }) {
+                Image(systemName: "trash")
+                    .foregroundColor(.red)
+            }
+        }
+        .padding()
+        .background(Color.gray.opacity(0.05))
+        .cornerRadius(12)
     }
     
     private func presentNameInput(for url: URL) {

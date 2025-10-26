@@ -21,6 +21,7 @@
 		38B847152EAED0410055EDCB /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847142EAED0410055EDCB /* AppSettings.swift */; };
 		38B847172EAED04B0055EDCB /* PrayerTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847162EAED04B0055EDCB /* PrayerTime.swift */; };
 		38B847192EAED1430055EDCB /* PrayerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847182EAED1430055EDCB /* PrayerCard.swift */; };
+		38B8471B2EAEE8800055EDCB /* azan_notification.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 38B8471A2EAEE8800055EDCB /* azan_notification.mp3 */; };
 		A1234567890ABCDEF001 /* MyAzanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF002 /* MyAzanApp.swift */; };
 		A1234567890ABCDEF005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF006 /* Assets.xcassets */; };
 		A1234567890ABCDEF007 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF008 /* Preview Assets.xcassets */; };
@@ -44,6 +45,7 @@
 		38B847142EAED0410055EDCB /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		38B847162EAED04B0055EDCB /* PrayerTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTime.swift; sourceTree = "<group>"; };
 		38B847182EAED1430055EDCB /* PrayerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerCard.swift; sourceTree = "<group>"; };
+		38B8471A2EAEE8800055EDCB /* azan_notification.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = azan_notification.mp3; sourceTree = "<group>"; };
 		A1234567890ABCDEF002 /* MyAzanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAzanApp.swift; sourceTree = "<group>"; };
 		A1234567890ABCDEF006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1234567890ABCDEF008 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 		A1234567890ABCDEF014 = {
 			isa = PBXGroup;
 			children = (
+				38B8471A2EAEE8800055EDCB /* azan_notification.mp3 */,
 				A1234567890ABCDEF015 /* MyAzan */,
 				A1234567890ABCDEF016 /* Products */,
 			);
@@ -214,6 +217,7 @@
 				A1234567890ABCDEF007 /* Preview Assets.xcassets in Resources */,
 				A1234567890ABCDEF046 /* LaunchScreen.storyboard in Resources */,
 				A1234567890ABCDEF005 /* Assets.xcassets in Resources */,
+				38B8471B2EAEE8800055EDCB /* azan_notification.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

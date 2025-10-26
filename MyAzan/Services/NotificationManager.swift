@@ -54,7 +54,7 @@ class NotificationManager: ObservableObject {
             
             // Only add sound if both global azan is enabled and this specific prayer sound is enabled
             if settings.azanEnabled && soundEnabled {
-                content.sound = UNNotificationSound(named: UNNotificationSoundName("azan_notification.wav"))
+                content.sound = UNNotificationSound(named: UNNotificationSoundName("azan_notification.mp3"))
             } else {
                 content.sound = nil // Silent notification
             }

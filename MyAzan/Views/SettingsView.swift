@@ -9,277 +9,319 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     
     @State private var showingAudioManagement = false
+    @State private var selectedTheme: ThemeMode = .system
+    @State private var selectedAccentColor: AccentColor = .blue
+    @State private var volumeLevel: Double = 0.8
+    @State private var showingTestAnimation = false
     
-    private var bgColors: [Color] {
-        colorScheme == .dark 
-            ? [Color.black, Color.blue.opacity(0.1)]
-            : [Color.white, Color.blue.opacity(0.05)]
+    enum ThemeMode: String, CaseIterable {
+        case light = "Light"
+        case dark = "Dark"
+        case system = "System"
+    }
+    
+    enum AccentColor: String, CaseIterable {
+        case blue = "Blue"
+        case teal = "Teal"
+        case purple = "Purple"
+        case green = "Green"
+        
+        var color: Color {
+            switch self {
+            case .blue: return Color(red: 0.3, green: 0.72, blue: 1.0) // #4DB8FF
+            case .teal: return Color(red: 0.0, green: 0.8, blue: 0.8)
+            case .purple: return Color(red: 0.6, green: 0.4, blue: 1.0)
+            case .green: return Color(red: 0.2, green: 0.8, blue: 0.4)
+            }
+        }
     }
     
     var body: some View {
         NavigationStack {
             ZStack {
-                // Background gradient
-                LinearGradient(
-                    colors: bgColors,
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
+                // Deep teal gradient background with soft light flare
+                ZStack {
+                    LinearGradient(
+                        colors: [
+                            Color(red: 0.04, green: 0.23, blue: 0.29), // #0a3a4a
+                            Color(red: 0.0, green: 0.12, blue: 0.15)  // #001e26
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .ignoresSafeArea()
+                    
+                    // Soft light flare at top center
+                    RadialGradient(
+                        colors: [
+                            Color.white.opacity(0.08),
+                            Color.clear
+                        ],
+                        center: .top,
+                        startRadius: 0,
+                        endRadius: 300
+                    )
+                    .ignoresSafeArea()
+                }
                 
                 ScrollView {
-                    VStack(spacing: 20) {
-                        // Audio Settings
-                        LiquidGlassBackground {
-                            VStack(alignment: .leading, spacing: 16) {
+                    VStack(spacing: 24) {
+                        // Header Section
+                        VStack(spacing: 8) {
+                            Text("Settings")
+                                .font(.system(size: 26, weight: .semibold, design: .rounded))
+                                .foregroundColor(.white.opacity(0.9))
+                            
+                            Text("Customize your prayer experience")
+                                .font(.system(size: 15, weight: .regular, design: .default))
+                                .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7)) // #BFD3D8
+                        }
+                        .padding(.top, 40)
+                        .padding(.bottom, 20)
+                        
+                        // Audio Settings Card
+                        EnhancedLiquidGlassCard {
+                            VStack(alignment: .leading, spacing: 20) {
                                 Text("Audio Settings")
-                                    .font(.headline)
-                                    .fontWeight(.semibold)
+                                    .font(.system(size: 18, weight: .semibold, design: .default))
+                                    .foregroundColor(.white.opacity(0.9))
                                 
-                                // Azan Audio Toggle
+                                // Azan Voice Dropdown
                                 HStack {
-                                    Text("Azan Audio")
-                                        .font(.body)
+                                    Text("Azan Voice")
+                                        .font(.system(size: 16, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.85))
                                     Spacer()
-                                    Toggle("", isOn: Binding(
+                                    Text(audioFileManager.getDefaultAudioName())
+                                        .font(.system(size: 16, weight: .medium, design: .default))
+                                        .foregroundColor(.white.opacity(0.7))
+                                    Image(systemName: "chevron.down")
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.white.opacity(0.6))
+                                }
+                                
+                                // Volume Level Slider
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Volume Level")
+                                        .font(.system(size: 16, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.85))
+                                    
+                                    HStack {
+                                        Image(systemName: "speaker.fill")
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.white.opacity(0.6))
+                                        
+                                        Slider(value: $volumeLevel, in: 0...1)
+                                            .accentColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 4)
+                                                    .fill(Color.white.opacity(0.1))
+                                                    .frame(height: 6)
+                                            )
+                                        
+                                        Image(systemName: "speaker.wave.3.fill")
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.white.opacity(0.6))
+                                    }
+                                }
+                                
+                                // Play Test Azan Button
+                                Button(action: {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        showingTestAnimation.toggle()
+                                    }
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        if settingsManager.settings.useDefaultAudio {
+                                            if audioManager.isCurrentlyPlayingDefault() {
+                                                audioManager.stopAzan()
+                                            } else {
+                                                audioManager.previewAudio(useDefault: true)
+                                            }
+                                        } else if let id = settingsManager.settings.selectedAudioFileId {
+                                            if audioManager.isCurrentlyPlaying(id) {
+                                                audioManager.stopAzan()
+                                            } else {
+                                                audioManager.previewAudio(useDefault: false, customFileId: id)
+                                            }
+                                        }
+                                    }
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        withAnimation(.easeInOut(duration: 0.3)) {
+                                            showingTestAnimation = false
+                                        }
+                                    }
+                                }) {
+                                    HStack {
+                                        Image(systemName: (settingsManager.settings.useDefaultAudio && audioManager.isCurrentlyPlayingDefault()) || 
+                                              (!settingsManager.settings.useDefaultAudio && settingsManager.settings.selectedAudioFileId != nil && 
+                                               audioManager.isCurrentlyPlaying(settingsManager.settings.selectedAudioFileId!)) ? 
+                                              "stop.circle.fill" : "play.circle.fill")
+                                        Text("Play Test Azan")
+                                    }
+                                    .font(.system(size: 15, weight: .medium, design: .default))
+                                    .foregroundColor(.white.opacity(0.9))
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 12)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(.ultraThinMaterial)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .stroke(.white.opacity(0.2), lineWidth: 1)
+                                            )
+                                    )
+                                    .scaleEffect(showingTestAnimation ? 0.95 : 1.0)
+                                }
+                            }
+                            .padding(20)
+                        }
+                        
+                        // Notifications Card
+                        EnhancedLiquidGlassCard {
+                            VStack(alignment: .leading, spacing: 20) {
+                                Text("Notifications")
+                                    .font(.system(size: 18, weight: .semibold, design: .default))
+                                    .foregroundColor(.white.opacity(0.9))
+                                
+                                // Prayer Time Alerts Toggle
+                                HStack {
+                                    Text("Prayer Time Alerts")
+                                        .font(.system(size: 16, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.85))
+                                    Spacer()
+                                    CustomToggle(isOn: Binding(
                                         get: { settingsManager.settings.azanEnabled },
                                         set: { settingsManager.updateAzanEnabled($0) }
                                     ))
-                                    .tint(.blue)
                                 }
                                 
-                                // Audio File Selection
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Selected Audio")
-                                        .font(.body)
-                                    
-                                    Picker("Audio File", selection: Binding(
-                                        get: { 
-                                            if settingsManager.settings.useDefaultAudio {
-                                                return "default"
-                                            } else if let id = settingsManager.settings.selectedAudioFileId {
-                                                return id.uuidString
-                                            }
-                                            return "default"
-                                        },
-                                        set: { value in
-                                            if value == "default" {
-                                                settingsManager.updateUseDefaultAudio(true)
-                                            } else if let id = UUID(uuidString: value) {
-                                                settingsManager.updateSelectedAudioFile(id)
-                                                settingsManager.updateUseDefaultAudio(false)
-                                            }
-                                        }
-                                    )) {
-                                        Text(audioFileManager.getDefaultAudioName()).tag("default")
-                                        ForEach(audioFileManager.customAudioFiles) { file in
-                                            Text(file.displayName).tag(file.id.uuidString)
-                                        }
-                                    }
-                                    
-                                    // Preview Button for Selected Audio
-                                    HStack {
-                                        Button(action: {
-                                            if settingsManager.settings.useDefaultAudio {
-                                                if audioManager.isCurrentlyPlayingDefault() {
-                                                    audioManager.stopAzan()
-                                                } else {
-                                                    audioManager.previewAudio(useDefault: true)
-                                                }
-                                            } else if let id = settingsManager.settings.selectedAudioFileId {
-                                                if audioManager.isCurrentlyPlaying(id) {
-                                                    audioManager.stopAzan()
-                                                } else {
-                                                    audioManager.previewAudio(useDefault: false, customFileId: id)
-                                                }
-                                            }
-                                        }) {
-                                            HStack {
-                                                Image(systemName: (settingsManager.settings.useDefaultAudio && audioManager.isCurrentlyPlayingDefault()) || 
-                                                      (!settingsManager.settings.useDefaultAudio && settingsManager.settings.selectedAudioFileId != nil && 
-                                                       audioManager.isCurrentlyPlaying(settingsManager.settings.selectedAudioFileId!)) ? 
-                                                      "stop.circle.fill" : "play.circle.fill")
-                                                Text("Preview Audio")
-                                            }
-                                            .frame(maxWidth: .infinity)
-                                            .padding()
-                                            .background(Color.blue.opacity(0.1))
-                                            .foregroundColor(.blue)
-                                            .cornerRadius(12)
-                                        }
-                                    }
-                                }
-                                
-                                // Manage Audio Files Button
-                                Button(action: {
-                                    showingAudioManagement = true
-                                }) {
-                                    HStack {
-                                        Image(systemName: "folder.badge.gearshape")
-                                        Text("Manage Audio Files")
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.blue.opacity(0.1))
-                                    .foregroundColor(.blue)
-                                    .cornerRadius(12)
-                                }
-                            }
-                            .padding()
-                        }
-                        
-                        // Prayer Sound Settings
-                        LiquidGlassBackground {
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("Prayer Sound Settings")
-                                    .font(.headline)
-                                    .fontWeight(.semibold)
-                                
-                                // Bulk Controls
-                                HStack(spacing: 12) {
-                                    Button("Enable All") {
-                                        settingsManager.enableAllPrayerSounds()
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .tint(.green)
-                                    
-                                    Button("Disable All") {
-                                        settingsManager.disableAllPrayerSounds()
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .tint(.red)
-                                    
-                                    Spacer()
-                                }
-                                
-                                Divider()
-                                
-                                // Individual Prayer Sound Controls
-                                VStack(spacing: 12) {
-                                    PrayerSoundToggleRow(
-                                        prayerName: "Fajr",
-                                        isEnabled: Binding(
-                                            get: { settingsManager.settings.fajrSoundEnabled },
-                                            set: { settingsManager.updateFajrSoundEnabled($0) }
-                                        )
-                                    )
-                                    
-                                    PrayerSoundToggleRow(
-                                        prayerName: "Dhuhr",
-                                        isEnabled: Binding(
-                                            get: { settingsManager.settings.dhuhrSoundEnabled },
-                                            set: { settingsManager.updateDhuhrSoundEnabled($0) }
-                                        )
-                                    )
-                                    
-                                    PrayerSoundToggleRow(
-                                        prayerName: "Asr",
-                                        isEnabled: Binding(
-                                            get: { settingsManager.settings.asrSoundEnabled },
-                                            set: { settingsManager.updateAsrSoundEnabled($0) }
-                                        )
-                                    )
-                                    
-                                    PrayerSoundToggleRow(
-                                        prayerName: "Maghrib",
-                                        isEnabled: Binding(
-                                            get: { settingsManager.settings.maghribSoundEnabled },
-                                            set: { settingsManager.updateMaghribSoundEnabled($0) }
-                                        )
-                                    )
-                                    
-                                    PrayerSoundToggleRow(
-                                        prayerName: "Isha",
-                                        isEnabled: Binding(
-                                            get: { settingsManager.settings.ishaSoundEnabled },
-                                            set: { settingsManager.updateIshaSoundEnabled($0) }
-                                        )
-                                    )
-                                }
-                            }
-                            .padding()
-                        }
-                        
-                        // Notification Settings
-                        LiquidGlassBackground {
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("Notification Settings")
-                                    .font(.headline)
-                                    .fontWeight(.semibold)
-                                
-                                // 5-minute Reminder Toggle
+                                // Pre-Azan Reminder Toggle
                                 HStack {
-                                    Text("5-minute Reminder")
-                                        .font(.body)
+                                    Text("Pre-Azan Reminder (5 min before)")
+                                        .font(.system(size: 16, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.85))
                                     Spacer()
-                                    Toggle("", isOn: Binding(
+                                    CustomToggle(isOn: Binding(
                                         get: { settingsManager.settings.reminderEnabled },
                                         set: { settingsManager.updateReminderEnabled($0) }
                                     ))
-                                    .tint(.blue)
                                 }
                                 
-                                // Live Activity Toggle
+                                // Vibration Only Toggle
                                 HStack {
-                                    Text("Live Activity")
-                                        .font(.body)
+                                    Text("Vibration Only During Meetings")
+                                        .font(.system(size: 16, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.85))
                                     Spacer()
-                                    Toggle("", isOn: Binding(
+                                    CustomToggle(isOn: Binding(
                                         get: { settingsManager.settings.liveActivityEnabled },
                                         set: { settingsManager.updateLiveActivityEnabled($0) }
                                     ))
-                                    .tint(.blue)
                                 }
                             }
-                            .padding()
+                            .padding(20)
                         }
                         
-                        // Permissions Status
-                        LiquidGlassBackground {
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("Permissions")
-                                    .font(.headline)
-                                    .fontWeight(.semibold)
+                        // Appearance Card
+                        EnhancedLiquidGlassCard {
+                            VStack(alignment: .leading, spacing: 20) {
+                                Text("Appearance")
+                                    .font(.system(size: 18, weight: .semibold, design: .default))
+                                    .foregroundColor(.white.opacity(0.9))
                                 
-                                HStack {
-                                    Text("Notifications")
-                                        .font(.body)
-                                    Spacer()
-                                    Text(notificationStatusText)
-                                        .font(.caption)
-                                        .foregroundColor(notificationStatusColor)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(notificationStatusColor.opacity(0.1), in: Capsule())
-                                }
-                                
-                                if notificationManager.authorizationStatus == .denied {
-                                    Button("Open Settings") {
-                                        if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
-                                            UIApplication.shared.open(settingsUrl)
+                                // Theme Selector
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Text("Theme")
+                                        .font(.system(size: 16, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.85))
+                                    
+                                    HStack(spacing: 8) {
+                                        ForEach(ThemeMode.allCases, id: \.self) { theme in
+                                            Button(action: {
+                                                withAnimation(.easeInOut(duration: 0.3)) {
+                                                    selectedTheme = theme
+                                                }
+                                            }) {
+                                                Text(theme.rawValue)
+                                                    .font(.system(size: 14, weight: .medium, design: .default))
+                                                    .foregroundColor(selectedTheme == theme ? .white : .white.opacity(0.7))
+                                                    .padding(.horizontal, 16)
+                                                    .padding(.vertical, 8)
+                                                    .background(
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .fill(selectedTheme == theme ? 
+                                                                  Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.8) : 
+                                                                  Color.white.opacity(0.1))
+                                                    )
+                                            }
                                         }
                                     }
-                                    .buttonStyle(.bordered)
-                                    .tint(.blue)
+                                }
+                                
+                                // Accent Color Picker
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Text("Accent Color")
+                                        .font(.system(size: 16, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.85))
+                                    
+                                    HStack(spacing: 12) {
+                                        ForEach(AccentColor.allCases, id: \.self) { accent in
+                                            Button(action: {
+                                                withAnimation(.easeInOut(duration: 0.3)) {
+                                                    selectedAccentColor = accent
+                                                }
+                                            }) {
+                                                Circle()
+                                                    .fill(accent.color)
+                                                    .frame(width: 32, height: 32)
+                                                    .overlay(
+                                                        Circle()
+                                                            .stroke(.white.opacity(0.3), lineWidth: selectedAccentColor == accent ? 3 : 1)
+                                                    )
+                                                    .scaleEffect(selectedAccentColor == accent ? 1.1 : 1.0)
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                            .padding()
+                            .padding(20)
                         }
                         
-                        Spacer(minLength: 100)
+                        // Footer Section
+                        VStack(spacing: 16) {
+                            // Restore Defaults Button
+                            Button(action: {
+                                // Restore defaults logic
+                            }) {
+                                Text("Restore Defaults")
+                                    .font(.system(size: 16, weight: .medium, design: .default))
+                                    .foregroundColor(.white.opacity(0.7))
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 14)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 25)
+                                            .fill(Color.white.opacity(0.15))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 25)
+                                                    .stroke(.white.opacity(0.2), lineWidth: 1)
+                                            )
+                                    )
+                            }
+                            
+                            // Version Info
+                            Text("App Version 1.0.0 (2026 build)")
+                                .font(.system(size: 12, weight: .regular, design: .default))
+                                .foregroundColor(.white.opacity(0.6))
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 40)
                     }
-                    .padding()
+                    .padding(.horizontal, 20)
                 }
             }
-            .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
+            .navigationBarHidden(true)
             .sheet(isPresented: $showingAudioManagement) {
                 AudioManagementView()
             }
