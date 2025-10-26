@@ -1,0 +1,106 @@
+#!/bin/bash
+
+# iOS 26 Azan App - Complete Setup Script
+echo "🕌 iOS 26 Azan App - Complete Setup"
+echo "=================================="
+echo ""
+
+# Check if Xcode is running
+if pgrep -x "Xcode" > /dev/null; then
+    echo "✅ Xcode is running - Perfect!"
+else
+    echo "⚠️  Xcode is not running. Please open MyAzan.xcworkspace first."
+    echo "   Run: open MyAzan.xcworkspace"
+    exit 1
+fi
+
+echo ""
+echo "📋 NEXT STEPS TO COMPLETE YOUR APP:"
+echo ""
+
+echo "1️⃣  ADD ADHAN SWIFT PACKAGE DEPENDENCY"
+echo "   In Xcode:"
+echo "   • File → Add Package Dependencies"
+echo "   • URL: https://github.com/batoulapps/adhan-swift"
+echo "   • Version: 2.0.0 or later"
+echo "   • Click Add Package"
+echo "   • Select 'Adhan' and click Add Package"
+echo ""
+
+echo "2️⃣  CONFIGURE APP CAPABILITIES"
+echo "   Select 'MyAzan' target → Signing & Capabilities tab:"
+echo "   • Click '+ Capability' and add:"
+echo "     - Location (Always and When In Use)"
+echo "     - Background Modes (Background fetch, Remote notifications, Audio)"
+echo "     - Push Notifications"
+echo "     - App Groups (create: group.com.myazan.app)"
+echo ""
+
+echo "3️⃣  CONFIGURE WIDGET CAPABILITIES"
+echo "   Select 'MyAzanWidget' target → Signing & Capabilities:"
+echo "   • Add App Groups capability"
+echo "   • Use same group: group.com.myazan.app"
+echo ""
+
+echo "4️⃣  CONFIGURE LIVE ACTIVITY CAPABILITIES"
+echo "   Select 'MyAzanLiveActivity' target → Signing & Capabilities:"
+echo "   • Add App Groups capability"
+echo "   • Use same group: group.com.myazan.app"
+echo ""
+
+echo "5️⃣  ADD AUDIO FILES"
+echo "   Replace placeholder files in MyAzan/Assets/:"
+echo "   • azan_makkah.mp3 (Makkah Azan recording)"
+echo "   • azan_madinah.mp3 (Madinah Azan recording)"
+echo "   • azan_cairo.mp3 (Cairo Azan recording)"
+echo "   • azan_notification.wav (Notification sound)"
+echo ""
+
+echo "6️⃣  BUILD AND TEST"
+echo "   • Select iOS 18+ device or simulator"
+echo "   • Press Cmd+R to build and run"
+echo "   • Grant permissions when prompted"
+echo "   • Test on physical device for full functionality"
+echo ""
+
+echo "🎯 FEATURES READY TO TEST:"
+echo "✅ Automatic location detection"
+echo "✅ Prayer time calculation"
+echo "✅ Azan audio playback"
+echo "✅ Smart notifications"
+echo "✅ Liquid Glass UI design"
+echo "✅ Home screen widgets"
+echo "✅ Live Activities with Dynamic Island"
+echo "✅ Background updates"
+echo "✅ Complete settings"
+echo ""
+
+echo "🐛 TROUBLESHOOTING:"
+echo "• Prayer times not updating? Check location permissions"
+echo "• Notifications not working? Check notification permissions"
+echo "• Widget not updating? Check App Groups configuration"
+echo "• Live Activity not starting? Check Live Activity permissions"
+echo ""
+
+echo "📱 TESTING CHECKLIST:"
+echo "□ Test on physical iOS 18+ device"
+echo "□ Verify location detection works"
+echo "□ Check prayer time calculations"
+echo "□ Test notification delivery"
+echo "□ Verify widget updates"
+echo "□ Test Live Activity countdown"
+echo "□ Check background refresh"
+echo "□ Test in light and dark modes"
+echo "□ Verify audio playback"
+echo "□ Check settings persistence"
+echo ""
+
+echo "🎉 Your iOS 26 Azan app is ready to build!"
+echo "   Repository: https://github.com/YasirBucha/ios-26-azan-app"
+echo ""
+echo "📚 Documentation:"
+echo "   • README.md - Complete project documentation"
+echo "   • SETUP_GUIDE.md - Detailed setup instructions"
+echo "   • setup.sh - Automated setup verification"
+echo ""
+echo "🕌 May your app bring peace and convenience to users worldwide!"
