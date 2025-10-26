@@ -11,7 +11,16 @@ class PrayerTimeService: ObservableObject {
     private var currentLongitude: Double = 0
     
     init() {
+        // Load cached data immediately for faster startup
         loadCachedPrayerTimes()
+        
+        // Defer heavy calculations
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // Only calculate if no cached data exists
+            if self.prayerTimes.isEmpty {
+                self.calculatePrayerTimes()
+            }
+        }
     }
     
     func updateLocation(latitude: Double, longitude: Double) {

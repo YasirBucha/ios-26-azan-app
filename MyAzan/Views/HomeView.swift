@@ -5,6 +5,7 @@ struct HomeView: View {
     @EnvironmentObject var prayerTimeService: PrayerTimeService
     @EnvironmentObject var notificationManager: NotificationManager
     @EnvironmentObject var settingsManager: SettingsManager
+    @StateObject private var audioManager = AudioManager()
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -90,17 +91,43 @@ struct HomeView: View {
                             .padding(.horizontal)
                         }
                         
+                        // Test Audio Button
+                        if settingsManager.settings.azanEnabled {
+                            LiquidGlassBackground {
+                                Button(action: {
+                                    if audioManager.isPlaying {
+                                        audioManager.stopAzan()
+                                    } else {
+                                        if settingsManager.settings.useDefaultAudio {
+                                            audioManager.playAzan(useDefault: true)
+                                        } else if let id = settingsManager.settings.selectedAudioFileId {
+                                            audioManager.playAzan(useDefault: false, customFileId: id)
+                                        }
+                                    }
+                                }) {
+                                    HStack {
+                                        Image(systemName: audioManager.isPlaying ? "stop.circle.fill" : "play.circle.fill")
+                                        Text(audioManager.isPlaying ? "Stop Azan" : "Test Azan")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.blue.opacity(0.1))
+                                    .foregroundColor(.blue)
+                                    .cornerRadius(12)
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        
                         Spacer(minLength: 100)
                     }
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                // Request location permission when view appears
-                if locationManager.authorizationStatus == .notDetermined {
-                    locationManager.requestLocationPermission()
-                } else if locationManager.authorizationStatus == .authorizedWhenInUse || locationManager.authorizationStatus == .authorizedAlways {
-                    locationManager.startLocationUpdates()
+                // Defer location services initialization
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    initializeLocationServices()
                 }
             }
             .toolbar {
@@ -121,6 +148,15 @@ struct HomeView: View {
             if !prayers.isEmpty {
                 notificationManager.schedulePrayerNotifications(for: prayers)
             }
+        }
+    }
+    
+    private func initializeLocationServices() {
+        // Request location permission when view appears
+        if locationManager.authorizationStatus == .notDetermined {
+            locationManager.requestLocationPermission()
+        } else if locationManager.authorizationStatus == .authorizedWhenInUse || locationManager.authorizationStatus == .authorizedAlways {
+            locationManager.startLocationUpdates()
         }
     }
     

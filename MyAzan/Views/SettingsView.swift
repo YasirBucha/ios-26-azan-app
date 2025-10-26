@@ -4,6 +4,7 @@ struct SettingsView: View {
     @EnvironmentObject var settingsManager: SettingsManager
     @EnvironmentObject var notificationManager: NotificationManager
     @StateObject private var audioFileManager = AudioFileManager.shared
+    @StateObject private var audioManager = AudioManager()
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     
@@ -73,6 +74,38 @@ struct SettingsView: View {
                                         Text(audioFileManager.getDefaultAudioName()).tag("default")
                                         ForEach(audioFileManager.customAudioFiles) { file in
                                             Text(file.displayName).tag(file.id.uuidString)
+                                        }
+                                    }
+                                    
+                                    // Preview Button for Selected Audio
+                                    HStack {
+                                        Button(action: {
+                                            if settingsManager.settings.useDefaultAudio {
+                                                if audioManager.isCurrentlyPlayingDefault() {
+                                                    audioManager.stopAzan()
+                                                } else {
+                                                    audioManager.previewAudio(useDefault: true)
+                                                }
+                                            } else if let id = settingsManager.settings.selectedAudioFileId {
+                                                if audioManager.isCurrentlyPlaying(id) {
+                                                    audioManager.stopAzan()
+                                                } else {
+                                                    audioManager.previewAudio(useDefault: false, customFileId: id)
+                                                }
+                                            }
+                                        }) {
+                                            HStack {
+                                                Image(systemName: (settingsManager.settings.useDefaultAudio && audioManager.isCurrentlyPlayingDefault()) || 
+                                                      (!settingsManager.settings.useDefaultAudio && settingsManager.settings.selectedAudioFileId != nil && 
+                                                       audioManager.isCurrentlyPlaying(settingsManager.settings.selectedAudioFileId!)) ? 
+                                                      "stop.circle.fill" : "play.circle.fill")
+                                                Text("Preview Audio")
+                                            }
+                                            .frame(maxWidth: .infinity)
+                                            .padding()
+                                            .background(Color.blue.opacity(0.1))
+                                            .foregroundColor(.blue)
+                                            .cornerRadius(12)
                                         }
                                     }
                                 }

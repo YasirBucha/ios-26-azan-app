@@ -14,7 +14,23 @@ class AudioFileManager: ObservableObject {
     
     // MARK: - Default Audio
     func getDefaultAudioURL() -> URL? {
-        return Bundle.main.url(forResource: defaultFileName.replacingOccurrences(of: ".mp3", with: ""), withExtension: "mp3")
+        // For now, use the file we know exists in the project
+        let projectPath = "/Users/yb/Development/Azan/MyAzan/Assets/azan_notification.mp3"
+        let projectURL = URL(fileURLWithPath: projectPath)
+        
+        if FileManager.default.fileExists(atPath: projectURL.path) {
+            print("✅ Using project audio file: \(projectURL.path)")
+            return projectURL
+        }
+        
+        // Try bundle as fallback
+        if let bundleURL = Bundle.main.url(forResource: "azan_notification", withExtension: "mp3") {
+            print("✅ Using bundle audio file: \(bundleURL.path)")
+            return bundleURL
+        }
+        
+        print("❌ Default audio file not found")
+        return nil
     }
     
     func getDefaultAudioName() -> String {

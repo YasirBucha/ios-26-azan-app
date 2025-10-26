@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 struct AudioManagementView: View {
     @StateObject private var audioFileManager = AudioFileManager.shared
     @StateObject private var settingsManager = SettingsManager()
+    @StateObject private var audioManager = AudioManager()
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     
@@ -61,6 +62,20 @@ struct AudioManagementView: View {
                                         .foregroundColor(.yellow)
                                     Text(audioFileManager.getDefaultAudioName())
                                     Spacer()
+                                    
+                                    // Preview Button for Default Audio
+                                    Button(action: {
+                                        if audioManager.isCurrentlyPlayingDefault() {
+                                            audioManager.stopAzan()
+                                        } else {
+                                            audioManager.previewAudio(useDefault: true)
+                                        }
+                                    }) {
+                                        Image(systemName: audioManager.isCurrentlyPlayingDefault() ? "stop.circle.fill" : "play.circle.fill")
+                                            .foregroundColor(.blue)
+                                            .font(.title2)
+                                    }
+                                    
                                     Text("Default")
                                         .font(.caption)
                                         .padding(.horizontal, 8)
@@ -80,6 +95,20 @@ struct AudioManagementView: View {
                                             .foregroundColor(.blue)
                                         Text(file.displayName)
                                         Spacer()
+                                        
+                                        // Preview Button for Custom Audio
+                                        Button(action: {
+                                            if audioManager.isCurrentlyPlaying(file.id) {
+                                                audioManager.stopAzan()
+                                            } else {
+                                                audioManager.previewAudio(useDefault: false, customFileId: file.id)
+                                            }
+                                        }) {
+                                            Image(systemName: audioManager.isCurrentlyPlaying(file.id) ? "stop.circle.fill" : "play.circle.fill")
+                                                .foregroundColor(.blue)
+                                                .font(.title2)
+                                        }
+                                        
                                         Button(action: {
                                             fileToRename = file
                                             newFileName = file.displayName

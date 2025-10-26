@@ -5,6 +5,7 @@ import Combine
 class AudioManager: NSObject, ObservableObject {
     private var audioPlayer: AVAudioPlayer?
     @Published var isPlaying = false
+    @Published var currentlyPlayingId: UUID?
     private let audioFileManager = AudioFileManager.shared
     
     override init() {
@@ -55,7 +56,52 @@ class AudioManager: NSObject, ObservableObject {
         audioPlayer?.stop()
         DispatchQueue.main.async {
             self.isPlaying = false
+            self.currentlyPlayingId = nil
         }
+    }
+    
+    // MARK: - Preview Functions
+    func previewAudio(useDefault: Bool = true, customFileId: UUID? = nil) {
+        // Stop any currently playing audio
+        stopAzan()
+        
+        var url: URL?
+        var playingId: UUID?
+        
+        if useDefault {
+            url = audioFileManager.getDefaultAudioURL()
+            playingId = UUID(uuidString: "default") // Use a special UUID for default
+        } else if let fileId = customFileId,
+                  let customFile = audioFileManager.customAudioFiles.first(where: { $0.id == fileId }) {
+            url = audioFileManager.getAudioURL(for: customFile)
+            playingId = fileId
+        }
+        
+        guard let audioURL = url, let id = playingId else {
+            print("Audio file not found for preview")
+            return
+        }
+        
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
+            audioPlayer?.delegate = self
+            audioPlayer?.play()
+            
+            DispatchQueue.main.async {
+                self.isPlaying = true
+                self.currentlyPlayingId = id
+            }
+        } catch {
+            print("Error playing audio preview: \(error)")
+        }
+    }
+    
+    func isCurrentlyPlaying(_ id: UUID) -> Bool {
+        return currentlyPlayingId == id && isPlaying
+    }
+    
+    func isCurrentlyPlayingDefault() -> Bool {
+        return currentlyPlayingId == UUID(uuidString: "default") && isPlaying
     }
 }
 
@@ -63,6 +109,7 @@ extension AudioManager: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         DispatchQueue.main.async {
             self.isPlaying = false
+            self.currentlyPlayingId = nil
         }
     }
     
@@ -70,6 +117,7 @@ extension AudioManager: AVAudioPlayerDelegate {
         print("Audio player decode error: \(error?.localizedDescription ?? "Unknown error")")
         DispatchQueue.main.async {
             self.isPlaying = false
+            self.currentlyPlayingId = nil
         }
     }
 }

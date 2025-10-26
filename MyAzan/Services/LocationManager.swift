@@ -10,9 +10,21 @@ class LocationManager: NSObject, ObservableObject {
     
     override init() {
         super.init()
+        // Defer heavy initialization
+        DispatchQueue.main.async {
+            self.setupLocationManager()
+        }
+    }
+    
+    private func setupLocationManager() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.distanceFilter = 1000 // Update when moved 1km
+        
+        // Load cached city name
+        if let cachedCity = UserDefaults(suiteName: "group.com.myazan.app")?.string(forKey: "cityName") {
+            cityName = cachedCity
+        }
     }
     
     func requestLocationPermission() {

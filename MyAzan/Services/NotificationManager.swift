@@ -6,7 +6,10 @@ class NotificationManager: ObservableObject {
     @Published var authorizationStatus: UNAuthorizationStatus = .notDetermined
     
     init() {
-        checkAuthorizationStatus()
+        // Defer heavy authorization check
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.checkAuthorizationStatus()
+        }
     }
     
     func requestNotificationPermission() {
