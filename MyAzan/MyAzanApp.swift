@@ -9,7 +9,7 @@ struct MyAzanApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView()
                 .environmentObject(locationManager)
                 .environmentObject(prayerTimeService)
                 .environmentObject(notificationManager)
