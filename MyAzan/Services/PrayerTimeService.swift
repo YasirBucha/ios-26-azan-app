@@ -120,28 +120,25 @@ class PrayerTimeService: ObservableObject {
     
     private func savePrayerTimes() {
         let encoder = JSONEncoder()
-        let sharedDefaults = UserDefaults(suiteName: "group.com.myazan.app")
         
         if let data = try? encoder.encode(prayerTimes) {
-            UserDefaults.standard.set(data, forKey: "cachedPrayerTimes")
-            sharedDefaults?.set(data, forKey: "cachedPrayerTimes")
+            SharedDefaults.set(data, forKey: "cachedPrayerTimes")
         }
         
         if let nextPrayer = nextPrayer, let data = try? encoder.encode(nextPrayer) {
-            UserDefaults.standard.set(data, forKey: "cachedNextPrayer")
-            sharedDefaults?.set(data, forKey: "cachedNextPrayer")
+            SharedDefaults.set(data, forKey: "cachedNextPrayer")
         }
     }
     
     private func loadCachedPrayerTimes() {
         let decoder = JSONDecoder()
         
-        if let data = UserDefaults.standard.data(forKey: "cachedPrayerTimes"),
+        if let data = SharedDefaults.data(forKey: "cachedPrayerTimes"),
            let times = try? decoder.decode([PrayerTime].self, from: data) {
             prayerTimes = times
         }
         
-        if let data = UserDefaults.standard.data(forKey: "cachedNextPrayer"),
+        if let data = SharedDefaults.data(forKey: "cachedNextPrayer"),
            let next = try? decoder.decode(PrayerTime.self, from: data) {
             nextPrayer = next
         }

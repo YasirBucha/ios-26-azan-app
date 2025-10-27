@@ -111,7 +111,8 @@ class LiveActivityManager: ObservableObject {
         guard let activity = currentActivity else { return }
         
         Task {
-            let currentState = activity.contentState
+            let latestContent = activity.content
+            let currentState = latestContent.state
             let content = ActivityContent(state: currentState, staleDate: nil)
             await activity.end(content, dismissalPolicy: .immediate)
             await MainActor.run {

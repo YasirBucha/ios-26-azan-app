@@ -22,7 +22,7 @@ class LocationManager: NSObject, ObservableObject {
         locationManager.distanceFilter = 1000 // Update when moved 1km
         
         // Load cached city name
-        if let cachedCity = UserDefaults(suiteName: "group.com.myazan.app")?.string(forKey: "cityName") {
+        if let cachedCity = SharedDefaults.string(forKey: "cityName") {
             cityName = cachedCity
         }
     }
@@ -50,10 +50,10 @@ class LocationManager: NSObject, ObservableObject {
             DispatchQueue.main.async {
                 if let city = placemark.locality {
                     self?.cityName = city
-                    UserDefaults(suiteName: "group.com.myazan.app")?.set(city, forKey: "cityName")
+                    SharedDefaults.set(city, forKey: "cityName")
                 } else if let country = placemark.country {
                     self?.cityName = country
-                    UserDefaults(suiteName: "group.com.myazan.app")?.set(country, forKey: "cityName")
+                    SharedDefaults.set(country, forKey: "cityName")
                 }
             }
         }

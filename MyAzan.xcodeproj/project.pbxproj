@@ -17,6 +17,7 @@
 		38B8470D2EAECFE50055EDCB /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B8470C2EAECFE50055EDCB /* BackgroundTaskManager.swift */; };
 		38B8470F2EAECFEF0055EDCB /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B8470E2EAECFEF0055EDCB /* LiveActivityManager.swift */; };
 		38B847112EAED0050055EDCB /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847102EAED0050055EDCB /* LocationManager.swift */; };
+		05CE1FE1305FDE5A54368B1A /* SharedDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0AB7FEE4AD9CE5453B0C3D9 /* SharedDefaults.swift */; };
 		38B847132EAED0130055EDCB /* PrayerTimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847122EAED0130055EDCB /* PrayerTimeService.swift */; };
 		38B847152EAED0410055EDCB /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847142EAED0410055EDCB /* AppSettings.swift */; };
 		38B847172EAED04B0055EDCB /* PrayerTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847162EAED04B0055EDCB /* PrayerTime.swift */; };
@@ -41,6 +42,7 @@
 		38B8470C2EAECFE50055EDCB /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		38B8470E2EAECFEF0055EDCB /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
 		38B847102EAED0050055EDCB /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		A0AB7FEE4AD9CE5453B0C3D9 /* SharedDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedDefaults.swift; sourceTree = "<group>"; };
 		38B847122EAED0130055EDCB /* PrayerTimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimeService.swift; sourceTree = "<group>"; };
 		38B847142EAED0410055EDCB /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		38B847162EAED04B0055EDCB /* PrayerTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTime.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 			children = (
 				38B847122EAED0130055EDCB /* PrayerTimeService.swift */,
 				38B847102EAED0050055EDCB /* LocationManager.swift */,
+				A0AB7FEE4AD9CE5453B0C3D9 /* SharedDefaults.swift */,
 				38B8470E2EAECFEF0055EDCB /* LiveActivityManager.swift */,
 				38B8470C2EAECFE50055EDCB /* BackgroundTaskManager.swift */,
 				38B8470A2EAECFDC0055EDCB /* AudioManager.swift */,
@@ -234,6 +237,7 @@
 				38B847032EAECEB80055EDCB /* SettingsView.swift in Sources */,
 				38B8470B2EAECFDC0055EDCB /* AudioManager.swift in Sources */,
 				38B847112EAED0050055EDCB /* LocationManager.swift in Sources */,
+				05CE1FE1305FDE5A54368B1A /* SharedDefaults.swift in Sources */,
 				38B847192EAED1430055EDCB /* PrayerCard.swift in Sources */,
 				38B847012EAECEAD0055EDCB /* HomeView.swift in Sources */,
 				38B8470D2EAECFE50055EDCB /* BackgroundTaskManager.swift in Sources */,

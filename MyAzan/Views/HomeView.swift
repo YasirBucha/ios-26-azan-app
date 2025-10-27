@@ -121,65 +121,65 @@ struct HomeView: View {
                         
                         // Rectangular Next Prayer Card
                         if let nextPrayer = prayerTimeService.nextPrayer {
-                            ZStack {
-                                // Frosted glass background with soft glow
-                                RoundedRectangle(cornerRadius: 36)
-                                    .fill(.ultraThinMaterial)
-                                    .frame(height: 120)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 36)
-                                            .stroke(
-                                                LinearGradient(
-                                                    colors: [
-                                                        Color.white.opacity(0.3),
-                                                        Color.white.opacity(0.1)
-                                                    ],
-                                                    startPoint: .topLeading,
-                                                    endPoint: .bottomTrailing
-                                                ),
-                                                lineWidth: 1
-                                            )
-                                    )
-                                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 3)
-                                    .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.3), radius: 20, x: 0, y: 10)
-                                
-                                HStack(spacing: 20) {
-                                    // Left side - Prayer info
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        // Next Prayer caption
-                                        Text("Next Prayer")
+                            HStack(spacing: 20) {
+                                // Left side - Prayer info
+                                VStack(alignment: .leading, spacing: 8) {
+                                    // Next Prayer caption
+                                    Text("Next Prayer")
+                                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                                        .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7)) // #C7E3E8
+                                    
+                                    // Arabic prayer name
+                                    Text(nextPrayer.arabicName)
+                                        .font(.system(size: 20, weight: .medium))
+                                        .foregroundColor(.white.opacity(0.9))
+                                    
+                                    // English prayer name
+                                    Text(nextPrayer.name)
+                                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.white.opacity(0.85))
+                                    
+                                    // Countdown
+                                    if nextPrayer.isUpcoming {
+                                        Text("in \(formatTimeRemaining(nextPrayer.timeRemaining))")
                                             .font(.system(size: 12, weight: .medium, design: .rounded))
-                                            .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7)) // #C7E3E8
-                                        
-                                        // Arabic prayer name
-                                        Text(nextPrayer.arabicName)
-                                            .font(.system(size: 20, weight: .medium))
-                                            .foregroundColor(.white.opacity(0.9))
-                                        
-                                        // English prayer name
-                                        Text(nextPrayer.name)
-                                            .font(.system(size: 16, weight: .semibold, design: .rounded))
-                                            .foregroundColor(.white.opacity(0.85))
-                                        
-                                        // Countdown
-                                        if nextPrayer.isUpcoming {
-                                            Text("in \(formatTimeRemaining(nextPrayer.timeRemaining))")
-                                                .font(.system(size: 12, weight: .medium, design: .rounded))
-                                                .foregroundColor(.white.opacity(0.7))
-                                        }
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    // Right side - Time
-                                    VStack(alignment: .trailing, spacing: 4) {
-                                        Text(nextPrayer.timeString)
-                                            .font(.system(size: 28, weight: .bold, design: .rounded))
-                                            .foregroundColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
-                                            .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.5), radius: 8, x: 0, y: 0)
+                                            .foregroundColor(.white.opacity(0.7))
                                     }
                                 }
+                                
+                                Spacer()
+                                
+                                // Right side - Time
+                                VStack(alignment: .trailing, spacing: 4) {
+                                    Text(nextPrayer.timeString)
+                                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                                        .foregroundColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
+                                        .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.5), radius: 8, x: 0, y: 0)
+                                }
                             }
+                            .padding(.horizontal, 24)
+                            .padding(.vertical, 20)
+                            .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 36)
+                                    .fill(.ultraThinMaterial)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 36)
+                                    .stroke(
+                                        LinearGradient(
+                                            colors: [
+                                                Color.white.opacity(0.3),
+                                                Color.white.opacity(0.1)
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 1
+                                    )
+                            )
+                            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 3)
+                            .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.3), radius: 20, x: 0, y: 10)
                             .scaleEffect(prayerCardScale)
                             .onTapGesture {
                                 withAnimation(.easeInOut(duration: 0.2)) {
