@@ -49,7 +49,7 @@ struct HomeView: View {
                 }
                 
                 // Subtle radial glow behind main prayer card
-                if let nextPrayer = prayerTimeService.nextPrayer {
+                if prayerTimeService.nextPrayer != nil {
                     RadialGradient(
                         colors: [
                             Color.white.opacity(0.1),
@@ -411,6 +411,8 @@ struct CircularPrayerCard: View {
                         .foregroundColor(.white.opacity(0.7))
                 }
             }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
         }
         .scaleEffect(cardScale)
         .animation(.easeInOut(duration: 0.2), value: cardScale)

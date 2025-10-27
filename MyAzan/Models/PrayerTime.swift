@@ -1,7 +1,7 @@
 import Foundation
 
 struct PrayerTime: Identifiable, Codable {
-    let id = UUID()
+    var id = UUID()
     let name: String
     let arabicName: String
     let time: Date

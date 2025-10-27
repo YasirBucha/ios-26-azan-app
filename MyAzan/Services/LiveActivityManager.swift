@@ -1,6 +1,7 @@
 import Foundation
 import ActivityKit
 import SwiftUI
+import UIKit
 
 // PrayerActivityAttributes struct (copied from MyAzanLiveActivity target for main app use)
 struct PrayerActivityAttributes: ActivityAttributes {
@@ -24,6 +25,7 @@ struct PrayerActivityAttributes: ActivityAttributes {
     var isAzanEnabled: Bool
 }
 
+@MainActor
 class LiveActivityManager: ObservableObject {
     @Published var currentActivity: Activity<PrayerActivityAttributes>?
     
@@ -57,11 +59,12 @@ class LiveActivityManager: ObservableObject {
             isAzanEnabled: isAzanEnabled,
             currentDate: Date()
         )
+        let content = ActivityContent(state: initialState, staleDate: nil)
         
         do {
             let activity = try Activity<PrayerActivityAttributes>.request(
                 attributes: attributes,
-                contentState: initialState,
+                content: content,
                 pushType: nil
             )
             currentActivity = activity
@@ -89,14 +92,17 @@ class LiveActivityManager: ObservableObject {
             isAzanEnabled: isAzanEnabled,
             currentDate: Date()
         )
+        let content = ActivityContent(state: state, staleDate: nil)
         
         Task {
-            await activity.update(using: state)
+            await activity.update(content)
             
             // Trigger haptic feedback if countdown reaches 0
             if timeRemaining <= 0 && isAzanEnabled {
-                let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-                impactFeedback.impactOccurred()
+                await MainActor.run {
+                    let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                    impactFeedback.impactOccurred()
+                }
             }
         }
     }
@@ -105,8 +111,12 @@ class LiveActivityManager: ObservableObject {
         guard let activity = currentActivity else { return }
         
         Task {
-            await activity.end(dismissalPolicy: .immediate)
-            currentActivity = nil
+            let currentState = activity.contentState
+            let content = ActivityContent(state: currentState, staleDate: nil)
+            await activity.end(content, dismissalPolicy: .immediate)
+            await MainActor.run {
+                self.currentActivity = nil
+            }
         }
     }
     

@@ -22,7 +22,7 @@ class AudioManager: NSObject, ObservableObject {
             try audioSession.setCategory(
                 .playback,
                 mode: .default,
-                options: [.allowBluetooth, .allowBluetoothA2DP, .mixWithOthers]
+                options: [.allowBluetoothHFP, .allowBluetoothA2DP, .mixWithOthers]
             )
             hasConfiguredSession = true
             print("✅ Audio session category configured")
