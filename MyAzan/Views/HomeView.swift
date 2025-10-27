@@ -216,33 +216,6 @@ struct HomeView: View {
                             .padding(.horizontal, 24)
                         }
                         
-                        // Test Audio Button
-                        if settingsManager.settings.azanEnabled {
-                            LiquidGlassBackground {
-                                Button(action: {
-                                    if audioManager.isPlaying {
-                                        audioManager.stopAzan()
-                                    } else {
-                                        if settingsManager.settings.useDefaultAudio {
-                                            audioManager.playAzan(useDefault: true)
-                                        } else if let id = settingsManager.settings.selectedAudioFileId {
-                                            audioManager.playAzan(useDefault: false, customFileId: id)
-                                        }
-                                    }
-                                }) {
-                                    HStack {
-                                        Image(systemName: audioManager.isPlaying ? "stop.circle.fill" : "play.circle.fill")
-                                        Text(audioManager.isPlaying ? "Stop Azan" : "Test Azan")
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.blue.opacity(0.1))
-                                    .foregroundColor(.blue)
-                                    .cornerRadius(12)
-                                }
-                            }
-                            .padding(.horizontal, 24)
-                        }
                         
                         Spacer(minLength: 100)
                     }
@@ -379,7 +352,7 @@ struct CircularPrayerCard: View {
                             lineWidth: 1
                         )
                 )
-                .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 3)
+                .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
                 .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.3), radius: 20, x: 0, y: 10)
             
             VStack(spacing: 16) {
@@ -456,12 +429,23 @@ struct PrayerRowCard: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(.white.opacity(0.1), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.3),
+                            Color.white.opacity(0.1)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
         )
-        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 3)
+        .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
+        .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.2), radius: 20, x: 0, y: 10)
         .scaleEffect(cardScale)
         .onTapGesture {
             withAnimation(.easeInOut(duration: 0.2)) {
