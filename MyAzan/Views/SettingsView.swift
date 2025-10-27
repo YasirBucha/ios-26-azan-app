@@ -15,7 +15,7 @@ struct SettingsView: View {
     @State private var showingTestAnimation = false
     @State private var cardsScale: [Double] = [0.95, 0.95, 0.95]
     @State private var cardsOpacity: [Double] = [0.0, 0.0, 0.0]
-    @State private var cardsBlur: [Double] = [8.0, 8.0, 8.0]
+    @State private var cardsBlur: [Double] = [0.0, 0.0, 0.0]
     @State private var contentOffset: Double = 100
     @Namespace private var liquidBackground
     
@@ -350,7 +350,7 @@ struct SettingsView: View {
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
                     cardsScale[i] = 1.0
                     cardsOpacity[i] = 1.0
-                    cardsBlur[i] = 3.0
+                    cardsBlur[i] = 0.0
                 }
             }
         }
@@ -383,7 +383,6 @@ struct EnhancedLiquidGlassCard<Content: View>: View {
         content
             .scaleEffect(cardsScale.indices.contains(cardIndex) ? cardsScale[cardIndex] : 1.0)
             .opacity(cardsOpacity.indices.contains(cardIndex) ? cardsOpacity[cardIndex] : 1.0)
-            .blur(radius: cardsBlur.indices.contains(cardIndex) ? cardsBlur[cardIndex] : 3.0)
             .background(
                 ZStack {
                     // Base glass material
