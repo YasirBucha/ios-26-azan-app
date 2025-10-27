@@ -138,17 +138,13 @@ struct SettingsView: View {
                                     }
                                     
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                        if settingsManager.settings.useDefaultAudio {
-                                            if audioManager.isCurrentlyPlayingDefault() {
-                                                audioManager.stopAzan()
-                                            } else {
-                                                audioManager.previewAudio(useDefault: true)
-                                            }
-                                        } else if let id = settingsManager.settings.selectedAudioFileId {
-                                            if audioManager.isCurrentlyPlaying(id) {
-                                                audioManager.stopAzan()
-                                            } else {
-                                                audioManager.previewAudio(useDefault: false, customFileId: id)
+                                        if audioManager.isPlaying {
+                                            audioManager.stopAzan()
+                                        } else {
+                                            if settingsManager.settings.useDefaultAudio {
+                                                audioManager.playAzan(useDefault: true)
+                                            } else if let id = settingsManager.settings.selectedAudioFileId {
+                                                audioManager.playAzan(useDefault: false, customFileId: id)
                                             }
                                         }
                                     }
@@ -160,10 +156,7 @@ struct SettingsView: View {
                                     }
                                 }) {
                                     HStack {
-                                        Image(systemName: (settingsManager.settings.useDefaultAudio && audioManager.isCurrentlyPlayingDefault()) || 
-                                              (!settingsManager.settings.useDefaultAudio && settingsManager.settings.selectedAudioFileId != nil && 
-                                               audioManager.isCurrentlyPlaying(settingsManager.settings.selectedAudioFileId!)) ? 
-                                              "stop.circle.fill" : "play.circle.fill")
+                                        Image(systemName: audioManager.isPlaying ? "stop.circle.fill" : "play.circle.fill")
                                         Text("Play Test Azan")
                                     }
                                     .font(.system(size: 15, weight: .medium, design: .default))
@@ -181,7 +174,8 @@ struct SettingsView: View {
                                     .scaleEffect(showingTestAnimation ? 0.95 : 1.0)
                                 }
                             }
-                            .padding(20)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 20)
                         }
                         
                         // Notifications Card
@@ -227,72 +221,8 @@ struct SettingsView: View {
                                     ))
                                 }
                             }
-                            .padding(20)
-                        }
-                        
-                        // Appearance Card
-                        EnhancedLiquidGlassCard(cardIndex: 2, cardsScale: cardsScale, cardsOpacity: cardsOpacity, cardsBlur: cardsBlur) {
-                            VStack(alignment: .leading, spacing: 20) {
-                                Text("Appearance")
-                                    .font(.system(size: 18, weight: .semibold, design: .default))
-                                    .foregroundColor(.white.opacity(0.9))
-                                
-                                // Theme Selector
-                                VStack(alignment: .leading, spacing: 12) {
-                                    Text("Theme")
-                                        .font(.system(size: 16, weight: .regular, design: .default))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    
-                                    HStack(spacing: 8) {
-                                        ForEach(ThemeMode.allCases, id: \.self) { theme in
-                                            Button(action: {
-                                                withAnimation(.easeInOut(duration: 0.3)) {
-                                                    selectedTheme = theme
-                                                }
-                                            }) {
-                                                Text(theme.rawValue)
-                                                    .font(.system(size: 14, weight: .medium, design: .default))
-                                                    .foregroundColor(selectedTheme == theme ? .white : .white.opacity(0.7))
-                                                    .padding(.horizontal, 16)
-                                                    .padding(.vertical, 8)
-                                                    .background(
-                                                        RoundedRectangle(cornerRadius: 20)
-                                                            .fill(selectedTheme == theme ? 
-                                                                  Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.8) : 
-                                                                  Color.white.opacity(0.1))
-                                                    )
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                // Accent Color Picker
-                                VStack(alignment: .leading, spacing: 12) {
-                                    Text("Accent Color")
-                                        .font(.system(size: 16, weight: .regular, design: .default))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    
-                                    HStack(spacing: 12) {
-                                        ForEach(AccentColor.allCases, id: \.self) { accent in
-                                            Button(action: {
-                                                withAnimation(.easeInOut(duration: 0.3)) {
-                                                    selectedAccentColor = accent
-                                                }
-                                            }) {
-                                                Circle()
-                                                    .fill(accent.color)
-                                                    .frame(width: 32, height: 32)
-                                                    .overlay(
-                                                        Circle()
-                                                            .stroke(.white.opacity(0.3), lineWidth: selectedAccentColor == accent ? 3 : 1)
-                                                    )
-                                                    .scaleEffect(selectedAccentColor == accent ? 1.1 : 1.0)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(20)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 20)
                         }
                         
                         // Footer Section
@@ -331,7 +261,6 @@ struct SettingsView: View {
                     startSettingsEntranceAnimation()
                 }
             }
-            .navigationBarHidden(true)
             .sheet(isPresented: $showingAudioManagement) {
                 AudioManagementView()
             }

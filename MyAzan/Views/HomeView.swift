@@ -7,6 +7,7 @@ struct HomeView: View {
     @EnvironmentObject var settingsManager: SettingsManager
     @StateObject private var audioManager = AudioManager()
     @Environment(\.colorScheme) var colorScheme
+    var logoTransition: Namespace.ID
     @State private var breathingOpacity: Double = 0.7
     @State private var prayerCardScale: Double = 1.0
     @State private var contentScale: Double = 0.95
@@ -15,7 +16,6 @@ struct HomeView: View {
     @State private var gearIconScale: Double = 1.0
     @State private var rippleOpacity: Double = 0.0
     @State private var rippleRadius: Double = 20.0
-    @State private var shimmerOffset: Double = -200.0
     @Namespace private var liquidBackground
     
     var body: some View {
@@ -71,53 +71,98 @@ struct HomeView: View {
                 
                 ScrollView {
                     VStack(spacing: 32) {
-                        // Header Section with Logo Transition
-                        VStack(spacing: 12) {
-                            // App Logo (hidden)
-                            Image("AppIcon")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 60, height: 60)
-                                .clipShape(RoundedRectangle(cornerRadius: 13))
-                                .opacity(0.0) // Hidden
-                            
+                        // Header Section with Mosque Icon and Calligraphic Text
+                        HStack(spacing: 14) {
+                            // Left side - Mosque Icon Container
                             ZStack {
-                                Text("My Azan")
-                                    .font(.system(size: 28, weight: .medium, design: .rounded))
-                                    .foregroundColor(.white.opacity(0.9))
+                                // Background glow behind icon
+                                Circle()
+                                    .fill(Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.15)) // #4DB8FF15
+                                    .frame(width: 80, height: 80)
+                                    .blur(radius: 20)
                                 
-                                // Shimmer effect
-                                Rectangle()
-                                    .fill(
+                                // Liquid glass icon container
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(.ultraThinMaterial)
+                                    .frame(width: 64, height: 64)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .stroke(
+                                                LinearGradient(
+                                                    colors: [
+                                                        Color.white.opacity(0.3),
+                                                        Color.white.opacity(0.1)
+                                                    ],
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                ),
+                                                lineWidth: 1
+                                            )
+                                    )
+                                    .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
+                                    .overlay(
+                                        // Inner glow
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .fill(
+                                                LinearGradient(
+                                                    colors: [
+                                                        Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.4),
+                                                        Color.clear
+                                                    ],
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                )
+                                            )
+                                            .blur(radius: 8)
+                                    )
+                                
+                                // Mosque icon (using SF Symbol as substitute)
+                                Image(systemName: "building.columns.fill")
+                                    .font(.system(size: 24, weight: .medium))
+                                    .foregroundStyle(
                                         LinearGradient(
                                             colors: [
-                                                Color.clear,
-                                                Color.white.opacity(0.3),
-                                                Color.clear
+                                                Color(red: 0.92, green: 0.85, blue: 0.64), // #EBD9A4
+                                                Color(red: 0.85, green: 0.77, blue: 0.51)  // #D9C483
                                             ],
-                                            startPoint: .leading,
-                                            endPoint: .trailing
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
                                         )
                                     )
-                                    .frame(width: 100, height: 30)
-                                    .offset(x: shimmerOffset)
-                                    .mask(
-                                        Text("My Azan")
-                                            .font(.system(size: 28, weight: .medium, design: .rounded))
-                                    )
+                                    .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
+                                    .matchedGeometryEffect(id: "logoIcon", in: logoTransition)
                             }
                             
-                            VStack(spacing: 4) {
-                                Text(locationManager.cityName)
-                                    .font(.system(size: 16, weight: .regular, design: .rounded))
-                                    .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7)) // #BFD3D8
+                            // Right side - Calligraphic Text
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("My Azan")
+                                    .font(.system(size: 34, weight: .semibold, design: .serif))
+                                    .foregroundStyle(
+                                        LinearGradient(
+                                            colors: [
+                                                Color(red: 0.92, green: 0.85, blue: 0.64), // #EBD9A4
+                                                Color(red: 0.85, green: 0.77, blue: 0.51)  // #D9C483
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                                    .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
+                                    .matchedGeometryEffect(id: "logoText", in: logoTransition)
                                 
-                                Text(Date().formatted(date: .abbreviated, time: .omitted))
-                                    .font(.system(size: 14, weight: .regular, design: .rounded))
-                                    .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7))
+                                Text("Prayer Times")
+                                    .font(.system(size: 16, weight: .regular))
+                                    .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7)) // #C7E3E8
+                                    .kerning(0.6)
+                                    .matchedGeometryEffect(id: "subtitle", in: logoTransition)
                             }
+                            
+                            Spacer()
                         }
+                        .padding(.horizontal, 28)
                         .padding(.top, 20)
+                        .opacity(contentOpacity)
+                        .offset(y: contentOffset < 0 ? contentOffset * 0.1 : 0)
                         
                         // Rectangular Next Prayer Card
                         if let nextPrayer = prayerTimeService.nextPrayer {
@@ -125,7 +170,7 @@ struct HomeView: View {
                                 // Frosted glass background with soft glow
                                 RoundedRectangle(cornerRadius: 36)
                                     .fill(.ultraThinMaterial)
-                                    .frame(width: 280, height: 280)
+                                    .frame(height: 120)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 36)
                                             .stroke(
@@ -143,33 +188,40 @@ struct HomeView: View {
                                     .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 3)
                                     .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.3), radius: 20, x: 0, y: 10)
                                 
-                                VStack(spacing: 16) {
-                                    // Next Prayer caption
-                                    Text("Next Prayer")
-                                        .font(.system(size: 14, weight: .medium, design: .rounded))
-                                        .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7)) // #C7E3E8
+                                HStack(spacing: 20) {
+                                    // Left side - Prayer info
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        // Next Prayer caption
+                                        Text("Next Prayer")
+                                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                                            .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7)) // #C7E3E8
+                                        
+                                        // Arabic prayer name
+                                        Text(nextPrayer.arabicName)
+                                            .font(.system(size: 20, weight: .medium))
+                                            .foregroundColor(.white.opacity(0.9))
+                                        
+                                        // English prayer name
+                                        Text(nextPrayer.name)
+                                            .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                            .foregroundColor(.white.opacity(0.85))
+                                        
+                                        // Countdown
+                                        if nextPrayer.isUpcoming {
+                                            Text("in \(formatTimeRemaining(nextPrayer.timeRemaining))")
+                                                .font(.system(size: 12, weight: .medium, design: .rounded))
+                                                .foregroundColor(.white.opacity(0.7))
+                                        }
+                                    }
                                     
-                                    // Arabic prayer name
-                                    Text(nextPrayer.arabicName)
-                                        .font(.system(size: 24, weight: .medium))
-                                        .foregroundColor(.white.opacity(0.9))
+                                    Spacer()
                                     
-                                    // English prayer name
-                                    Text(nextPrayer.name)
-                                        .font(.system(size: 18, weight: .semibold, design: .rounded))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    
-                                    // Time with glow effect
-                                    Text(nextPrayer.timeString)
-                                        .font(.system(size: 32, weight: .bold, design: .rounded))
-                                        .foregroundColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
-                                        .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.5), radius: 8, x: 0, y: 0)
-                                    
-                                    // Countdown
-                                    if nextPrayer.isUpcoming {
-                                        Text("in \(formatTimeRemaining(nextPrayer.timeRemaining))")
-                                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                                            .foregroundColor(.white.opacity(0.7))
+                                    // Right side - Time
+                                    VStack(alignment: .trailing, spacing: 4) {
+                                        Text(nextPrayer.timeString)
+                                            .font(.system(size: 28, weight: .bold, design: .rounded))
+                                            .foregroundColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
+                                            .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.5), radius: 8, x: 0, y: 0)
                                     }
                                 }
                             }
@@ -184,6 +236,7 @@ struct HomeView: View {
                                     }
                                 }
                             }
+                            .padding(.horizontal, 20)
                         }
                         
                         // Prayer Times List
@@ -260,7 +313,10 @@ struct HomeView: View {
                             .font(.system(size: 18, weight: .medium))
                             .foregroundColor(.white.opacity(0.8))
                             .scaleEffect(gearIconScale)
-                            .onTapGesture {
+                    }
+                    .simultaneousGesture(
+                        TapGesture()
+                            .onEnded {
                                 // Gear icon expansion animation
                                 withAnimation(.spring(response: 0.15, dampingFraction: 0.6)) {
                                     gearIconScale = 1.15
@@ -285,7 +341,7 @@ struct HomeView: View {
                                     rippleRadius = 20
                                 }
                             }
-                    }
+                    )
                 }
             }
         }
@@ -307,17 +363,6 @@ struct HomeView: View {
             contentScale = 1.0
             contentOpacity = 1.0
             contentBlur = 0.0
-        }
-        
-        // Shimmer effect on title
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            withAnimation(.easeInOut(duration: 0.8)) {
-                shimmerOffset = 200
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                shimmerOffset = -200
-            }
         }
     }
     
