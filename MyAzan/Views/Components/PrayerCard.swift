@@ -39,7 +39,13 @@ struct PrayerCard: View {
     
     var body: some View {
         LiquidGlassBackground {
-            HStack(spacing: 20) {
+            HStack(spacing: 16) {
+                // Prayer icon
+                Image(systemName: iconForPrayer(prayer.name))
+                    .font(.system(size: 20, weight: .medium))
+                    .foregroundColor(.white.opacity(0.8))
+                    .frame(width: 24)
+                
                 // Arabic prayer name
                 Text(prayer.arabicName)
                     .font(.system(size: 18, weight: .medium))
@@ -70,6 +76,23 @@ struct PrayerCard: View {
                     cardScale = 1.0
                 }
             }
+        }
+    }
+    
+    private func iconForPrayer(_ prayerName: String) -> String {
+        switch prayerName.lowercased() {
+        case "fajr":
+            return "sunrise"
+        case "dhuhr", "zuhr":
+            return "sun.max"
+        case "asr":
+            return "sun.horizon"
+        case "maghrib":
+            return "sunset"
+        case "isha":
+            return "moon"
+        default:
+            return "clock"
         }
     }
 }

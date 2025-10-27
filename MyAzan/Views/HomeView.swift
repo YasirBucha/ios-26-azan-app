@@ -68,201 +68,163 @@ struct HomeView: View {
                     }
                 }
                 
-                ScrollView {
-                    VStack(spacing: 32) {
-                        
-                        // Custom Row Section
-                        VStack(spacing: 8) {
-                            HStack(alignment: .top, spacing: 16) {
-                                // Left: Circular image
-                                Image("CircularImage")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 100, height: 100)
-                                    .clipShape(Circle())
-                                
-                                // Right: Rectangular image
+                VStack(spacing: 32) {
+                    
+                    // Settings Button (Back Button Style)
+                    HStack {
+                        Spacer()
+                        NavigationLink(destination: SettingsView()) {
+                            LiquidGlassIconButton(systemName: "gearshape.fill")
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 50)
+                    
+                    // Custom Row Section
+                    VStack(spacing: 8) {
+                        HStack(alignment: .top, spacing: 16) {
+                            // Left: Circular image
+                            Image("CircularImage")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 150, height: 150)
+                                .clipped()
+                                .clipShape(Circle())
+                            
+                            // Right: Rectangle image + location/date below
+                            VStack(alignment: .leading, spacing: 8) {
                                 Image("RectangleImage")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(width: 200, height: 40)
+                                    .frame(width: 140, height: 80)
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                            }
-                            .padding(.horizontal, 20)
-                            
-                            // Text below
-                            Text("Text 1 | Text 2")
-                                .font(.system(size: 14, weight: .medium, design: .rounded))
-                                .foregroundColor(.white.opacity(0.7))
-                        }
-                        .padding(.top, 20)
-                        
-                        // Header Section with Logo Transition
-                        VStack(spacing: 12) {
-                            // App Logo (hidden)
-                            Image("AppIcon")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 60, height: 60)
-                                .clipShape(RoundedRectangle(cornerRadius: 13))
-                                .opacity(0.0) // Hidden
-                            
-                            ZStack {
-                                Text("My Azan")
-                                    .font(.system(size: 28, weight: .medium, design: .rounded))
-                                    .foregroundColor(.white.opacity(0.9))
-                                
-                                // Shimmer effect
-                                Rectangle()
-                                    .fill(
-                                        LinearGradient(
-                                            colors: [
-                                                Color.clear,
-                                                Color.white.opacity(0.3),
-                                                Color.clear
-                                            ],
-                                            startPoint: .leading,
-                                            endPoint: .trailing
-                                        )
-                                    )
-                                    .frame(width: 100, height: 30)
-                                    .offset(x: shimmerOffset)
-                                    .mask(
-                                        Text("My Azan")
-                                            .font(.system(size: 28, weight: .medium, design: .rounded))
-                                    )
-                            }
-                            
-                            VStack(spacing: 4) {
-                                Text(locationManager.cityName)
-                                    .font(.system(size: 16, weight: .regular, design: .rounded))
-                                    .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7)) // #BFD3D8
-                                
-                                Text(Date().formatted(date: .abbreviated, time: .omitted))
-                                    .font(.system(size: 14, weight: .regular, design: .rounded))
-                                    .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7))
+                                    .padding(.top, 20)
+                                    .padding(.leading, -14)
+
+                                Text("\(locationManager.cityName) | \(Date().formatted(date: .abbreviated, time: .omitted))")
+                                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.7))
+                                    .padding(.top, -16)
                             }
                         }
-                        .padding(.top, 20)
-                        
-                        // Rectangular Next Prayer Card
-                        if let nextPrayer = prayerTimeService.nextPrayer {
-                            HStack(spacing: 20) {
-                                // Left side - Prayer info
-                                VStack(alignment: .leading, spacing: 8) {
-                                    // Next Prayer caption
+                        .padding(.horizontal, 16)
+                    }
+                    .padding(.top, 20)
+                    
+                    // Rectangular Next Prayer Card
+                    if let nextPrayer = prayerTimeService.nextPrayer {
+                        HStack(spacing: 20) {
+                            // Left side - Prayer info
+                            VStack(alignment: .leading, spacing: 8) {
+                                // Next Prayer caption with icon
+                                HStack(spacing: 8) {
+                                    Image(systemName: iconForPrayer(nextPrayer.name))
+                                        .font(.system(size: 14, weight: .medium))
+                                        .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7))
+                                    
                                     Text("Next Prayer")
                                         .font(.system(size: 12, weight: .medium, design: .rounded))
                                         .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7)) // #C7E3E8
-                                    
-                                    // Arabic prayer name
-                                    Text(nextPrayer.arabicName)
-                                        .font(.system(size: 20, weight: .medium))
-                                        .foregroundColor(.white.opacity(0.9))
-                                    
-                                    // English prayer name
-                                    Text(nextPrayer.name)
-                                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    
-                                    // Countdown
-                                    if nextPrayer.isUpcoming {
-                                        Text("in \(formatTimeRemaining(nextPrayer.timeRemaining))")
-                                            .font(.system(size: 12, weight: .medium, design: .rounded))
-                                            .foregroundColor(.white.opacity(0.7))
-                                    }
                                 }
                                 
-                                Spacer()
+                                // Arabic prayer name
+                                Text(nextPrayer.arabicName)
+                                    .font(.system(size: 40, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.9))
                                 
-                                // Right side - Time
-                                VStack(alignment: .trailing, spacing: 4) {
-                                    Text(nextPrayer.timeString)
-                                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                                        .foregroundColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
-                                        .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.5), radius: 8, x: 0, y: 0)
+                                // English prayer name
+                                Text(nextPrayer.name)
+                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.85))
+                                
+                                // Countdown
+                                if nextPrayer.isUpcoming {
+                                    Text("in \(formatTimeRemaining(nextPrayer.timeRemaining))")
+                                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                                        .foregroundColor(.white.opacity(0.7))
                                 }
                             }
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 20)
-                            .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color.white.opacity(0.05))
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .stroke(
-                                        LinearGradient(
-                                            colors: [
-                                                Color.white.opacity(0.4),
-                                                Color.white.opacity(0.2)
-                                            ],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        ),
-                                        lineWidth: 1.5
-                                    )
-                            )
-                            .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
-                            .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
-                            .scaleEffect(prayerCardScale)
-                            .onTapGesture {
+                            
+                            Spacer()
+                            
+                            // Right side - Time
+                            VStack(alignment: .trailing, spacing: 4) {
+                                Text(nextPrayer.timeString)
+                                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                                    .foregroundColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
+                                    .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.5), radius: 8, x: 0, y: 0)
+                            }
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 20)
+                        .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.white.opacity(0.4),
+                                            Color.white.opacity(0.2)
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 1.5
+                                )
+                        )
+                        .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
+                        .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
+                        .scaleEffect(prayerCardScale)
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                prayerCardScale = 0.97
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                 withAnimation(.easeInOut(duration: 0.2)) {
-                                    prayerCardScale = 0.97
-                                }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        prayerCardScale = 1.0
-                                    }
+                                    prayerCardScale = 1.0
                                 }
                             }
-                            .padding(.horizontal, 20)
                         }
-                        
-                        // Prayer Times List
-                        if prayerTimeService.isLoading {
-                            VStack(spacing: 16) {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                    .scaleEffect(1.2)
-                                
-                                Text("Calculating prayer times...")
-                                    .font(.system(size: 16, weight: .medium, design: .rounded))
-                                    .foregroundColor(.white.opacity(0.8))
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .padding(.top, 60)
-                        } else {
-                            LazyVStack(spacing: 16) {
-                                ForEach(prayerTimeService.prayerTimes) { prayer in
-                                    PrayerCard(prayer: prayer)
-                                }
-                            }
-                            .padding(.horizontal, 24)
-                        }
-                        
-                        
-                        Spacer(minLength: 100)
+                        .padding(.horizontal, 20)
                     }
+                    
+                    // Prayer Times List
+                    if prayerTimeService.isLoading {
+                        VStack(spacing: 16) {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .scaleEffect(1.2)
+                            
+                            Text("Calculating prayer times...")
+                                .font(.system(size: 16, weight: .medium, design: .rounded))
+                                .foregroundColor(.white.opacity(0.8))
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .padding(.top, 60)
+                    } else {
+                        LazyVStack(spacing: 16) {
+                            ForEach(prayerTimeService.prayerTimes) { prayer in
+                                PrayerCard(prayer: prayer)
+                            }
+                        }
+                        .padding(.horizontal, 24)
+                    }
+                    
+                    
+                    Spacer(minLength: 100)
+                }
+                .safeAreaInset(edge: .top) {
+                    Color.clear.frame(height: 0)
+                }
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: 0)
                 }
                 .scaleEffect(contentScale)
                 .opacity(contentOpacity)
                 .blur(radius: contentBlur)
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: SettingsView()) {
-                        Image(systemName: "gearshape.fill")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.white.opacity(0.85))
-                            .shadow(color: .white.opacity(0.3), radius: 2, x: 0, y: 0)
-                            .padding(12)
-                            .background(.ultraThinMaterial, in: Circle())
-                    }
-                }
-            }
             .onAppear {
                 // Start home screen entrance animation
                 startHomeEntranceAnimation()
@@ -322,6 +284,23 @@ struct HomeView: View {
             return "\(hours)h \(minutes)m"
         } else {
             return "\(minutes)m"
+        }
+    }
+    
+    private func iconForPrayer(_ prayerName: String) -> String {
+        switch prayerName.lowercased() {
+        case "fajr":
+            return "sunrise"
+        case "dhuhr", "zuhr":
+            return "sun.max"
+        case "asr":
+            return "sun.horizon"
+        case "maghrib":
+            return "sunset"
+        case "isha":
+            return "moon"
+        default:
+            return "clock"
         }
     }
 }

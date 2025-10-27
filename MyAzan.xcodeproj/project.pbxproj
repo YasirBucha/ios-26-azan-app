@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		05CE1FE1305FDE5A54368B1A /* SharedDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0AB7FEE4AD9CE5453B0C3D9 /* SharedDefaults.swift */; };
+		3821DE7E2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3821DE7D2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift */; };
 		38B846FF2EAECEA20055EDCB /* AudioManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */; };
 		38B847012EAECEAD0055EDCB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847002EAECEAD0055EDCB /* HomeView.swift */; };
 		38B847032EAECEB80055EDCB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847022EAECEB80055EDCB /* SettingsView.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3821DE7D2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassIconButton.swift; sourceTree = "<group>"; };
 		38B846F92EAEC66F0055EDCB /* MyAzan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyAzan.entitlements; sourceTree = "<group>"; };
 		38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManagementView.swift; sourceTree = "<group>"; };
 		38B847002EAECEAD0055EDCB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				38B8471C2EAFC6BF0055EDCB /* AppCardStyle.swift */,
+				3821DE7D2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift */,
 				38B847182EAED1430055EDCB /* PrayerCard.swift */,
 			);
 			path = Components;
@@ -240,6 +243,7 @@
 				38B847152EAED0410055EDCB /* AppSettings.swift in Sources */,
 				38B847072EAECF4A0055EDCB /* NotificationManager.swift in Sources */,
 				38B847132EAED0130055EDCB /* PrayerTimeService.swift in Sources */,
+				3821DE7E2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift in Sources */,
 				38B8471D2EAFC6BF0055EDCB /* AppCardStyle.swift in Sources */,
 				38B847032EAECEB80055EDCB /* SettingsView.swift in Sources */,
 				38B8470B2EAECFDC0055EDCB /* AudioManager.swift in Sources */,

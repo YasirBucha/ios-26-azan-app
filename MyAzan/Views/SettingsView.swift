@@ -191,10 +191,14 @@ struct SettingsView: View {
                                         .font(.system(size: 16, weight: .regular, design: .default))
                                         .foregroundColor(.white.opacity(0.85))
                                     Spacer()
-                                    CustomToggle(isOn: Binding(
+                                    Toggle(isOn: Binding(
                                         get: { settingsManager.settings.azanEnabled },
                                         set: { settingsManager.updateAzanEnabled($0) }
-                                    ))
+                                    )) {
+                                        EmptyView()
+                                    }
+                                    .labelsHidden()
+                                    .toggleStyle(.automatic)
                                 }
                                 
                                 // Pre-Azan Reminder Toggle
@@ -203,10 +207,14 @@ struct SettingsView: View {
                                         .font(.system(size: 16, weight: .regular, design: .default))
                                         .foregroundColor(.white.opacity(0.85))
                                     Spacer()
-                                    CustomToggle(isOn: Binding(
+                                    Toggle(isOn: Binding(
                                         get: { settingsManager.settings.reminderEnabled },
                                         set: { settingsManager.updateReminderEnabled($0) }
-                                    ))
+                                    )) {
+                                        EmptyView()
+                                    }
+                                    .labelsHidden()
+                                    .toggleStyle(.automatic)
                                 }
                                 
                                 // Vibration Only Toggle
@@ -215,10 +223,14 @@ struct SettingsView: View {
                                         .font(.system(size: 16, weight: .regular, design: .default))
                                         .foregroundColor(.white.opacity(0.85))
                                     Spacer()
-                                    CustomToggle(isOn: Binding(
+                                    Toggle(isOn: Binding(
                                         get: { settingsManager.settings.liveActivityEnabled },
                                         set: { settingsManager.updateLiveActivityEnabled($0) }
-                                    ))
+                                    )) {
+                                        EmptyView()
+                                    }
+                                    .labelsHidden()
+                                    .toggleStyle(.automatic)
                                 }
                             }
                             .padding(.horizontal, 20)
@@ -312,7 +324,7 @@ struct EnhancedLiquidGlassCard<Content: View>: View {
         content
             .scaleEffect(cardsScale.indices.contains(cardIndex) ? cardsScale[cardIndex] : 1.0)
             .opacity(cardsOpacity.indices.contains(cardIndex) ? cardsOpacity[cardIndex] : 1.0)
-            .appCardStyle()
+            .appCardStyleMaterial()
     }
 }
 
