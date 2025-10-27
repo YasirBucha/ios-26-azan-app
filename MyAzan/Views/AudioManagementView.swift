@@ -136,9 +136,23 @@ struct AudioManagementView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.blue.opacity(0.1))
-                .foregroundColor(.blue)
-                .cornerRadius(12)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.4),
+                                    Color.white.opacity(0.2)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.5
+                        )
+                )
+                .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
+                .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
             }
         }
         .padding()
@@ -198,8 +212,23 @@ struct AudioManagementView: View {
                 .cornerRadius(8)
         }
         .padding()
-        .background(Color.blue.opacity(0.05))
-        .cornerRadius(12)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.4),
+                            Color.white.opacity(0.2)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1.5
+                )
+        )
+        .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
+        .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
     }
     
     private func customAudioRow(for file: CustomAudioFile) -> some View {
@@ -239,8 +268,23 @@ struct AudioManagementView: View {
             }
         }
         .padding()
-        .background(Color.gray.opacity(0.05))
-        .cornerRadius(12)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.4),
+                            Color.white.opacity(0.2)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1.5
+                )
+        )
+        .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
+        .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
     }
     
     private func presentNameInput(for url: URL) {

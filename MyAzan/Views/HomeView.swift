@@ -34,17 +34,16 @@ struct HomeView: View {
                     .matchedGeometryEffect(id: "liquidBackground", in: liquidBackground)
                     .ignoresSafeArea()
                     
-                    // Ripple effect overlay
+                    // Soft light flare at top center
                     RadialGradient(
                         colors: [
-                            Color.white.opacity(rippleOpacity),
+                            Color.white.opacity(0.08),
                             Color.clear
                         ],
-                        center: .center,
+                        center: .top,
                         startRadius: 0,
-                        endRadius: rippleRadius
+                        endRadius: 300
                     )
-                    .opacity(rippleOpacity)
                     .ignoresSafeArea()
                 }
                 
@@ -71,62 +70,23 @@ struct HomeView: View {
                 
                 ScrollView {
                     VStack(spacing: 32) {
+                        
                         // Custom Row Section
                         VStack(spacing: 8) {
-                            HStack(spacing: 16) {
-                                // Left: Circular container with image
-                                ZStack {
-                                    Circle()
-                                        .fill(.ultraThinMaterial)
-                                        .frame(width: 100, height: 100)
-                                    
-                                    Image("CircularImage")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 100, height: 100)
-                                        .clipShape(Circle())
-                                    
-                                    Circle()
-                                        .stroke(
-                                            LinearGradient(
-                                                colors: [
-                                                    Color.white.opacity(0.3),
-                                                    Color.white.opacity(0.1)
-                                                ],
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            ),
-                                            lineWidth: 1
-                                        )
-                                }
-                                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 3)
+                            HStack(alignment: .top, spacing: 16) {
+                                // Left: Circular image
+                                Image("CircularImage")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 100, height: 100)
+                                    .clipShape(Circle())
                                 
-                                // Right: Rectangle with image
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(.ultraThinMaterial)
-                                        .frame(width: 200, height: 40)
-                                    
-                                    Image("RectangleImage")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 200, height: 40)
-                                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(
-                                            LinearGradient(
-                                                colors: [
-                                                    Color.white.opacity(0.3),
-                                                    Color.white.opacity(0.1)
-                                                ],
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            ),
-                                            lineWidth: 1
-                                        )
-                                }
-                                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 3)
+                                // Right: Rectangular image
+                                Image("RectangleImage")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 200, height: 40)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
                             .padding(.horizontal, 20)
                             
@@ -227,25 +187,25 @@ struct HomeView: View {
                             .padding(.vertical, 20)
                             .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
                             .background(
-                                RoundedRectangle(cornerRadius: 36)
-                                    .fill(.ultraThinMaterial)
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color.white.opacity(0.05))
                             )
                             .overlay(
-                                RoundedRectangle(cornerRadius: 36)
+                                RoundedRectangle(cornerRadius: 20)
                                     .stroke(
                                         LinearGradient(
                                             colors: [
-                                                Color.white.opacity(0.3),
-                                                Color.white.opacity(0.1)
+                                                Color.white.opacity(0.4),
+                                                Color.white.opacity(0.2)
                                             ],
                                             startPoint: .topLeading,
                                             endPoint: .bottomTrailing
                                         ),
-                                        lineWidth: 1
+                                        lineWidth: 1.5
                                     )
                             )
-                            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 3)
-                            .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.3), radius: 20, x: 0, y: 10)
+                            .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
+                            .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
                             .scaleEffect(prayerCardScale)
                             .onTapGesture {
                                 withAnimation(.easeInOut(duration: 0.2)) {
@@ -291,6 +251,18 @@ struct HomeView: View {
                 .blur(radius: contentBlur)
             }
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: SettingsView()) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(.white.opacity(0.85))
+                            .shadow(color: .white.opacity(0.3), radius: 2, x: 0, y: 0)
+                            .padding(12)
+                            .background(.ultraThinMaterial, in: Circle())
+                    }
+                }
+            }
             .onAppear {
                 // Start home screen entrance animation
                 startHomeEntranceAnimation()
@@ -298,44 +270,6 @@ struct HomeView: View {
                 // Defer location services initialization
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     initializeLocationServices()
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: SettingsView()) {
-                        Image(systemName: "gearshape.fill")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.white.opacity(0.8))
-                            .scaleEffect(gearIconScale)
-                    }
-                    .simultaneousGesture(
-                        TapGesture()
-                            .onEnded {
-                                // Gear icon expansion animation
-                                withAnimation(.spring(response: 0.15, dampingFraction: 0.6)) {
-                                    gearIconScale = 1.15
-                                }
-                                
-                                // Trigger ripple effect
-                                withAnimation(.easeOut(duration: 0.6)) {
-                                    rippleOpacity = 0.1
-                                    rippleRadius = 200
-                                }
-                                
-                                // Reset gear icon scale
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                                    withAnimation(.spring(response: 0.2, dampingFraction: 0.8)) {
-                                        gearIconScale = 1.0
-                                    }
-                                }
-                                
-                                // Reset ripple
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                    rippleOpacity = 0.0
-                                    rippleRadius = 20
-                                }
-                            }
-                    )
                 }
             }
         }
@@ -409,17 +343,17 @@ struct CircularPrayerCard: View {
                         .stroke(
                             LinearGradient(
                                 colors: [
-                                    Color.white.opacity(0.3),
-                                    Color.white.opacity(0.1)
+                                    Color.white.opacity(0.4),
+                                    Color.white.opacity(0.2)
                                 ],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             ),
-                            lineWidth: 1
+                            lineWidth: 1.5
                         )
                 )
-                .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
-                .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.3), radius: 20, x: 0, y: 10)
+                .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
+                .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
             
             VStack(spacing: 16) {
                 // Next Prayer caption
@@ -501,17 +435,17 @@ struct PrayerRowCard: View {
                 .stroke(
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(0.3),
-                            Color.white.opacity(0.1)
+                            Color.white.opacity(0.4),
+                            Color.white.opacity(0.2)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ),
-                    lineWidth: 1
+                    lineWidth: 1.5
                 )
         )
-        .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
-        .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.2), radius: 20, x: 0, y: 10)
+        .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
+        .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
         .scaleEffect(cardScale)
         .onTapGesture {
             withAnimation(.easeInOut(duration: 0.2)) {
@@ -564,14 +498,33 @@ struct GlassAudioButton: View {
             .foregroundColor(.white.opacity(0.9))
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
             .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(.white.opacity(0.2), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(0.4),
+                                Color.white.opacity(0.2)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1.5
+                    )
             )
-            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 3)
+            .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
+            .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
         }
         .scaleEffect(buttonScale)
         .animation(.easeInOut(duration: 0.2), value: buttonScale)
     }
+}
+
+#Preview {
+    HomeView()
+        .environmentObject(LocationManager())
+        .environmentObject(PrayerTimeService())
+        .environmentObject(NotificationManager())
+        .environmentObject(SettingsManager())
 }

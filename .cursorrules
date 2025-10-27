@@ -1,0 +1,4 @@
+context:
+  - path: ~/cursor-global/ios26/
+    purpose: >
+      Global reference for iOS 26, latest Xcode, SwiftUI 6, and design tokens.

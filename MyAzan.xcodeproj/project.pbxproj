@@ -11,6 +11,7 @@
 		38B846FF2EAECEA20055EDCB /* AudioManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */; };
 		38B847012EAECEAD0055EDCB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847002EAECEAD0055EDCB /* HomeView.swift */; };
 		38B847032EAECEB80055EDCB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847022EAECEB80055EDCB /* SettingsView.swift */; };
+		38B847042EAECEB90055EDCB /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847032EAECEB90055EDCB /* SplashScreenView.swift */; };
 		38B847052EAECF020055EDCB /* AudioFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847042EAECF020055EDCB /* AudioFileManager.swift */; };
 		38B847072EAECF4A0055EDCB /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847062EAECF4A0055EDCB /* NotificationManager.swift */; };
 		38B847092EAECF5B0055EDCB /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847082EAECF5B0055EDCB /* SettingsManager.swift */; };
@@ -23,6 +24,7 @@
 		38B847172EAED04B0055EDCB /* PrayerTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847162EAED04B0055EDCB /* PrayerTime.swift */; };
 		38B847192EAED1430055EDCB /* PrayerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847182EAED1430055EDCB /* PrayerCard.swift */; };
 		38B8471B2EAEE8800055EDCB /* azan_notification.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 38B8471A2EAEE8800055EDCB /* azan_notification.mp3 */; };
+		38B8471D2EAFC6BF0055EDCB /* AppCardStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B8471C2EAFC6BF0055EDCB /* AppCardStyle.swift */; };
 		A1234567890ABCDEF001 /* MyAzanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF002 /* MyAzanApp.swift */; };
 		A1234567890ABCDEF005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF006 /* Assets.xcassets */; };
 		A1234567890ABCDEF007 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF008 /* Preview Assets.xcassets */; };
@@ -35,6 +37,7 @@
 		38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManagementView.swift; sourceTree = "<group>"; };
 		38B847002EAECEAD0055EDCB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		38B847022EAECEB80055EDCB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		38B847032EAECEB90055EDCB /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		38B847042EAECF020055EDCB /* AudioFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileManager.swift; sourceTree = "<group>"; };
 		38B847062EAECF4A0055EDCB /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		38B847082EAECF5B0055EDCB /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
@@ -47,6 +50,7 @@
 		38B847162EAED04B0055EDCB /* PrayerTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTime.swift; sourceTree = "<group>"; };
 		38B847182EAED1430055EDCB /* PrayerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerCard.swift; sourceTree = "<group>"; };
 		38B8471A2EAEE8800055EDCB /* azan_notification.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = azan_notification.mp3; sourceTree = "<group>"; };
+		38B8471C2EAFC6BF0055EDCB /* AppCardStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCardStyle.swift; sourceTree = "<group>"; };
 		A0AB7FEE4AD9CE5453B0C3D9 /* SharedDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedDefaults.swift; sourceTree = "<group>"; };
 		A1234567890ABCDEF002 /* MyAzanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAzanApp.swift; sourceTree = "<group>"; };
 		A1234567890ABCDEF006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -130,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				38B847022EAECEB80055EDCB /* SettingsView.swift */,
+				38B847032EAECEB90055EDCB /* SplashScreenView.swift */,
 				38B847002EAECEAD0055EDCB /* HomeView.swift */,
 				38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */,
 				A1234567890ABCDEF032 /* Components */,
@@ -148,6 +153,7 @@
 		A1234567890ABCDEF032 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				38B8471C2EAFC6BF0055EDCB /* AppCardStyle.swift */,
 				38B847182EAED1430055EDCB /* PrayerCard.swift */,
 			);
 			path = Components;
@@ -234,12 +240,14 @@
 				38B847152EAED0410055EDCB /* AppSettings.swift in Sources */,
 				38B847072EAECF4A0055EDCB /* NotificationManager.swift in Sources */,
 				38B847132EAED0130055EDCB /* PrayerTimeService.swift in Sources */,
+				38B8471D2EAFC6BF0055EDCB /* AppCardStyle.swift in Sources */,
 				38B847032EAECEB80055EDCB /* SettingsView.swift in Sources */,
 				38B8470B2EAECFDC0055EDCB /* AudioManager.swift in Sources */,
 				38B847112EAED0050055EDCB /* LocationManager.swift in Sources */,
 				05CE1FE1305FDE5A54368B1A /* SharedDefaults.swift in Sources */,
 				38B847192EAED1430055EDCB /* PrayerCard.swift in Sources */,
 				38B847012EAECEAD0055EDCB /* HomeView.swift in Sources */,
+				38B847042EAECEB90055EDCB /* SplashScreenView.swift in Sources */,
 				38B8470D2EAECFE50055EDCB /* BackgroundTaskManager.swift in Sources */,
 				38B847092EAECF5B0055EDCB /* SettingsManager.swift in Sources */,
 				38B847172EAED04B0055EDCB /* PrayerTime.swift in Sources */,

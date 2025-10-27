@@ -312,42 +312,7 @@ struct EnhancedLiquidGlassCard<Content: View>: View {
         content
             .scaleEffect(cardsScale.indices.contains(cardIndex) ? cardsScale[cardIndex] : 1.0)
             .opacity(cardsOpacity.indices.contains(cardIndex) ? cardsOpacity[cardIndex] : 1.0)
-            .background(
-                ZStack {
-                    // Base glass material
-                    RoundedRectangle(cornerRadius: 18)
-                        .fill(.ultraThinMaterial)
-                    
-                    // Inner shadow effect
-                    RoundedRectangle(cornerRadius: 18)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    Color.black.opacity(0.15),
-                                    Color.clear
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                        .blur(radius: 8)
-                    
-                    // White glow on edges
-                    RoundedRectangle(cornerRadius: 18)
-                        .stroke(
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(0.1),
-                                    Color.white.opacity(0.05)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 1
-                        )
-                }
-            )
-            .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
+            .appCardStyle()
     }
 }
 
@@ -358,23 +323,44 @@ struct CustomToggle: View {
     
     var body: some View {
         Button(action: {
-            withAnimation(.easeInOut(duration: 0.3)) {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
                 isOn.toggle()
                 animationOffset = isOn ? 20 : 0
             }
         }) {
             ZStack {
-                // Background capsule
+                // Background capsule with iOS 26 glass effect
                 Capsule()
-                    .fill(isOn ? Color(red: 0.3, green: 0.72, blue: 1.0) : Color(red: 0.17, green: 0.28, blue: 0.32))
+                    .fill(.regularMaterial)
                     .frame(width: 50, height: 30)
+                    .overlay(
+                        Capsule()
+                            .stroke(
+                                LinearGradient(
+                                    colors: [
+                                        Color.white.opacity(0.6),
+                                        Color.white.opacity(0.2)
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 1
+                            )
+                    )
+                    .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                    .shadow(color: .white.opacity(0.3), radius: 2, x: 0, y: 1)
                 
-                // Toggle knob
+                // Toggle knob with lifted effect
                 Circle()
-                    .fill(.white)
+                    .fill(.thickMaterial)
                     .frame(width: 26, height: 26)
                     .offset(x: animationOffset - 10)
-                    .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.white.opacity(0.4), lineWidth: 0.5)
+                    )
+                    .shadow(color: .black.opacity(0.3), radius: 6, x: 0, y: 3)
+                    .shadow(color: .white.opacity(0.4), radius: 1, x: 0, y: 1)
             }
         }
         .onAppear {
@@ -382,4 +368,3 @@ struct CustomToggle: View {
         }
     }
 }
-
