@@ -16,7 +16,6 @@ struct HomeView: View {
     @State private var rippleOpacity: Double = 0.0
     @State private var rippleRadius: Double = 20.0
     @State private var shimmerOffset: Double = -200.0
-    let namespace: Namespace.ID
     @Namespace private var liquidBackground
     
     var body: some View {
@@ -74,14 +73,13 @@ struct HomeView: View {
                     VStack(spacing: 32) {
                         // Header Section with Logo Transition
                         VStack(spacing: 12) {
-                            // App Logo (for matched geometry effect)
+                            // App Logo (hidden)
                             Image("AppIcon")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 60, height: 60)
                                 .clipShape(RoundedRectangle(cornerRadius: 13))
-                                .matchedGeometryEffect(id: "app_logo", in: namespace)
-                                .opacity(0.0) // Hidden but maintains geometry
+                                .opacity(0.0) // Hidden
                             
                             ZStack {
                                 Text("My Azan")

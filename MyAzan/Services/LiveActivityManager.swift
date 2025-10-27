@@ -10,8 +10,6 @@ struct PrayerActivityAttributes: ActivityAttributes {
         var nextPrayerTime: Date
         var timeRemaining: TimeInterval
         var cityName: String
-        var nextPrayerName: String
-        var nextPrayerTime: Date
         var progressPercentage: Double
         var isAzanEnabled: Bool
         var currentDate: Date
@@ -55,8 +53,6 @@ class LiveActivityManager: ObservableObject {
             nextPrayerTime: prayer.time,
             timeRemaining: timeRemaining,
             cityName: cityName,
-            nextPrayerName: nextPrayer.name,
-            nextPrayerTime: nextPrayer.time,
             progressPercentage: progressPercentage,
             isAzanEnabled: isAzanEnabled,
             currentDate: Date()
@@ -89,8 +85,6 @@ class LiveActivityManager: ObservableObject {
             nextPrayerTime: prayer.time,
             timeRemaining: timeRemaining,
             cityName: cityName,
-            nextPrayerName: nextPrayer.name,
-            nextPrayerTime: nextPrayer.time,
             progressPercentage: progressPercentage,
             isAzanEnabled: isAzanEnabled,
             currentDate: Date()
