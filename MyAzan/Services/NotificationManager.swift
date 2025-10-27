@@ -2,6 +2,7 @@ import Foundation
 import UserNotifications
 import Combine
 
+@MainActor
 class NotificationManager: ObservableObject {
     @Published var authorizationStatus: UNAuthorizationStatus = .notDetermined
     
@@ -32,8 +33,9 @@ class NotificationManager: ObservableObject {
     
     private func checkAuthorizationStatus() {
         UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
-            DispatchQueue.main.async {
-                self?.authorizationStatus = settings.authorizationStatus
+            let status = settings.authorizationStatus
+            Task { @MainActor in
+                self?.authorizationStatus = status
             }
         }
     }

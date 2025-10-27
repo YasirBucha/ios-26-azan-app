@@ -71,6 +71,72 @@ struct HomeView: View {
                 
                 ScrollView {
                     VStack(spacing: 32) {
+                        // Custom Row Section
+                        VStack(spacing: 8) {
+                            HStack(spacing: 16) {
+                                // Left: Circular container with image
+                                ZStack {
+                                    Circle()
+                                        .fill(.ultraThinMaterial)
+                                        .frame(width: 100, height: 100)
+                                    
+                                    Image("CircularImage")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 100, height: 100)
+                                        .clipShape(Circle())
+                                    
+                                    Circle()
+                                        .stroke(
+                                            LinearGradient(
+                                                colors: [
+                                                    Color.white.opacity(0.3),
+                                                    Color.white.opacity(0.1)
+                                                ],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            ),
+                                            lineWidth: 1
+                                        )
+                                }
+                                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 3)
+                                
+                                // Right: Rectangle with image
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(.ultraThinMaterial)
+                                        .frame(width: 200, height: 40)
+                                    
+                                    Image("RectangleImage")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 200, height: 40)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(
+                                            LinearGradient(
+                                                colors: [
+                                                    Color.white.opacity(0.3),
+                                                    Color.white.opacity(0.1)
+                                                ],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            ),
+                                            lineWidth: 1
+                                        )
+                                }
+                                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 3)
+                            }
+                            .padding(.horizontal, 20)
+                            
+                            // Text below
+                            Text("Text 1 | Text 2")
+                                .font(.system(size: 14, weight: .medium, design: .rounded))
+                                .foregroundColor(.white.opacity(0.7))
+                        }
+                        .padding(.top, 20)
+                        
                         // Header Section with Logo Transition
                         VStack(spacing: 12) {
                             // App Logo (hidden)

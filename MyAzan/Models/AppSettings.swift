@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class AppSettings: ObservableObject {
     @Published var azanEnabled: Bool {
         didSet {

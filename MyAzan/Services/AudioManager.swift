@@ -3,6 +3,7 @@ import AVFoundation
 import AudioToolbox
 import Combine
 
+@MainActor
 class AudioManager: NSObject, ObservableObject {
     private var audioPlayer: AVAudioPlayer?
     @Published var isPlaying = false
@@ -191,20 +192,20 @@ class AudioManager: NSObject, ObservableObject {
 }
 
 extension AudioManager: AVAudioPlayerDelegate {
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        DispatchQueue.main.async {
+    nonisolated func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        Task { @MainActor in
             self.isPlaying = false
             self.currentlyPlayingId = nil
+            self.deactivateAudioSessionIfPossible()
         }
-        deactivateAudioSessionIfPossible()
     }
     
-    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+    nonisolated func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         print("Audio player decode error: \(error?.localizedDescription ?? "Unknown error")")
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.isPlaying = false
             self.currentlyPlayingId = nil
+            self.deactivateAudioSessionIfPossible()
         }
-        deactivateAudioSessionIfPossible()
     }
 }

@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class SettingsManager: ObservableObject {
     @Published var settings = AppSettings()
     

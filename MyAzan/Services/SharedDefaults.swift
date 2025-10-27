@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 enum SharedDefaults {
     private static let suiteName = "group.com.myazan.app"
     private static var cachedShared: UserDefaults?

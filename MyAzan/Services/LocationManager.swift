@@ -2,6 +2,7 @@ import Foundation
 import CoreLocation
 import Combine
 
+@MainActor
 class LocationManager: NSObject, ObservableObject {
     private let locationManager = CLLocationManager()
     @Published var currentLocation: CLLocation?
@@ -22,8 +23,10 @@ class LocationManager: NSObject, ObservableObject {
         locationManager.distanceFilter = 1000 // Update when moved 1km
         
         // Load cached city name
-        if let cachedCity = SharedDefaults.string(forKey: "cityName") {
-            cityName = cachedCity
+        Task { @MainActor in
+            if let cachedCity = SharedDefaults.string(forKey: "cityName") {
+                cityName = cachedCity
+            }
         }
     }
     
@@ -50,10 +53,14 @@ class LocationManager: NSObject, ObservableObject {
             DispatchQueue.main.async {
                 if let city = placemark.locality {
                     self?.cityName = city
-                    SharedDefaults.set(city, forKey: "cityName")
+                    Task { @MainActor in
+                        SharedDefaults.set(city, forKey: "cityName")
+                    }
                 } else if let country = placemark.country {
                     self?.cityName = country
-                    SharedDefaults.set(country, forKey: "cityName")
+                    Task { @MainActor in
+                        SharedDefaults.set(country, forKey: "cityName")
+                    }
                 }
             }
         }
@@ -61,17 +68,17 @@ class LocationManager: NSObject, ObservableObject {
 }
 
 extension LocationManager: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.currentLocation = location
             self.reverseGeocode(location: location)
         }
     }
     
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        DispatchQueue.main.async {
+    nonisolated func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        Task { @MainActor in
             self.authorizationStatus = status
             
             switch status {
@@ -87,7 +94,7 @@ extension LocationManager: CLLocationManagerDelegate {
         }
     }
     
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Location manager failed with error: \(error.localizedDescription)")
     }
 }

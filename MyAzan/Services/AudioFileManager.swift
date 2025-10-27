@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class AudioFileManager: ObservableObject {
     static let shared = AudioFileManager()
     

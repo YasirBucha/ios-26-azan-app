@@ -2,6 +2,7 @@ import Foundation
 import BackgroundTasks
 import UserNotifications
 
+@MainActor
 class BackgroundTaskManager {
     static let shared = BackgroundTaskManager()
     

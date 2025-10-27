@@ -2,6 +2,7 @@ import Foundation
 import Combine
 // import Adhan // Temporarily commented out for testing
 
+@MainActor
 class PrayerTimeService: ObservableObject {
     @Published var prayerTimes: [PrayerTime] = []
     @Published var nextPrayer: PrayerTime?
@@ -52,7 +53,7 @@ class PrayerTimeService: ObservableObject {
         
         isLoading = true
         
-        DispatchQueue.global(qos: .userInitiated).async(execute: DispatchWorkItem { [weak self] in
+        Task.detached { [weak self] in
             guard let self = self else { return }
             
             // Temporary mock prayer times for testing (will be replaced with real Adhan calculations)
@@ -80,7 +81,7 @@ class PrayerTimeService: ObservableObject {
             if let next = upcomingPrayers.first {
                 let nextPrayer = PrayerTime(name: next.name, arabicName: next.arabicName, time: next.time, isNext: true)
                 
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.prayerTimes = times
                     self.nextPrayer = nextPrayer
                     self.isLoading = false
@@ -92,7 +93,7 @@ class PrayerTimeService: ObservableObject {
                 let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
                 let firstPrayerTomorrow = PrayerTime(name: "Fajr", arabicName: "الفجر", time: calendar.date(bySettingHour: 5, minute: 30, second: 0, of: tomorrow) ?? tomorrow, isNext: true)
                 
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.prayerTimes = times
                     self.nextPrayer = firstPrayerTomorrow
                     self.isLoading = false
@@ -100,7 +101,7 @@ class PrayerTimeService: ObservableObject {
                     self.scheduleNotifications()
                 }
             }
-        })
+        }
     }
     
     private func calculateDistance(from: (Double, Double), to: (Double, Double)) -> Double {
@@ -122,25 +123,31 @@ class PrayerTimeService: ObservableObject {
         let encoder = JSONEncoder()
         
         if let data = try? encoder.encode(prayerTimes) {
-            SharedDefaults.set(data, forKey: "cachedPrayerTimes")
+            Task { @MainActor in
+                SharedDefaults.set(data, forKey: "cachedPrayerTimes")
+            }
         }
         
         if let nextPrayer = nextPrayer, let data = try? encoder.encode(nextPrayer) {
-            SharedDefaults.set(data, forKey: "cachedNextPrayer")
+            Task { @MainActor in
+                SharedDefaults.set(data, forKey: "cachedNextPrayer")
+            }
         }
     }
     
     private func loadCachedPrayerTimes() {
         let decoder = JSONDecoder()
         
-        if let data = SharedDefaults.data(forKey: "cachedPrayerTimes"),
-           let times = try? decoder.decode([PrayerTime].self, from: data) {
-            prayerTimes = times
-        }
-        
-        if let data = SharedDefaults.data(forKey: "cachedNextPrayer"),
-           let next = try? decoder.decode(PrayerTime.self, from: data) {
-            nextPrayer = next
+        Task { @MainActor in
+            if let data = SharedDefaults.data(forKey: "cachedPrayerTimes"),
+               let times = try? decoder.decode([PrayerTime].self, from: data) {
+                prayerTimes = times
+            }
+            
+            if let data = SharedDefaults.data(forKey: "cachedNextPrayer"),
+               let next = try? decoder.decode(PrayerTime.self, from: data) {
+                nextPrayer = next
+            }
         }
     }
 }
