@@ -1,6 +1,34 @@
 import Foundation
 import Combine
 
+enum PrayerNotificationState: String, CaseIterable {
+    case off = "off"
+    case vibrate = "vibrate"
+    case sound = "sound"
+    
+    var iconName: String {
+        switch self {
+        case .off:
+            return "bell.slash"
+        case .vibrate:
+            return "bell.badge"
+        case .sound:
+            return "bell.fill"
+        }
+    }
+    
+    var color: String {
+        switch self {
+        case .off:
+            return "gray"
+        case .vibrate:
+            return "orange"
+        case .sound:
+            return "blue"
+        }
+    }
+}
+
 @MainActor
 class AppSettings: ObservableObject {
     @Published var azanEnabled: Bool {
@@ -37,34 +65,40 @@ class AppSettings: ObservableObject {
         }
     }
     
-    // Individual prayer sound settings
-    @Published var fajrSoundEnabled: Bool {
+    @Published var appVolume: Float {
         didSet {
-            UserDefaults.standard.set(fajrSoundEnabled, forKey: "fajrSoundEnabled")
+            UserDefaults.standard.set(appVolume, forKey: "appVolume")
         }
     }
     
-    @Published var dhuhrSoundEnabled: Bool {
+    // Individual prayer notification settings
+    @Published var fajrNotificationState: PrayerNotificationState {
         didSet {
-            UserDefaults.standard.set(dhuhrSoundEnabled, forKey: "dhuhrSoundEnabled")
+            UserDefaults.standard.set(fajrNotificationState.rawValue, forKey: "fajrNotificationState")
         }
     }
     
-    @Published var asrSoundEnabled: Bool {
+    @Published var dhuhrNotificationState: PrayerNotificationState {
         didSet {
-            UserDefaults.standard.set(asrSoundEnabled, forKey: "asrSoundEnabled")
+            UserDefaults.standard.set(dhuhrNotificationState.rawValue, forKey: "dhuhrNotificationState")
         }
     }
     
-    @Published var maghribSoundEnabled: Bool {
+    @Published var asrNotificationState: PrayerNotificationState {
         didSet {
-            UserDefaults.standard.set(maghribSoundEnabled, forKey: "maghribSoundEnabled")
+            UserDefaults.standard.set(asrNotificationState.rawValue, forKey: "asrNotificationState")
         }
     }
     
-    @Published var ishaSoundEnabled: Bool {
+    @Published var maghribNotificationState: PrayerNotificationState {
         didSet {
-            UserDefaults.standard.set(ishaSoundEnabled, forKey: "ishaSoundEnabled")
+            UserDefaults.standard.set(maghribNotificationState.rawValue, forKey: "maghribNotificationState")
+        }
+    }
+    
+    @Published var ishaNotificationState: PrayerNotificationState {
+        didSet {
+            UserDefaults.standard.set(ishaNotificationState.rawValue, forKey: "ishaNotificationState")
         }
     }
     
@@ -80,45 +114,57 @@ class AppSettings: ObservableObject {
         self.liveActivityEnabled = UserDefaults.standard.bool(forKey: "liveActivityEnabled")
         self.reminderEnabled = UserDefaults.standard.bool(forKey: "reminderEnabled")
         
-        // Initialize individual prayer sound settings (default to true for all prayers)
-        self.fajrSoundEnabled = UserDefaults.standard.object(forKey: "fajrSoundEnabled") as? Bool ?? true
-        self.dhuhrSoundEnabled = UserDefaults.standard.object(forKey: "dhuhrSoundEnabled") as? Bool ?? true
-        self.asrSoundEnabled = UserDefaults.standard.object(forKey: "asrSoundEnabled") as? Bool ?? true
-        self.maghribSoundEnabled = UserDefaults.standard.object(forKey: "maghribSoundEnabled") as? Bool ?? true
-        self.ishaSoundEnabled = UserDefaults.standard.object(forKey: "ishaSoundEnabled") as? Bool ?? true
+        // Initialize app volume (default to 0.8)
+        self.appVolume = UserDefaults.standard.object(forKey: "appVolume") as? Float ?? 0.8
+        
+        // Initialize individual prayer notification settings (default to sound for all prayers)
+        self.fajrNotificationState = PrayerNotificationState(rawValue: UserDefaults.standard.string(forKey: "fajrNotificationState") ?? "sound") ?? .sound
+        self.dhuhrNotificationState = PrayerNotificationState(rawValue: UserDefaults.standard.string(forKey: "dhuhrNotificationState") ?? "sound") ?? .sound
+        self.asrNotificationState = PrayerNotificationState(rawValue: UserDefaults.standard.string(forKey: "asrNotificationState") ?? "sound") ?? .sound
+        self.maghribNotificationState = PrayerNotificationState(rawValue: UserDefaults.standard.string(forKey: "maghribNotificationState") ?? "sound") ?? .sound
+        self.ishaNotificationState = PrayerNotificationState(rawValue: UserDefaults.standard.string(forKey: "ishaNotificationState") ?? "sound") ?? .sound
     }
     
     // Helper methods for bulk operations
-    func enableAllPrayerSounds() {
-        fajrSoundEnabled = true
-        dhuhrSoundEnabled = true
-        asrSoundEnabled = true
-        maghribSoundEnabled = true
-        ishaSoundEnabled = true
+    func setAllPrayerNotifications(to state: PrayerNotificationState) {
+        fajrNotificationState = state
+        dhuhrNotificationState = state
+        asrNotificationState = state
+        maghribNotificationState = state
+        ishaNotificationState = state
     }
     
-    func disableAllPrayerSounds() {
-        fajrSoundEnabled = false
-        dhuhrSoundEnabled = false
-        asrSoundEnabled = false
-        maghribSoundEnabled = false
-        ishaSoundEnabled = false
-    }
-    
-    func isPrayerSoundEnabled(for prayerName: String) -> Bool {
+    func getPrayerNotificationState(for prayerName: String) -> PrayerNotificationState {
         switch prayerName.lowercased() {
         case "fajr":
-            return fajrSoundEnabled
+            return fajrNotificationState
         case "dhuhr":
-            return dhuhrSoundEnabled
+            return dhuhrNotificationState
         case "asr":
-            return asrSoundEnabled
+            return asrNotificationState
         case "maghrib":
-            return maghribSoundEnabled
+            return maghribNotificationState
         case "isha":
-            return ishaSoundEnabled
+            return ishaNotificationState
         default:
-            return true
+            return .sound
+        }
+    }
+    
+    func setPrayerNotificationState(for prayerName: String, to state: PrayerNotificationState) {
+        switch prayerName.lowercased() {
+        case "fajr":
+            fajrNotificationState = state
+        case "dhuhr":
+            dhuhrNotificationState = state
+        case "asr":
+            asrNotificationState = state
+        case "maghrib":
+            maghribNotificationState = state
+        case "isha":
+            ishaNotificationState = state
+        default:
+            break
         }
     }
 }

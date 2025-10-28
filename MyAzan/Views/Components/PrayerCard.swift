@@ -35,7 +35,9 @@ struct LiquidGlassBackground: View {
 struct PrayerCard: View {
     let prayer: PrayerTime
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var settingsManager: SettingsManager
     @State private var cardScale: Double = 1.0
+    @State private var showingAlert = false
     
     var body: some View {
         LiquidGlassBackground {
@@ -45,12 +47,6 @@ struct PrayerCard: View {
                     .font(.system(size: 20, weight: .medium))
                     .foregroundColor(.white.opacity(0.8))
                     .frame(width: 24)
-                
-                // Arabic prayer name
-                Text(prayer.arabicName)
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(.white.opacity(0.7))
-                    .frame(width: 60, alignment: .leading)
                 
                 // English prayer name
                 Text(prayer.name)
@@ -62,6 +58,23 @@ struct PrayerCard: View {
                 Text(prayer.timeString)
                     .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundColor(.white.opacity(0.9))
+                
+                // Bell toggle button
+                Button(action: {
+                    print("🔔 Bell button tapped for \(prayer.name)")
+                    showingAlert = true
+                    cycleNotificationState()
+                }) {
+                    Image(systemName: currentNotificationState.iconName)
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(notificationStateColor)
+                }
+                .buttonStyle(PlainButtonStyle())
+                .alert("Bell Tapped", isPresented: $showingAlert) {
+                    Button("OK") { }
+                } message: {
+                    Text("Bell button tapped for \(prayer.name)")
+                }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
@@ -76,6 +89,34 @@ struct PrayerCard: View {
                     cardScale = 1.0
                 }
             }
+        }
+    }
+    
+    private var currentNotificationState: PrayerNotificationState {
+        settingsManager.settings.getPrayerNotificationState(for: prayer.name)
+    }
+    
+    private var notificationStateColor: Color {
+        switch currentNotificationState {
+        case .off:
+            return .gray
+        case .vibrate:
+            return .orange
+        case .sound:
+            return .blue
+        }
+    }
+    
+    private func cycleNotificationState() {
+        let currentState = currentNotificationState
+        let allStates = PrayerNotificationState.allCases
+        print("🔄 Cycling notification state for \(prayer.name) from \(currentState.rawValue)")
+        
+        if let currentIndex = allStates.firstIndex(of: currentState) {
+            let nextIndex = (currentIndex + 1) % allStates.count
+            let nextState = allStates[nextIndex]
+            print("🔄 Setting \(prayer.name) to \(nextState.rawValue)")
+            settingsManager.settings.setPrayerNotificationState(for: prayer.name, to: nextState)
         }
     }
     

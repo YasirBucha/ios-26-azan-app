@@ -29,33 +29,37 @@ class SettingsManager: ObservableObject {
         settings.reminderEnabled = enabled
     }
     
-    // Individual prayer sound management
-    func updateFajrSoundEnabled(_ enabled: Bool) {
-        settings.fajrSoundEnabled = enabled
+    // Individual prayer notification management
+    func updateFajrNotificationState(_ state: PrayerNotificationState) {
+        settings.fajrNotificationState = state
     }
     
-    func updateDhuhrSoundEnabled(_ enabled: Bool) {
-        settings.dhuhrSoundEnabled = enabled
+    func updateDhuhrNotificationState(_ state: PrayerNotificationState) {
+        settings.dhuhrNotificationState = state
     }
     
-    func updateAsrSoundEnabled(_ enabled: Bool) {
-        settings.asrSoundEnabled = enabled
+    func updateAsrNotificationState(_ state: PrayerNotificationState) {
+        settings.asrNotificationState = state
     }
     
-    func updateMaghribSoundEnabled(_ enabled: Bool) {
-        settings.maghribSoundEnabled = enabled
+    func updateMaghribNotificationState(_ state: PrayerNotificationState) {
+        settings.maghribNotificationState = state
     }
     
-    func updateIshaSoundEnabled(_ enabled: Bool) {
-        settings.ishaSoundEnabled = enabled
+    func updateIshaNotificationState(_ state: PrayerNotificationState) {
+        settings.ishaNotificationState = state
     }
     
     // Bulk operations
-    func enableAllPrayerSounds() {
-        settings.enableAllPrayerSounds()
+    func setAllPrayerNotifications(to state: PrayerNotificationState) {
+        settings.setAllPrayerNotifications(to: state)
     }
     
-    func disableAllPrayerSounds() {
-        settings.disableAllPrayerSounds()
+    func getPrayerNotificationState(for prayerName: String) -> PrayerNotificationState {
+        return settings.getPrayerNotificationState(for: prayerName)
+    }
+    
+    func setPrayerNotificationState(for prayerName: String, to state: PrayerNotificationState) {
+        settings.setPrayerNotificationState(for: prayerName, to: state)
     }
 }

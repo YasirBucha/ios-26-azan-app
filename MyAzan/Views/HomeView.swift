@@ -16,6 +16,7 @@ struct HomeView: View {
     @State private var rippleOpacity: Double = 0.0
     @State private var rippleRadius: Double = 20.0
     @State private var shimmerOffset: Double = -200.0
+    @State private var showingMasterAlert = false
     @Namespace private var liquidBackground
     
     var body: some View {
@@ -116,32 +117,20 @@ struct HomeView: View {
                         HStack(spacing: 20) {
                             // Left side - Prayer info
                             VStack(alignment: .leading, spacing: 8) {
-                                // Next Prayer caption with icon
-                                HStack(spacing: 8) {
+                                // Next Prayer caption
+                                Text("Next Prayer")
+                                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                                    .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7)) // #C7E3E8
+                                
+                                // English prayer name with icon
+                                HStack(alignment: .center, spacing: 8) {
                                     Image(systemName: iconForPrayer(nextPrayer.name))
-                                        .font(.system(size: 14, weight: .medium))
+                                        .font(.system(size: 28, weight: .medium))
                                         .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7))
                                     
-                                    Text("Next Prayer")
-                                        .font(.system(size: 12, weight: .medium, design: .rounded))
-                                        .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7)) // #C7E3E8
-                                }
-                                
-                                // Arabic prayer name
-                                Text(nextPrayer.arabicName)
-                                    .font(.system(size: 40, weight: .medium))
-                                    .foregroundColor(.white.opacity(0.9))
-                                
-                                // English prayer name
-                                Text(nextPrayer.name)
-                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
-                                    .foregroundColor(.white.opacity(0.85))
-                                
-                                // Countdown
-                                if nextPrayer.isUpcoming {
-                                    Text("in \(formatTimeRemaining(nextPrayer.timeRemaining))")
-                                        .font(.system(size: 12, weight: .medium, design: .rounded))
-                                        .foregroundColor(.white.opacity(0.7))
+                                    Text(nextPrayer.name)
+                                        .font(.system(size: 32, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.white.opacity(0.85))
                                 }
                             }
                             
@@ -153,6 +142,13 @@ struct HomeView: View {
                                     .font(.system(size: 28, weight: .bold, design: .rounded))
                                     .foregroundColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
                                     .shadow(color: Color(red: 0.3, green: 0.72, blue: 1.0).opacity(0.5), radius: 8, x: 0, y: 0)
+                                
+                                // Countdown
+                                if nextPrayer.isUpcoming {
+                                    Text("in \(formatTimeRemaining(nextPrayer.timeRemaining))")
+                                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                                        .foregroundColor(.white.opacity(0.7))
+                                }
                             }
                         }
                         .padding(.horizontal, 24)
@@ -203,10 +199,84 @@ struct HomeView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding(.top, 60)
                     } else {
-                        LazyVStack(spacing: 16) {
-                            ForEach(prayerTimeService.prayerTimes) { prayer in
-                                PrayerCard(prayer: prayer)
+                        VStack(spacing: 16) {
+                            // Master notification controls
+                            HStack(spacing: 20) {
+                                Text("Prayer Notifications")
+                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.9))
+                                
+                                Spacer()
+                                
+                                // Master control buttons
+                                HStack(spacing: 12) {
+                                    Button(action: {
+                                        print("🔔 Master control: Setting all prayers to OFF")
+                                        showingMasterAlert = true
+                                        settingsManager.settings.setAllPrayerNotifications(to: .off)
+                                    }) {
+                                        Image(systemName: "bell.slash")
+                                            .font(.system(size: 18, weight: .medium))
+                                            .foregroundColor(.gray)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    
+                                    Button(action: {
+                                        print("🔔 Master control: Setting all prayers to VIBRATE")
+                                        settingsManager.settings.setAllPrayerNotifications(to: .vibrate)
+                                    }) {
+                                        Image(systemName: "bell.badge")
+                                            .font(.system(size: 18, weight: .medium))
+                                            .foregroundColor(.orange)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    
+                                    Button(action: {
+                                        print("🔔 Master control: Setting all prayers to SOUND")
+                                        settingsManager.settings.setAllPrayerNotifications(to: .sound)
+                                    }) {
+                                        Image(systemName: "bell.fill")
+                                            .font(.system(size: 18, weight: .medium))
+                                            .foregroundColor(.blue)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                }
                             }
+                            .padding(.horizontal, 24)
+                            .padding(.vertical, 12)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(
+                                        LinearGradient(
+                                            colors: [
+                                                Color.white.opacity(0.4),
+                                                Color.white.opacity(0.2)
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 1.5
+                                    )
+                            )
+                            .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
+                            .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
+                            .alert("Master Control", isPresented: $showingMasterAlert) {
+                                Button("OK") { }
+                            } message: {
+                                Text("Master control button tapped")
+                            }
+                            
+                            // Prayer cards list
+                            ScrollView {
+                                LazyVStack(spacing: 16) {
+                                    ForEach(prayerTimeService.prayerTimes) { prayer in
+                                        PrayerCard(prayer: prayer)
+                                    }
+                                }
+                                .padding(.horizontal, 8)
+                            }
+                            .frame(maxHeight: 400)
                         }
                         .padding(.horizontal, 24)
                     }
@@ -340,11 +410,6 @@ struct CircularPrayerCard: View {
                     .font(.system(size: 14, weight: .medium, design: .rounded))
                     .foregroundColor(Color(red: 0.78, green: 0.89, blue: 0.91).opacity(0.7)) // #C7E3E8
                 
-                // Arabic prayer name
-                Text(prayer.arabicName)
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundColor(.white.opacity(0.9))
-                
                 // English prayer name
                 Text(prayer.name)
                     .font(.system(size: 18, weight: .semibold, design: .rounded))
@@ -389,12 +454,6 @@ struct PrayerRowCard: View {
     
     var body: some View {
         HStack(spacing: 20) {
-            // Arabic prayer name
-            Text(prayer.arabicName)
-                .font(.system(size: 18, weight: .medium))
-                .foregroundColor(.white.opacity(0.7))
-                .frame(width: 60, alignment: .leading)
-            
             // English prayer name
             Text(prayer.name)
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
@@ -455,9 +514,9 @@ struct GlassAudioButton: View {
                 audioManager.stopAzan()
             } else {
                 if settingsManager.settings.useDefaultAudio {
-                    audioManager.playAzan(useDefault: true)
+                    audioManager.playAzan(useDefault: true, volume: settingsManager.settings.appVolume)
                 } else if let id = settingsManager.settings.selectedAudioFileId {
-                    audioManager.playAzan(useDefault: false, customFileId: id)
+                    audioManager.playAzan(useDefault: false, customFileId: id, volume: settingsManager.settings.appVolume)
                 }
             }
             

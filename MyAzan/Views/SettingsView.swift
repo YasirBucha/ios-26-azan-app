@@ -11,7 +11,6 @@ struct SettingsView: View {
     @State private var showingAudioManagement = false
     @State private var selectedTheme: ThemeMode = .system
     @State private var selectedAccentColor: AccentColor = .blue
-    @State private var volumeLevel: Double = 0.8
     @State private var showingTestAnimation = false
     @State private var cardsScale: [Double] = [0.95, 0.95, 0.95]
     @State private var cardsOpacity: [Double] = [0.0, 0.0, 0.0]
@@ -108,16 +107,27 @@ struct SettingsView: View {
                                 
                                 // Volume Level Slider
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text("Volume Level")
-                                        .font(.system(size: 16, weight: .regular, design: .default))
-                                        .foregroundColor(.white.opacity(0.85))
+                                    HStack {
+                                        Text("App Volume Level")
+                                            .font(.system(size: 16, weight: .regular, design: .default))
+                                            .foregroundColor(.white.opacity(0.85))
+                                        
+                                        Spacer()
+                                        
+                                        Text("\(Int(settingsManager.settings.appVolume * 100))%")
+                                            .font(.system(size: 14, weight: .medium, design: .default))
+                                            .foregroundColor(.white.opacity(0.7))
+                                    }
                                     
                                     HStack {
                                         Image(systemName: "speaker.fill")
                                             .font(.system(size: 14))
                                             .foregroundColor(.white.opacity(0.6))
                                         
-                                        Slider(value: $volumeLevel, in: 0...1)
+                                        Slider(value: Binding(
+                                            get: { Double(settingsManager.settings.appVolume) },
+                                            set: { settingsManager.settings.appVolume = Float($0) }
+                                        ), in: 0...1)
                                             .accentColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
                                             .background(
                                                 RoundedRectangle(cornerRadius: 4)
@@ -129,6 +139,11 @@ struct SettingsView: View {
                                             .font(.system(size: 14))
                                             .foregroundColor(.white.opacity(0.6))
                                     }
+                                    
+                                    Text("Controls volume for test azan playback. System notifications use device volume.")
+                                        .font(.system(size: 12, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.6))
+                                        .padding(.top, 4)
                                 }
                                 
                                 // Play Test Azan Button
@@ -141,11 +156,11 @@ struct SettingsView: View {
                                         if audioManager.isPlaying {
                                             audioManager.stopAzan()
                                         } else {
-                                            if settingsManager.settings.useDefaultAudio {
-                                                audioManager.playAzan(useDefault: true)
-                                            } else if let id = settingsManager.settings.selectedAudioFileId {
-                                                audioManager.playAzan(useDefault: false, customFileId: id)
-                                            }
+                                        if settingsManager.settings.useDefaultAudio {
+                                            audioManager.playAzan(useDefault: true, volume: settingsManager.settings.appVolume)
+                                        } else if let id = settingsManager.settings.selectedAudioFileId {
+                                            audioManager.playAzan(useDefault: false, customFileId: id, volume: settingsManager.settings.appVolume)
+                                        }
                                         }
                                     }
                                     

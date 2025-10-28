@@ -47,18 +47,28 @@ class NotificationManager: ObservableObject {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         
         for prayer in prayerTimes {
-            // Check if sound is enabled for this specific prayer
-            let soundEnabled = settings.isPrayerSoundEnabled(for: prayer.name)
+            // Get the notification state for this specific prayer
+            let notificationState = settings.getPrayerNotificationState(for: prayer.name)
             
             let content = UNMutableNotificationContent()
             content.title = "Prayer Time"
             content.body = "It's time for \(prayer.name) prayer"
             
-            // Only add sound if both global azan is enabled and this specific prayer sound is enabled
-            if settings.azanEnabled && soundEnabled {
-                content.sound = UNNotificationSound(named: UNNotificationSoundName("azan_notification.mp3"))
-            } else {
-                content.sound = nil // Silent notification
+            // Configure notification based on state
+            switch notificationState {
+            case .off:
+                // Don't schedule notification at all
+                continue
+            case .vibrate:
+                // Silent notification (no sound)
+                content.sound = nil
+            case .sound:
+                // Full notification with sound
+                if settings.azanEnabled {
+                    content.sound = UNNotificationSound(named: UNNotificationSoundName("azan_notification.mp3"))
+                } else {
+                    content.sound = UNNotificationSound.default
+                }
             }
             
             content.categoryIdentifier = "PRAYER_NOTIFICATION"

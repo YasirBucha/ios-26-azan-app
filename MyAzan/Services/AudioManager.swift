@@ -64,7 +64,7 @@ class AudioManager: NSObject, ObservableObject {
         }
     }
     
-    func playAzan(useDefault: Bool = true, customFileId: UUID? = nil) {
+    func playAzan(useDefault: Bool = true, customFileId: UUID? = nil, volume: Float = 1.0) {
         guard UserDefaults.standard.bool(forKey: "azanEnabled") else { 
             print("❌ Azan is disabled in settings")
             return 
@@ -95,7 +95,7 @@ class AudioManager: NSObject, ObservableObject {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
             audioPlayer?.delegate = self
-            audioPlayer?.volume = 1.0
+            audioPlayer?.volume = volume
             
             let success = audioPlayer?.play() ?? false
             print("🎵 Audio player created and play() called - success: \(success)")
@@ -121,7 +121,7 @@ class AudioManager: NSObject, ObservableObject {
     }
     
     // MARK: - Preview Functions
-    func previewAudio(useDefault: Bool = true, customFileId: UUID? = nil) {
+    func previewAudio(useDefault: Bool = true, customFileId: UUID? = nil, volume: Float = 1.0) {
         // Stop any currently playing audio
         stopAzan()
         activateAudioSessionIfNeeded()
@@ -146,6 +146,7 @@ class AudioManager: NSObject, ObservableObject {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
             audioPlayer?.delegate = self
+            audioPlayer?.volume = volume
             audioPlayer?.play()
             
             DispatchQueue.main.async {
