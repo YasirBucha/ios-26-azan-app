@@ -6,7 +6,7 @@ import EventKit
 @MainActor
 class NotificationManager: ObservableObject {
     @Published var authorizationStatus: UNAuthorizationStatus = .notDetermined
-    private let calendarManager = CalendarManager()
+    private let eventStore = EKEventStore()
     
     init() {
         setupNotificationCategories()
@@ -79,7 +79,7 @@ class NotificationManager: ObservableObject {
                 content.sound = nil
             case .sound:
                 // Check if we should use vibration only during meetings
-                if settings.vibrationOnlyDuringMeetings && calendarManager.checkIfInMeetingAtTime(prayer.time) {
+                if settings.vibrationOnlyDuringMeetings && checkIfInMeetingAtTime(prayer.time) {
                     // Silent notification (vibration only) during meetings
                     content.sound = nil
                 } else {
@@ -122,7 +122,7 @@ class NotificationManager: ObservableObject {
             content.body = "\(prayer.name) prayer in 5 minutes"
             
             // Check if we should use vibration only during meetings
-            if settings.vibrationOnlyDuringMeetings && calendarManager.checkIfInMeetingAtTime(reminderTime) {
+            if settings.vibrationOnlyDuringMeetings && checkIfInMeetingAtTime(reminderTime) {
                 // Silent notification (vibration only) during meetings
                 content.sound = nil
             } else {
@@ -145,5 +145,31 @@ class NotificationManager: ObservableObject {
     
     func cancelAllNotifications() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+    }
+    
+    // MARK: - Calendar Integration Methods
+    private func checkIfInMeetingAtTime(_ date: Date) -> Bool {
+        guard EKEventStore.authorizationStatus(for: .event) == .fullAccess else { return false }
+        
+        // Create a predicate to find events at the given time
+        let predicate = eventStore.predicateForEvents(
+            withStart: date,
+            end: date,
+            calendars: nil
+        )
+        
+        let events = eventStore.events(matching: predicate)
+        
+        // Check if any event is happening at the given time
+        for event in events {
+            if event.startDate <= date && event.endDate >= date {
+                // Check if this looks like a meeting
+                if !event.isAllDay && (event.hasAttendees || event.title.lowercased().contains("meeting") || event.title.lowercased().contains("call")) {
+                    return true
+                }
+            }
+        }
+        
+        return false
     }
 }

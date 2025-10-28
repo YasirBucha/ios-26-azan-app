@@ -120,6 +120,11 @@ class AudioManager: NSObject, ObservableObject {
         deactivateAudioSessionIfPossible()
     }
     
+    func updateVolume(_ volume: Float) {
+        audioPlayer?.volume = volume
+        print("🔊 Updated audio volume to: \(volume)")
+    }
+    
     // MARK: - Preview Functions
     func previewAudio(useDefault: Bool = true, customFileId: UUID? = nil, volume: Float = 1.0) {
         // Stop any currently playing audio

@@ -13,6 +13,7 @@ struct SettingsView: View {
     @State private var selectedTheme: ThemeMode = .system
     @State private var selectedAccentColor: AccentColor = .blue
     @State private var cardsScale: [Double] = [0.95, 0.95, 0.95]
+    @State private var calendarAuthorizationStatus: EKAuthorizationStatus = .notDetermined
     @State private var cardsOpacity: [Double] = [0.0, 0.0, 0.0]
     @State private var cardsBlur: [Double] = [0.0, 0.0, 0.0]
     @State private var contentOffset: Double = 100
@@ -116,47 +117,49 @@ struct SettingsView: View {
                                     }
                                 }
                                 
-                                // Volume Level Slider
-                                VStack(alignment: .leading, spacing: 8) {
-                                    HStack {
-                                        Text("App Volume Level")
-                                            .font(.system(size: 16, weight: .regular, design: .default))
-                                            .foregroundColor(.white.opacity(0.85))
-                                        
-                                        Spacer()
-                                        
-                                        Text("\(Int(settingsManager.settings.appVolume * 100))%")
-                                            .font(.system(size: 14, weight: .medium, design: .default))
-                                            .foregroundColor(.white.opacity(0.7))
-                                    }
+                                // Volume Level Row
+                                HStack {
+                                    Text("App Volume Level")
+                                        .font(.system(size: 16, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.85))
                                     
-                                    HStack {
-                                        Image(systemName: "speaker.fill")
-                                            .font(.system(size: 14))
-                                            .foregroundColor(.white.opacity(0.6))
-                                        
-                                        Slider(value: Binding(
-                                            get: { Double(settingsManager.settings.appVolume) },
-                                            set: { settingsManager.settings.appVolume = Float($0) }
-                                        ), in: 0...1)
-                                            .accentColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 4)
-                                                    .fill(Color.white.opacity(0.1))
-                                                    .frame(height: 6)
-                                            )
-                                        
-                                        Image(systemName: "speaker.wave.3.fill")
-                                            .font(.system(size: 14))
-                                            .foregroundColor(.white.opacity(0.6))
-                                    }
+                                    Spacer()
                                     
-                                    Text("Controls volume for azan playback. System notifications use device volume.")
-                                        .font(.system(size: 12, weight: .regular, design: .default))
+                                    Text("\(Int(settingsManager.settings.appVolume * 100))%")
+                                        .font(.system(size: 14, weight: .medium, design: .default))
+                                        .foregroundColor(.white.opacity(0.7))
+                                }
+                                
+                                // Volume Slider
+                                HStack {
+                                    Image(systemName: "speaker.fill")
+                                        .font(.system(size: 14))
                                         .foregroundColor(.white.opacity(0.6))
-                                        .padding(.top, 4)
+                                    
+                                    Slider(value: Binding(
+                                        get: { Double(settingsManager.settings.appVolume) },
+                                        set: { newValue in
+                                            settingsManager.settings.appVolume = Float(newValue)
+                                            // Update volume of currently playing audio
+                                            audioManager.updateVolume(Float(newValue))
+                                        }
+                                    ), in: 0...1)
+                                        .accentColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 4)
+                                                .fill(Color.white.opacity(0.1))
+                                                .frame(height: 6)
+                                        )
+                                    
+                                    Image(systemName: "speaker.wave.3.fill")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.white.opacity(0.6))
                                 }
-                                }
+                                
+                                // Volume Description
+                                Text("Controls volume for azan playback. System notifications use device volume.")
+                                    .font(.system(size: 12, weight: .regular, design: .default))
+                                    .foregroundColor(.white.opacity(0.6))
                             }
                             .padding(.horizontal, 20)
                             .padding(.vertical, 20)
@@ -225,7 +228,13 @@ struct SettingsView: View {
                                     Spacer()
                                     Toggle(isOn: Binding(
                                         get: { settingsManager.settings.vibrationOnlyDuringMeetings },
-                                        set: { settingsManager.updateVibrationOnlyDuringMeetings($0) }
+                                        set: { newValue in
+                                            if newValue {
+                                                requestCalendarPermission()
+                                            } else {
+                                                settingsManager.updateVibrationOnlyDuringMeetings(false)
+                                            }
+                                        }
                                     )) {
                                         EmptyView()
                                     }
@@ -271,6 +280,7 @@ struct SettingsView: View {
                 .offset(y: contentOffset)
                 .onAppear {
                     startSettingsEntranceAnimation()
+                    checkCalendarAuthorization()
                 }
             }
             .sheet(isPresented: $showingAudioManagement) {
@@ -300,6 +310,31 @@ struct SettingsView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             let impactFeedback = UIImpactFeedbackGenerator(style: .light)
             impactFeedback.impactOccurred()
+        }
+    }
+    
+    private func checkCalendarAuthorization() {
+        calendarAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
+    }
+    
+    private func requestCalendarPermission() {
+        let eventStore = EKEventStore()
+        
+        Task {
+            do {
+                let granted = try await eventStore.requestFullAccessToEvents()
+                await MainActor.run {
+                    calendarAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
+                    if granted {
+                        settingsManager.updateVibrationOnlyDuringMeetings(true)
+                    }
+                }
+            } catch {
+                print("Failed to request calendar access: \(error)")
+                await MainActor.run {
+                    calendarAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
+                }
+            }
         }
     }
 }

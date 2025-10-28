@@ -30,5 +30,7 @@
 	<string>My Azan needs your location to calculate accurate prayer times based on your exact location.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>My Azan needs your location even when you're not using the app to deliver timely prayer time notifications.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>My Azan needs access to your calendar to detect when you're in meetings and automatically switch to vibration-only mode for prayer notifications.</string>
 </dict>
 </plist>
