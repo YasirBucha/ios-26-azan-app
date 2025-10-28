@@ -109,7 +109,7 @@ class AppSettings: ObservableObject {
     }
     
     init() {
-        self.azanEnabled = UserDefaults.standard.bool(forKey: "azanEnabled")
+        self.azanEnabled = UserDefaults.standard.object(forKey: "azanEnabled") as? Bool ?? true
         self.useDefaultAudio = UserDefaults.standard.object(forKey: "useDefaultAudio") as? Bool ?? true
         
         if let idString = UserDefaults.standard.string(forKey: "selectedAudioFileId"),
@@ -117,9 +117,9 @@ class AppSettings: ObservableObject {
             self.selectedAudioFileId = id
         }
         
-        self.liveActivityEnabled = UserDefaults.standard.bool(forKey: "liveActivityEnabled")
-        self.reminderEnabled = UserDefaults.standard.bool(forKey: "reminderEnabled")
-        self.vibrationOnlyDuringMeetings = UserDefaults.standard.bool(forKey: "vibrationOnlyDuringMeetings")
+        self.liveActivityEnabled = UserDefaults.standard.object(forKey: "liveActivityEnabled") as? Bool ?? true
+        self.reminderEnabled = UserDefaults.standard.object(forKey: "reminderEnabled") as? Bool ?? true
+        self.vibrationOnlyDuringMeetings = UserDefaults.standard.object(forKey: "vibrationOnlyDuringMeetings") as? Bool ?? false
         
         // Initialize app volume (default to 0.8)
         self.appVolume = UserDefaults.standard.object(forKey: "appVolume") as? Float ?? 0.8
@@ -134,18 +134,20 @@ class AppSettings: ObservableObject {
     
     // Helper methods for bulk operations
     func setAllPrayerNotifications(to state: PrayerNotificationState) {
+        print("🔄 Setting all prayer notifications to: \(state.rawValue)")
         fajrNotificationState = state
         dhuhrNotificationState = state
         asrNotificationState = state
         maghribNotificationState = state
         ishaNotificationState = state
+        print("✅ All prayer notifications updated to: \(state.rawValue)")
     }
     
     func getPrayerNotificationState(for prayerName: String) -> PrayerNotificationState {
         switch prayerName.lowercased() {
         case "fajr":
             return fajrNotificationState
-        case "dhuhr":
+        case "dhuhr", "zuhr":
             return dhuhrNotificationState
         case "asr":
             return asrNotificationState
@@ -162,7 +164,7 @@ class AppSettings: ObservableObject {
         switch prayerName.lowercased() {
         case "fajr":
             fajrNotificationState = state
-        case "dhuhr":
+        case "dhuhr", "zuhr":
             dhuhrNotificationState = state
         case "asr":
             asrNotificationState = state

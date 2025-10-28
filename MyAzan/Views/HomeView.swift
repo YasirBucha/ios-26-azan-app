@@ -16,6 +16,9 @@ struct HomeView: View {
     @State private var rippleOpacity: Double = 0.0
     @State private var rippleRadius: Double = 20.0
     @State private var shimmerOffset: Double = -200.0
+    @State private var offButtonScale: Double = 1.0
+    @State private var vibrateButtonScale: Double = 1.0
+    @State private var soundButtonScale: Double = 1.0
     @Namespace private var liquidBackground
     
     var body: some View {
@@ -92,10 +95,16 @@ struct HomeView: View {
                                     .padding(.top, 20)
                                     .padding(.leading, -14)
 
-                                Text("\(locationManager.cityName) | \(Date().formatted(date: .abbreviated, time: .omitted))")
-                                    .font(.system(size: 14, weight: .medium, design: .rounded))
-                                    .foregroundColor(.white.opacity(0.7))
-                                    .padding(.top, -16)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(locationManager.cityName)
+                                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                                        .foregroundColor(.white.opacity(0.9))
+                                    
+                                    Text(Date().formatted(date: .abbreviated, time: .omitted))
+                                        .font(.system(size: 12, weight: .regular, design: .rounded))
+                                        .foregroundColor(.white.opacity(0.6))
+                                }
+                                .padding(.top, -16)
                             }
                             
                             // Right: Settings button
@@ -205,33 +214,100 @@ struct HomeView: View {
                                 
                                 // Master control buttons
                                 HStack(spacing: 12) {
+                                    let masterState = getMasterNotificationState()
                                     Button(action: {
+                                        // Haptic feedback
+                                        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                                        impactFeedback.impactOccurred()
+                                        
+                                        // Visual feedback
+                                        withAnimation(.easeInOut(duration: 0.1)) {
+                                            offButtonScale = 0.8
+                                        }
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            withAnimation(.easeInOut(duration: 0.1)) {
+                                                offButtonScale = 1.0
+                                            }
+                                        }
+                                        
+                                        print("🔔 Master OFF button tapped")
                                         settingsManager.settings.setAllPrayerNotifications(to: .off)
                                     }) {
                                         Image(systemName: "bell.slash")
                                             .font(.system(size: 18, weight: .medium))
-                                            .foregroundColor(.gray)
+                                            .foregroundColor(masterState == .off ? .gray : .gray.opacity(0.5))
+                                            .overlay(
+                                                masterState == .off ? 
+                                                Circle()
+                                                    .stroke(.gray.opacity(0.8), lineWidth: 2)
+                                                    .frame(width: 32, height: 32) : nil
+                                            )
                                     }
                                     .buttonStyle(PlainButtonStyle())
+                                    .scaleEffect(offButtonScale)
                                     
                                     Button(action: {
+                                        // Haptic feedback
+                                        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                                        impactFeedback.impactOccurred()
+                                        
+                                        // Visual feedback
+                                        withAnimation(.easeInOut(duration: 0.1)) {
+                                            vibrateButtonScale = 0.8
+                                        }
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            withAnimation(.easeInOut(duration: 0.1)) {
+                                                vibrateButtonScale = 1.0
+                                            }
+                                        }
+                                        
+                                        print("🔔 Master VIBRATE button tapped")
                                         settingsManager.settings.setAllPrayerNotifications(to: .vibrate)
                                     }) {
                                         Image(systemName: "bell.badge")
-                                            .font(.system(size: 22, weight: .bold))
-                                            .foregroundColor(.orange)
-                                            .shadow(color: .orange.opacity(0.5), radius: 4, x: 0, y: 0)
+                                            .font(.system(size: 20, weight: .bold))
+                                            .foregroundColor(masterState == .vibrate ? .orange : .orange.opacity(0.5))
+                                            .shadow(color: masterState == .vibrate ? .orange.opacity(0.8) : .orange.opacity(0.4), radius: 6, x: 0, y: 0)
+                                            .overlay(
+                                                masterState == .vibrate ? 
+                                                Circle()
+                                                    .stroke(.orange.opacity(0.8), lineWidth: 2)
+                                                    .frame(width: 32, height: 32) : nil
+                                            )
                                     }
                                     .buttonStyle(PlainButtonStyle())
+                                    .scaleEffect(vibrateButtonScale)
                                     
                                     Button(action: {
+                                        // Haptic feedback
+                                        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                                        impactFeedback.impactOccurred()
+                                        
+                                        // Visual feedback
+                                        withAnimation(.easeInOut(duration: 0.1)) {
+                                            soundButtonScale = 0.8
+                                        }
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            withAnimation(.easeInOut(duration: 0.1)) {
+                                                soundButtonScale = 1.0
+                                            }
+                                        }
+                                        
+                                        print("🔔 Master SOUND button tapped")
                                         settingsManager.settings.setAllPrayerNotifications(to: .sound)
                                     }) {
                                         Image(systemName: "bell.fill")
                                             .font(.system(size: 18, weight: .medium))
-                                            .foregroundColor(.blue)
+                                            .foregroundColor(masterState == .sound ? .blue : .blue.opacity(0.5))
+                                            .overlay(
+                                                masterState == .sound ? 
+                                                Circle()
+                                                    .stroke(.blue.opacity(0.8), lineWidth: 2)
+                                                    .frame(width: 32, height: 32) : nil
+                                            )
                                     }
                                     .buttonStyle(PlainButtonStyle())
+                                    .scaleEffect(soundButtonScale)
                                 }
                             }
                             .padding(.horizontal, 24)
@@ -339,6 +415,20 @@ struct HomeView: View {
         } else {
             return "\(minutes)m"
         }
+    }
+    
+    private func getMasterNotificationState() -> PrayerNotificationState? {
+        let prayerStates = prayerTimeService.prayerTimes.map { prayer in
+            settingsManager.settings.getPrayerNotificationState(for: prayer.name)
+        }
+        
+        // If all prayers have the same state, return that state
+        if let firstState = prayerStates.first, prayerStates.allSatisfy({ $0 == firstState }) {
+            return firstState
+        }
+        
+        // If prayers have mixed states, return nil (no master state)
+        return nil
     }
     
     private func iconForPrayer(_ prayerName: String) -> String {

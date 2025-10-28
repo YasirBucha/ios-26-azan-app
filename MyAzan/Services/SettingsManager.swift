@@ -7,7 +7,13 @@ class SettingsManager: ObservableObject {
     
     init() {
         // Initialize with default settings
+        // Forward AppSettings changes to SettingsManager
+        settings.objectWillChange.sink { [weak self] _ in
+            self?.objectWillChange.send()
+        }.store(in: &cancellables)
     }
+    
+    private var cancellables = Set<AnyCancellable>()
     
     func updateAzanEnabled(_ enabled: Bool) {
         settings.azanEnabled = enabled

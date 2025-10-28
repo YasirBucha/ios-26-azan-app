@@ -37,6 +37,7 @@ struct PrayerCard: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var settingsManager: SettingsManager
     @State private var cardScale: Double = 1.0
+    @State private var buttonScale: Double = 1.0
     
     var body: some View {
         LiquidGlassBackground {
@@ -60,6 +61,21 @@ struct PrayerCard: View {
                 
                 // Bell toggle button
                 Button(action: {
+                    // Haptic feedback
+                    let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                    impactFeedback.impactOccurred()
+                    
+                    // Visual feedback
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        buttonScale = 0.8
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            buttonScale = 1.0
+                        }
+                    }
+                    
+                    print("🔔 Bell button tapped for \(prayer.name)")
                     cycleNotificationState()
                 }) {
                     Image(systemName: currentNotificationState.iconName)
@@ -67,25 +83,18 @@ struct PrayerCard: View {
                         .foregroundColor(notificationStateColor)
                 }
                 .buttonStyle(PlainButtonStyle())
+                .scaleEffect(buttonScale)
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
         }
         .scaleEffect(cardScale)
-        .onTapGesture {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                cardScale = 0.97
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    cardScale = 1.0
-                }
-            }
-        }
     }
     
     private var currentNotificationState: PrayerNotificationState {
-        settingsManager.settings.getPrayerNotificationState(for: prayer.name)
+        let state = settingsManager.settings.getPrayerNotificationState(for: prayer.name)
+        print("🔔 PrayerCard for \(prayer.name) showing state: \(state.rawValue)")
+        return state
     }
     
     private var notificationStateColor: Color {
@@ -102,9 +111,12 @@ struct PrayerCard: View {
     private func cycleNotificationState() {
         let currentState = currentNotificationState
         let allStates = PrayerNotificationState.allCases
+        print("🔄 Cycling notification state for \(prayer.name) from \(currentState.rawValue)")
+        
         if let currentIndex = allStates.firstIndex(of: currentState) {
             let nextIndex = (currentIndex + 1) % allStates.count
             let nextState = allStates[nextIndex]
+            print("🔄 Setting \(prayer.name) to \(nextState.rawValue)")
             settingsManager.settings.setPrayerNotificationState(for: prayer.name, to: nextState)
         }
     }
