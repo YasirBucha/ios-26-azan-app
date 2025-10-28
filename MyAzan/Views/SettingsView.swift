@@ -1,4 +1,5 @@
 import SwiftUI
+import EventKit
 
 struct SettingsView: View {
     @EnvironmentObject var settingsManager: SettingsManager
@@ -11,7 +12,6 @@ struct SettingsView: View {
     @State private var showingAudioManagement = false
     @State private var selectedTheme: ThemeMode = .system
     @State private var selectedAccentColor: AccentColor = .blue
-    @State private var showingTestAnimation = false
     @State private var cardsScale: [Double] = [0.95, 0.95, 0.95]
     @State private var cardsOpacity: [Double] = [0.0, 0.0, 0.0]
     @State private var cardsBlur: [Double] = [0.0, 0.0, 0.0]
@@ -91,18 +91,29 @@ struct SettingsView: View {
                                     .font(.system(size: 18, weight: .semibold, design: .default))
                                     .foregroundColor(.white.opacity(0.9))
                                 
-                                // Azan Voice Dropdown
+                                // Azan Voice Play/Pause Toggle
                                 HStack {
                                     Text("Azan Voice")
                                         .font(.system(size: 16, weight: .regular, design: .default))
                                         .foregroundColor(.white.opacity(0.85))
                                     Spacer()
-                                    Text(audioFileManager.getDefaultAudioName())
-                                        .font(.system(size: 16, weight: .medium, design: .default))
-                                        .foregroundColor(.white.opacity(0.7))
-                                    Image(systemName: "chevron.down")
-                                        .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.white.opacity(0.6))
+                                    Button(action: {
+                                        withAnimation(.easeInOut(duration: 0.2)) {
+                                            if audioManager.isPlaying {
+                                                audioManager.stopAzan()
+                                            } else {
+                                                if settingsManager.settings.useDefaultAudio {
+                                                    audioManager.playAzan(useDefault: true, volume: settingsManager.settings.appVolume)
+                                                } else if let id = settingsManager.settings.selectedAudioFileId {
+                                                    audioManager.playAzan(useDefault: false, customFileId: id, volume: settingsManager.settings.appVolume)
+                                                }
+                                            }
+                                        }
+                                    }) {
+                                        Image(systemName: audioManager.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                                            .font(.system(size: 24, weight: .medium))
+                                            .foregroundColor(.white.opacity(0.8))
+                                    }
                                 }
                                 
                                 // Volume Level Slider
@@ -140,53 +151,11 @@ struct SettingsView: View {
                                             .foregroundColor(.white.opacity(0.6))
                                     }
                                     
-                                    Text("Controls volume for test azan playback. System notifications use device volume.")
+                                    Text("Controls volume for azan playback. System notifications use device volume.")
                                         .font(.system(size: 12, weight: .regular, design: .default))
                                         .foregroundColor(.white.opacity(0.6))
                                         .padding(.top, 4)
                                 }
-                                
-                                // Play Test Azan Button
-                                Button(action: {
-                                    withAnimation(.easeInOut(duration: 0.3)) {
-                                        showingTestAnimation.toggle()
-                                    }
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                        if audioManager.isPlaying {
-                                            audioManager.stopAzan()
-                                        } else {
-                                        if settingsManager.settings.useDefaultAudio {
-                                            audioManager.playAzan(useDefault: true, volume: settingsManager.settings.appVolume)
-                                        } else if let id = settingsManager.settings.selectedAudioFileId {
-                                            audioManager.playAzan(useDefault: false, customFileId: id, volume: settingsManager.settings.appVolume)
-                                        }
-                                        }
-                                    }
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        withAnimation(.easeInOut(duration: 0.3)) {
-                                            showingTestAnimation = false
-                                        }
-                                    }
-                                }) {
-                                    HStack {
-                                        Image(systemName: audioManager.isPlaying ? "stop.circle.fill" : "play.circle.fill")
-                                        Text("Play Test Azan")
-                                    }
-                                    .font(.system(size: 15, weight: .medium, design: .default))
-                                    .foregroundColor(.white.opacity(0.9))
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(.ultraThinMaterial)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 12)
-                                                    .stroke(.white.opacity(0.2), lineWidth: 1)
-                                            )
-                                    )
-                                    .scaleEffect(showingTestAnimation ? 0.95 : 1.0)
                                 }
                             }
                             .padding(.horizontal, 20)
@@ -232,15 +201,31 @@ struct SettingsView: View {
                                     .toggleStyle(.automatic)
                                 }
                                 
-                                // Vibration Only Toggle
+                                // Live Activity Toggle
                                 HStack {
-                                    Text("Vibration Only During Meetings")
+                                    Text("Live Activity")
                                         .font(.system(size: 16, weight: .regular, design: .default))
                                         .foregroundColor(.white.opacity(0.85))
                                     Spacer()
                                     Toggle(isOn: Binding(
                                         get: { settingsManager.settings.liveActivityEnabled },
                                         set: { settingsManager.updateLiveActivityEnabled($0) }
+                                    )) {
+                                        EmptyView()
+                                    }
+                                    .labelsHidden()
+                                    .toggleStyle(.automatic)
+                                }
+                                
+                                // Vibration Only During Meetings Toggle
+                                HStack {
+                                    Text("Vibration Only During Meetings")
+                                        .font(.system(size: 16, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.85))
+                                    Spacer()
+                                    Toggle(isOn: Binding(
+                                        get: { settingsManager.settings.vibrationOnlyDuringMeetings },
+                                        set: { settingsManager.updateVibrationOnlyDuringMeetings($0) }
                                     )) {
                                         EmptyView()
                                     }

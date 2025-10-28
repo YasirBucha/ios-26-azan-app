@@ -16,7 +16,6 @@ struct HomeView: View {
     @State private var rippleOpacity: Double = 0.0
     @State private var rippleRadius: Double = 20.0
     @State private var shimmerOffset: Double = -200.0
-    @State private var showingMasterAlert = false
     @Namespace private var liquidBackground
     
     var body: some View {
@@ -71,15 +70,6 @@ struct HomeView: View {
                 
                 VStack(spacing: 32) {
                     
-                    // Settings Button (Back Button Style)
-                    HStack {
-                        Spacer()
-                        NavigationLink(destination: SettingsView()) {
-                            LiquidGlassIconButton(systemName: "gearshape.fill")
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 50)
                     
                     // Custom Row Section
                     VStack(spacing: 8) {
@@ -92,7 +82,7 @@ struct HomeView: View {
                                 .clipped()
                                 .clipShape(Circle())
                             
-                            // Right: Rectangle image + location/date below
+                            // Middle: Rectangle image + location/date below
                             VStack(alignment: .leading, spacing: 8) {
                                 Image("RectangleImage")
                                     .resizable()
@@ -106,6 +96,11 @@ struct HomeView: View {
                                     .font(.system(size: 14, weight: .medium, design: .rounded))
                                     .foregroundColor(.white.opacity(0.7))
                                     .padding(.top, -16)
+                            }
+                            
+                            // Right: Settings button
+                            NavigationLink(destination: SettingsView()) {
+                                LiquidGlassIconButton(systemName: "gearshape.fill")
                             }
                         }
                         .padding(.horizontal, 16)
@@ -211,8 +206,6 @@ struct HomeView: View {
                                 // Master control buttons
                                 HStack(spacing: 12) {
                                     Button(action: {
-                                        print("🔔 Master control: Setting all prayers to OFF")
-                                        showingMasterAlert = true
                                         settingsManager.settings.setAllPrayerNotifications(to: .off)
                                     }) {
                                         Image(systemName: "bell.slash")
@@ -222,17 +215,16 @@ struct HomeView: View {
                                     .buttonStyle(PlainButtonStyle())
                                     
                                     Button(action: {
-                                        print("🔔 Master control: Setting all prayers to VIBRATE")
                                         settingsManager.settings.setAllPrayerNotifications(to: .vibrate)
                                     }) {
                                         Image(systemName: "bell.badge")
-                                            .font(.system(size: 18, weight: .medium))
+                                            .font(.system(size: 22, weight: .bold))
                                             .foregroundColor(.orange)
+                                            .shadow(color: .orange.opacity(0.5), radius: 4, x: 0, y: 0)
                                     }
                                     .buttonStyle(PlainButtonStyle())
                                     
                                     Button(action: {
-                                        print("🔔 Master control: Setting all prayers to SOUND")
                                         settingsManager.settings.setAllPrayerNotifications(to: .sound)
                                     }) {
                                         Image(systemName: "bell.fill")
@@ -261,11 +253,6 @@ struct HomeView: View {
                             )
                             .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
                             .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
-                            .alert("Master Control", isPresented: $showingMasterAlert) {
-                                Button("OK") { }
-                            } message: {
-                                Text("Master control button tapped")
-                            }
                             
                             // Prayer cards list
                             ScrollView {
@@ -280,9 +267,6 @@ struct HomeView: View {
                         }
                         .padding(.horizontal, 24)
                     }
-                    
-                    
-                    Spacer(minLength: 100)
                 }
                 .safeAreaInset(edge: .top) {
                     Color.clear.frame(height: 0)

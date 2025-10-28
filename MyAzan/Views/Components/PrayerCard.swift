@@ -37,7 +37,6 @@ struct PrayerCard: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var settingsManager: SettingsManager
     @State private var cardScale: Double = 1.0
-    @State private var showingAlert = false
     
     var body: some View {
         LiquidGlassBackground {
@@ -61,8 +60,6 @@ struct PrayerCard: View {
                 
                 // Bell toggle button
                 Button(action: {
-                    print("🔔 Bell button tapped for \(prayer.name)")
-                    showingAlert = true
                     cycleNotificationState()
                 }) {
                     Image(systemName: currentNotificationState.iconName)
@@ -70,11 +67,6 @@ struct PrayerCard: View {
                         .foregroundColor(notificationStateColor)
                 }
                 .buttonStyle(PlainButtonStyle())
-                .alert("Bell Tapped", isPresented: $showingAlert) {
-                    Button("OK") { }
-                } message: {
-                    Text("Bell button tapped for \(prayer.name)")
-                }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
@@ -110,12 +102,9 @@ struct PrayerCard: View {
     private func cycleNotificationState() {
         let currentState = currentNotificationState
         let allStates = PrayerNotificationState.allCases
-        print("🔄 Cycling notification state for \(prayer.name) from \(currentState.rawValue)")
-        
         if let currentIndex = allStates.firstIndex(of: currentState) {
             let nextIndex = (currentIndex + 1) % allStates.count
             let nextState = allStates[nextIndex]
-            print("🔄 Setting \(prayer.name) to \(nextState.rawValue)")
             settingsManager.settings.setPrayerNotificationState(for: prayer.name, to: nextState)
         }
     }

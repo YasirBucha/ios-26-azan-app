@@ -65,6 +65,12 @@ class AppSettings: ObservableObject {
         }
     }
     
+    @Published var vibrationOnlyDuringMeetings: Bool {
+        didSet {
+            UserDefaults.standard.set(vibrationOnlyDuringMeetings, forKey: "vibrationOnlyDuringMeetings")
+        }
+    }
+    
     @Published var appVolume: Float {
         didSet {
             UserDefaults.standard.set(appVolume, forKey: "appVolume")
@@ -113,6 +119,7 @@ class AppSettings: ObservableObject {
         
         self.liveActivityEnabled = UserDefaults.standard.bool(forKey: "liveActivityEnabled")
         self.reminderEnabled = UserDefaults.standard.bool(forKey: "reminderEnabled")
+        self.vibrationOnlyDuringMeetings = UserDefaults.standard.bool(forKey: "vibrationOnlyDuringMeetings")
         
         // Initialize app volume (default to 0.8)
         self.appVolume = UserDefaults.standard.object(forKey: "appVolume") as? Float ?? 0.8

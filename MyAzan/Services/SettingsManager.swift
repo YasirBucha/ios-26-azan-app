@@ -29,6 +29,10 @@ class SettingsManager: ObservableObject {
         settings.reminderEnabled = enabled
     }
     
+    func updateVibrationOnlyDuringMeetings(_ enabled: Bool) {
+        settings.vibrationOnlyDuringMeetings = enabled
+    }
+    
     // Individual prayer notification management
     func updateFajrNotificationState(_ state: PrayerNotificationState) {
         settings.fajrNotificationState = state

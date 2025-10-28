@@ -1,12 +1,15 @@
 import Foundation
 import UserNotifications
 import Combine
+import EventKit
 
 @MainActor
 class NotificationManager: ObservableObject {
     @Published var authorizationStatus: UNAuthorizationStatus = .notDetermined
+    private let calendarManager = CalendarManager()
     
     init() {
+        setupNotificationCategories()
         // Defer heavy authorization check
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             self.checkAuthorizationStatus()
@@ -24,11 +27,23 @@ class NotificationManager: ObservableObject {
             DispatchQueue.main.async {
                 if granted {
                     self?.authorizationStatus = .authorized
+                    self?.setupNotificationCategories()
                 } else {
                     self?.authorizationStatus = .denied
                 }
             }
         }
+    }
+    
+    private func setupNotificationCategories() {
+        let prayerCategory = UNNotificationCategory(
+            identifier: "PRAYER_NOTIFICATION",
+            actions: [],
+            intentIdentifiers: [],
+            options: [.customDismissAction]
+        )
+        
+        UNUserNotificationCenter.current().setNotificationCategories([prayerCategory])
     }
     
     private func checkAuthorizationStatus() {
@@ -63,11 +78,17 @@ class NotificationManager: ObservableObject {
                 // Silent notification (no sound)
                 content.sound = nil
             case .sound:
-                // Full notification with sound
-                if settings.azanEnabled {
-                    content.sound = UNNotificationSound(named: UNNotificationSoundName("azan_notification.mp3"))
+                // Check if we should use vibration only during meetings
+                if settings.vibrationOnlyDuringMeetings && calendarManager.checkIfInMeetingAtTime(prayer.time) {
+                    // Silent notification (vibration only) during meetings
+                    content.sound = nil
                 } else {
-                    content.sound = UNNotificationSound.default
+                    // Full notification with sound
+                    if settings.azanEnabled {
+                        content.sound = UNNotificationSound(named: UNNotificationSoundName("azan_notification.mp3"))
+                    } else {
+                        content.sound = UNNotificationSound.default
+                    }
                 }
             }
             
@@ -99,7 +120,14 @@ class NotificationManager: ObservableObject {
             let content = UNMutableNotificationContent()
             content.title = "Prayer Reminder"
             content.body = "\(prayer.name) prayer in 5 minutes"
-            content.sound = UNNotificationSound.default
+            
+            // Check if we should use vibration only during meetings
+            if settings.vibrationOnlyDuringMeetings && calendarManager.checkIfInMeetingAtTime(reminderTime) {
+                // Silent notification (vibration only) during meetings
+                content.sound = nil
+            } else {
+                content.sound = UNNotificationSound.default
+            }
             
             let calendar = Calendar.current
             let components = calendar.dateComponents([.hour, .minute], from: reminderTime)
