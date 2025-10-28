@@ -108,7 +108,7 @@ struct HomeView: View {
                             }
                             
                             // Right: Settings button
-                            NavigationLink(destination: SettingsView()) {
+                            NavigationLink(destination: SettingsView().environmentObject(settingsManager)) {
                                 LiquidGlassIconButton(systemName: "gearshape.fill")
                             }
                         }

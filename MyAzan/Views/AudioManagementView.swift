@@ -44,7 +44,11 @@ struct AudioManagementView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Done") { dismiss() }
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.primary)
+                    }
                 }
             }
             .fileImporter(

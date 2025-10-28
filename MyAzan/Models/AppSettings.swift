@@ -29,6 +29,94 @@ enum PrayerNotificationState: String, CaseIterable {
     }
 }
 
+enum LiveActivityDesign: String, CaseIterable {
+    case liquidGlass = "liquid_glass"
+    case minimalist = "minimalist"
+    case islamicArt = "islamic_art"
+    case timeline = "timeline"
+    case circular = "circular"
+    
+    var displayName: String {
+        switch self {
+        case .liquidGlass: return "Liquid Glass"
+        case .minimalist: return "Minimalist"
+        case .islamicArt: return "Islamic Art"
+        case .timeline: return "Timeline"
+        case .circular: return "Circular Progress"
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .liquidGlass: return "Modern, premium with rich animations"
+        case .minimalist: return "Clean, accessible, battery-friendly"
+        case .islamicArt: return "Traditional, culturally authentic"
+        case .timeline: return "Information-dense, shows all prayers"
+        case .circular: return "Unique, visually engaging circular layout"
+        }
+    }
+    
+    var iconName: String {
+        switch self {
+        case .liquidGlass: return "sparkles"
+        case .minimalist: return "textformat"
+        case .islamicArt: return "moon.stars"
+        case .timeline: return "list.bullet"
+        case .circular: return "circle.grid.3x3"
+        }
+    }
+    
+    var accentColor: String {
+        switch self {
+        case .liquidGlass: return "blue"
+        case .minimalist: return "blue"
+        case .islamicArt: return "orange"
+        case .timeline: return "green"
+        case .circular: return "cyan"
+        }
+    }
+    
+    var style: String {
+        switch self {
+        case .liquidGlass: return "Modern Premium"
+        case .minimalist: return "Clean Minimal"
+        case .islamicArt: return "Traditional Islamic"
+        case .timeline: return "Information Dense"
+        case .circular: return "Unique Circular"
+        }
+    }
+    
+    var animationLevel: String {
+        switch self {
+        case .liquidGlass: return "Rich"
+        case .minimalist: return "Minimal"
+        case .islamicArt: return "Moderate"
+        case .timeline: return "Low"
+        case .circular: return "Moderate"
+        }
+    }
+    
+    var batteryImpact: String {
+        switch self {
+        case .liquidGlass: return "Medium"
+        case .minimalist: return "Low"
+        case .islamicArt: return "Low"
+        case .timeline: return "Low"
+        case .circular: return "Medium"
+        }
+    }
+    
+    var bestFor: String {
+        switch self {
+        case .liquidGlass: return "Modern users"
+        case .minimalist: return "Accessibility"
+        case .islamicArt: return "Cultural authenticity"
+        case .timeline: return "Information seekers"
+        case .circular: return "Visual appeal"
+        }
+    }
+}
+
 @MainActor
 class AppSettings: ObservableObject {
     @Published var azanEnabled: Bool {
@@ -108,6 +196,12 @@ class AppSettings: ObservableObject {
         }
     }
     
+    @Published var liveActivityDesign: LiveActivityDesign {
+        didSet {
+            UserDefaults.standard.set(liveActivityDesign.rawValue, forKey: "liveActivityDesign")
+        }
+    }
+    
     init() {
         self.azanEnabled = UserDefaults.standard.object(forKey: "azanEnabled") as? Bool ?? true
         self.useDefaultAudio = UserDefaults.standard.object(forKey: "useDefaultAudio") as? Bool ?? true
@@ -130,6 +224,9 @@ class AppSettings: ObservableObject {
         self.asrNotificationState = PrayerNotificationState(rawValue: UserDefaults.standard.string(forKey: "asrNotificationState") ?? "sound") ?? .sound
         self.maghribNotificationState = PrayerNotificationState(rawValue: UserDefaults.standard.string(forKey: "maghribNotificationState") ?? "sound") ?? .sound
         self.ishaNotificationState = PrayerNotificationState(rawValue: UserDefaults.standard.string(forKey: "ishaNotificationState") ?? "sound") ?? .sound
+        
+        // Initialize Live Activity design (default to liquid glass)
+        self.liveActivityDesign = LiveActivityDesign(rawValue: UserDefaults.standard.string(forKey: "liveActivityDesign") ?? "liquid_glass") ?? .liquidGlass
     }
     
     // Helper methods for bulk operations

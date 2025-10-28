@@ -12,10 +12,10 @@ struct SettingsView: View {
     @State private var showingAudioManagement = false
     @State private var selectedTheme: ThemeMode = .system
     @State private var selectedAccentColor: AccentColor = .blue
-    @State private var cardsScale: [Double] = [0.95, 0.95, 0.95]
+    @State private var cardsScale: [Double] = [0.95, 0.95, 0.95, 0.95]
     @State private var calendarAuthorizationStatus: EKAuthorizationStatus = .notDetermined
-    @State private var cardsOpacity: [Double] = [0.0, 0.0, 0.0]
-    @State private var cardsBlur: [Double] = [0.0, 0.0, 0.0]
+    @State private var cardsOpacity: [Double] = [0.0, 0.0, 0.0, 0.0]
+    @State private var cardsBlur: [Double] = [0.0, 0.0, 0.0, 0.0]
     @State private var contentOffset: Double = 100
     @Namespace private var liquidBackground
     
@@ -204,21 +204,6 @@ struct SettingsView: View {
                                     .toggleStyle(.automatic)
                                 }
                                 
-                                // Live Activity Toggle
-                                HStack {
-                                    Text("Live Activity")
-                                        .font(.system(size: 16, weight: .regular, design: .default))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    Spacer()
-                                    Toggle(isOn: Binding(
-                                        get: { settingsManager.settings.liveActivityEnabled },
-                                        set: { settingsManager.updateLiveActivityEnabled($0) }
-                                    )) {
-                                        EmptyView()
-                                    }
-                                    .labelsHidden()
-                                    .toggleStyle(.automatic)
-                                }
                                 
                                 // Vibration Only During Meetings Toggle
                                 HStack {
@@ -240,6 +225,55 @@ struct SettingsView: View {
                                     }
                                     .labelsHidden()
                                     .toggleStyle(.automatic)
+                                }
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 20)
+                        }
+                        
+                        // Live Activities Card
+                        EnhancedLiquidGlassCard(cardIndex: 2, cardsScale: cardsScale, cardsOpacity: cardsOpacity, cardsBlur: cardsBlur) {
+                            VStack(alignment: .leading, spacing: 20) {
+                                Text("Live Activities")
+                                    .font(.system(size: 18, weight: .semibold, design: .default))
+                                    .foregroundColor(.white.opacity(0.9))
+                                
+                                // Live Activity Toggle
+                                HStack {
+                                    Text("Live Activity")
+                                        .font(.system(size: 16, weight: .regular, design: .default))
+                                        .foregroundColor(.white.opacity(0.85))
+                                    Spacer()
+                                    Toggle(isOn: Binding(
+                                        get: { settingsManager.settings.liveActivityEnabled },
+                                        set: { settingsManager.updateLiveActivityEnabled($0) }
+                                    )) {
+                                        EmptyView()
+                                    }
+                                    .labelsHidden()
+                                    .toggleStyle(.automatic)
+                                }
+                                
+                                // Live Activity Gallery Button
+                                if settingsManager.settings.liveActivityEnabled {
+                                    NavigationLink(destination: LiveActivityGalleryView(initialDesign: settingsManager.settings.liveActivityDesign).environmentObject(settingsManager)) {
+                                        HStack {
+                                            Image(systemName: "rectangle.and.text.magnifyingglass")
+                                                .font(.system(size: 16, weight: .medium))
+                                                .foregroundColor(.white.opacity(0.7))
+                                            
+                                            Text("Live Activity Gallery")
+                                                .font(.system(size: 16, weight: .regular, design: .default))
+                                                .foregroundColor(.white.opacity(0.85))
+                                            
+                                            Spacer()
+                                            
+                                            Image(systemName: "chevron.right")
+                                                .font(.system(size: 12, weight: .medium))
+                                                .foregroundColor(.white.opacity(0.5))
+                                        }
+                                        .padding(.vertical, 4)
+                                    }
                                 }
                             }
                             .padding(.horizontal, 20)
@@ -285,6 +319,17 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showingAudioManagement) {
                 AudioManagementView()
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.white)
+                    }
+                }
             }
         }
     }

@@ -11,6 +11,7 @@
 		3821DE7E2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3821DE7D2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift */; };
 		38B846FF2EAECEA20055EDCB /* AudioManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */; };
 		38B847012EAECEAD0055EDCB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847002EAECEAD0055EDCB /* HomeView.swift */; };
+		05622BBA6E7A4C49B722BA50 /* LiveActivityGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5CC2DD4E3D46E19DDA9236 /* LiveActivityGalleryView.swift */; };
 		38B847032EAECEB80055EDCB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847022EAECEB80055EDCB /* SettingsView.swift */; };
 		38B847042EAECEB90055EDCB /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847032EAECEB90055EDCB /* SplashScreenView.swift */; };
 		38B847052EAECF020055EDCB /* AudioFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847042EAECF020055EDCB /* AudioFileManager.swift */; };
@@ -38,6 +39,7 @@
 		38B846F92EAEC66F0055EDCB /* MyAzan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyAzan.entitlements; sourceTree = "<group>"; };
 		38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManagementView.swift; sourceTree = "<group>"; };
 		38B847002EAECEAD0055EDCB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		1F5CC2DD4E3D46E19DDA9236 /* LiveActivityGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityGalleryView.swift; sourceTree = "<group>"; };
 		38B847022EAECEB80055EDCB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		38B847032EAECEB90055EDCB /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		38B847042EAECF020055EDCB /* AudioFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileManager.swift; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 				38B847022EAECEB80055EDCB /* SettingsView.swift */,
 				38B847032EAECEB90055EDCB /* SplashScreenView.swift */,
 				38B847002EAECEAD0055EDCB /* HomeView.swift */,
+			1F5CC2DD4E3D46E19DDA9236 /* LiveActivityGalleryView.swift */,
 				38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */,
 				A1234567890ABCDEF032 /* Components */,
 			);
@@ -251,6 +254,7 @@
 				05CE1FE1305FDE5A54368B1A /* SharedDefaults.swift in Sources */,
 				38B847192EAED1430055EDCB /* PrayerCard.swift in Sources */,
 				38B847012EAECEAD0055EDCB /* HomeView.swift in Sources */,
+			05622BBA6E7A4C49B722BA50 /* LiveActivityGalleryView.swift in Sources */,
 				38B847042EAECEB90055EDCB /* SplashScreenView.swift in Sources */,
 				38B8470D2EAECFE50055EDCB /* BackgroundTaskManager.swift in Sources */,
 				38B847092EAECF5B0055EDCB /* SettingsManager.swift in Sources */,

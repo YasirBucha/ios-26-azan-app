@@ -28,9 +28,24 @@ struct PrayerActivityAttributes: ActivityAttributes {
 @MainActor
 class LiveActivityManager: ObservableObject {
     @Published var currentActivity: Activity<PrayerActivityAttributes>?
+    private var currentDesign: LiveActivityDesign = .liquidGlass
     
     init() {
         // Initialize if needed
+    }
+    
+    func setDesign(_ design: LiveActivityDesign) {
+        currentDesign = design
+        // If there's an active Live Activity, restart it with the new design
+        if currentActivity != nil {
+            restartActivityWithNewDesign()
+        }
+    }
+    
+    private func restartActivityWithNewDesign() {
+        // This will be called when design changes
+        // The actual restart will be handled by the calling code
+        print("🔄 Live Activity design changed to: \(currentDesign.displayName)")
     }
     
     func startPrayerActivity(prayer: PrayerTime, nextPrayer: PrayerTime, cityName: String, isAzanEnabled: Bool) {
