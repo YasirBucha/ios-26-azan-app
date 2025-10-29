@@ -10,11 +10,8 @@ enum SharedDefaults {
             return cachedShared
         }
 
-        guard FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: suiteName) != nil,
-              let defaults = UserDefaults(suiteName: suiteName) else {
-            return nil
-        }
-
+        // Use standard UserDefaults instead of group container to avoid CFPrefsPlistSource error
+        let defaults = UserDefaults.standard
         cachedShared = defaults
         return defaults
     }
