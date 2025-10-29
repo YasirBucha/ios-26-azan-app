@@ -8,12 +8,17 @@ class LocationManager: NSObject, ObservableObject {
     @Published var currentLocation: CLLocation?
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @Published var cityName: String = "Unknown Location"
+    private var lastLocationUpdate: Date?
+    private var isRefreshingLocation = false
     
     override init() {
         super.init()
         // Defer heavy initialization
         DispatchQueue.main.async {
             self.setupLocationManager()
+        }
+        if let lastTimestamp = UserDefaults.standard.object(forKey: "lastLocationUpdate") as? TimeInterval {
+            lastLocationUpdate = Date(timeIntervalSince1970: lastTimestamp)
         }
     }
     
@@ -31,20 +36,49 @@ class LocationManager: NSObject, ObservableObject {
     }
     
     func requestLocationPermission() {
-        locationManager.requestAlwaysAuthorization()
+        locationManager.requestWhenInUseAuthorization()
     }
-    
+
     func startLocationUpdates() {
         guard authorizationStatus == .authorizedWhenInUse || authorizationStatus == .authorizedAlways else {
             return
         }
+        isRefreshingLocation = true
         locationManager.startUpdatingLocation()
     }
-    
+
     func stopLocationUpdates() {
         locationManager.stopUpdatingLocation()
+        isRefreshingLocation = false
     }
-    
+
+    func refreshLocationIfNeeded(force: Bool = false) {
+        guard !isRefreshingLocation else { return }
+
+        let shouldRefresh: Bool
+        if force {
+            shouldRefresh = true
+        } else if let lastLocationUpdate {
+            shouldRefresh = Date().timeIntervalSince(lastLocationUpdate) > 1800
+        } else {
+            shouldRefresh = true
+        }
+
+        guard shouldRefresh else { return }
+
+        switch authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways:
+            startLocationUpdates()
+        case .notDetermined:
+            isRefreshingLocation = true
+            requestLocationPermission()
+        case .denied, .restricted:
+            break
+        @unknown default:
+            break
+        }
+    }
+
     private func reverseGeocode(location: CLLocation) {
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
@@ -74,16 +108,21 @@ extension LocationManager: CLLocationManagerDelegate {
         Task { @MainActor in
             self.currentLocation = location
             self.reverseGeocode(location: location)
+            self.lastLocationUpdate = Date()
+            SharedDefaults.set(self.lastLocationUpdate?.timeIntervalSince1970, forKey: "lastLocationUpdate")
+            self.stopLocationUpdates()
         }
     }
-    
+
     nonisolated func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         Task { @MainActor in
             self.authorizationStatus = status
-            
+
             switch status {
             case .authorizedWhenInUse, .authorizedAlways:
-                self.startLocationUpdates()
+                if self.isRefreshingLocation {
+                    self.startLocationUpdates()
+                }
             case .denied, .restricted:
                 self.stopLocationUpdates()
             case .notDetermined:
@@ -96,5 +135,8 @@ extension LocationManager: CLLocationManagerDelegate {
     
     nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Location manager failed with error: \(error.localizedDescription)")
+        Task { @MainActor in
+            self.stopLocationUpdates()
+        }
     }
 }

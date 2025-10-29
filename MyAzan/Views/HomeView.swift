@@ -361,13 +361,8 @@ struct HomeView: View {
                 
                 // Defer location services initialization
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    initializeLocationServices()
+                    locationManager.refreshLocationIfNeeded(force: false)
                 }
-            }
-        }
-        .onAppear {
-            if !prayerTimeService.prayerTimes.isEmpty {
-                notificationManager.schedulePrayerNotifications(for: prayerTimeService.prayerTimes, settings: settingsManager.settings)
             }
         }
         .onReceive(prayerTimeService.$prayerTimes) { prayers in
@@ -394,15 +389,6 @@ struct HomeView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                 shimmerOffset = -200
             }
-        }
-    }
-    
-    private func initializeLocationServices() {
-        // Request location permission when view appears
-        if locationManager.authorizationStatus == .notDetermined {
-            locationManager.requestLocationPermission()
-        } else if locationManager.authorizationStatus == .authorizedWhenInUse || locationManager.authorizationStatus == .authorizedAlways {
-            locationManager.startLocationUpdates()
         }
     }
     

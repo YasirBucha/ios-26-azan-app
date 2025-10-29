@@ -29,6 +29,8 @@ enum PrayerNotificationState: String, CaseIterable {
     }
 }
 
+extension PrayerNotificationState: Sendable {}
+
 enum LiveActivityDesign: String, CaseIterable {
     case liquidGlass = "liquid_glass"
     case minimalist = "minimalist"
@@ -114,6 +116,24 @@ enum LiveActivityDesign: String, CaseIterable {
         case .timeline: return "Information seekers"
         case .circular: return "Visual appeal"
         }
+    }
+}
+
+extension AppSettings {
+    func makeNotificationSnapshot() -> NotificationSettingsSnapshot {
+        let prayerKeys = ["fajr", "dhuhr", "asr", "maghrib", "isha"]
+        var states: [String: PrayerNotificationState] = [:]
+
+        for key in prayerKeys {
+            states[key] = getPrayerNotificationState(for: key)
+        }
+
+        return NotificationSettingsSnapshot(
+            azanEnabled: azanEnabled,
+            reminderEnabled: reminderEnabled,
+            vibrationOnlyDuringMeetings: vibrationOnlyDuringMeetings,
+            prayerStates: states
+        )
     }
 }
 
