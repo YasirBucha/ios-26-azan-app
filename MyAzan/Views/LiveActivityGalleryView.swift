@@ -172,6 +172,8 @@ struct LiveActivityGalleryView: View {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 16, weight: .medium))
                             .foregroundColor(.white)
+                            .frame(width: 32, height: 32)
+                            .glassedEffect(in: Circle(), interactive: true)
                     }
                 }
             }
@@ -300,13 +302,11 @@ struct LiveActivityPreviewCard: View {
                 preview
                     .frame(maxWidth: .infinity) // Full width like real Live Activity
                     .frame(height: 120) // Actual Live Activity height
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .overlay(
+                    .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                            .fill(Color.black.opacity(0.2))
                     )
-                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
-                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                    .glassedEffect(in: RoundedRectangle(cornerRadius: 20), interactive: false)
                     .transition(.opacity.combined(with: .scale(scale: 0.95)))
             } else {
                 RoundedRectangle(cornerRadius: 20)

@@ -158,23 +158,11 @@ struct HomeView: View {
                         .padding(.horizontal, 24)
                         .padding(.vertical, 20)
                         .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
-                        .overlay(
+                        .background(
                             RoundedRectangle(cornerRadius: 20)
-                                .stroke(
-                                    LinearGradient(
-                                        colors: [
-                                            Color.white.opacity(0.4),
-                                            Color.white.opacity(0.2)
-                                        ],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    ),
-                                    lineWidth: 1.5
-                                )
+                                .fill(Color.black.opacity(0.35))
                         )
-                        .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
-                        .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
+                        .glassedEffect(in: RoundedRectangle(cornerRadius: 20), interactive: false)
                         .scaleEffect(prayerCardScale)
                         .onTapGesture {
                             withAnimation(.easeInOut(duration: 0.2)) {
@@ -312,23 +300,11 @@ struct HomeView: View {
                             }
                             .padding(.horizontal, 24)
                             .padding(.vertical, 12)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
-                            .overlay(
+                            .background(
                                 RoundedRectangle(cornerRadius: 16)
-                                    .stroke(
-                                        LinearGradient(
-                                            colors: [
-                                                Color.white.opacity(0.4),
-                                                Color.white.opacity(0.2)
-                                            ],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        ),
-                                        lineWidth: 1.5
-                                    )
+                                    .fill(Color.black.opacity(0.5))
                             )
-                            .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
-                            .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
+                            .glassedEffect(in: RoundedRectangle(cornerRadius: 16), interactive: false)
                             
                             // Prayer cards list
                             ScrollView {
