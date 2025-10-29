@@ -92,9 +92,7 @@ struct PrayerCard: View {
     }
     
     private var currentNotificationState: PrayerNotificationState {
-        let state = settingsManager.settings.getPrayerNotificationState(for: prayer.name)
-        print("🔔 PrayerCard for \(prayer.name) showing state: \(state.rawValue)")
-        return state
+        return settingsManager.settings.getPrayerNotificationState(for: prayer.name)
     }
     
     private var notificationStateColor: Color {
