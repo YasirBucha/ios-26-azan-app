@@ -2,13 +2,19 @@ import SwiftUI
 
 struct LiquidGlassIconButton: View {
     let systemName: String
+    let interactive: Bool
+    
+    init(systemName: String, interactive: Bool = true) {
+        self.systemName = systemName
+        self.interactive = interactive
+    }
     
     var body: some View {
         Image(systemName: systemName)
             .font(.system(size: 18, weight: .semibold))
             .foregroundColor(.white.opacity(0.9))
             .frame(width: 44, height: 44)
-            .glassedEffect(in: Circle(), interactive: true)
+            .glassedEffect(in: Circle(), interactive: interactive)
             .contentShape(Circle())
             .accessibilityLabel(Text(systemName))
     }

@@ -72,8 +72,16 @@ struct SettingsView: View {
                 
                 ScrollView {
                     VStack(spacing: 24) {
-                        // Header Section
+                        // Header Section with Back Button
                         VStack(spacing: 8) {
+                            HStack {
+                                Button(action: { dismiss() }) {
+                                    LiquidGlassIconButton(systemName: "chevron.left", interactive: false)
+                                }
+                                
+                                Spacer()
+                            }
+                            
                             Text("Settings")
                                 .font(.system(size: 26, weight: .semibold, design: .rounded))
                                 .foregroundColor(.white.opacity(0.9))
@@ -84,201 +92,211 @@ struct SettingsView: View {
                         }
                         .padding(.top, 40)
                         .padding(.bottom, 20)
+                        .padding(.horizontal, 20)
                         
-                        // Audio Settings Card
-                        EnhancedLiquidGlassCard(cardIndex: 0, cardsScale: cardsScale, cardsOpacity: cardsOpacity, cardsBlur: cardsBlur) {
-                            VStack(alignment: .leading, spacing: 20) {
-                                Text("Audio Settings")
-                                    .font(.system(size: 18, weight: .semibold, design: .default))
-                                    .foregroundColor(.white.opacity(0.9))
-                                
-                                // Azan Voice Play/Pause Toggle
-                                HStack {
-                                    Text("Azan Voice")
-                                        .font(.system(size: 16, weight: .regular, design: .default))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    Spacer()
-                                    Button(action: {
-                                        withAnimation(.easeInOut(duration: 0.2)) {
-                                            if audioManager.isPlaying {
-                                                audioManager.stopAzan()
-                                            } else {
-                                                if settingsManager.settings.useDefaultAudio {
-                                                    audioManager.playAzan(useDefault: true, volume: settingsManager.settings.appVolume)
-                                                } else if let id = settingsManager.settings.selectedAudioFileId {
-                                                    audioManager.playAzan(useDefault: false, customFileId: id, volume: settingsManager.settings.appVolume)
-                                                }
+                        // Audio Settings Card (basic rounded rectangle + glassedEffect)
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Audio Settings")
+                                .font(.system(size: 18, weight: .semibold, design: .default))
+                                .foregroundColor(.white.opacity(0.9))
+                            
+                            // Azan Voice Play/Pause Toggle
+                            HStack {
+                                Text("Azan Voice")
+                                    .font(.system(size: 16, weight: .regular, design: .default))
+                                    .foregroundColor(.white.opacity(0.85))
+                                Spacer()
+                                Button(action: {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        if audioManager.isPlaying {
+                                            audioManager.stopAzan()
+                                        } else {
+                                            if settingsManager.settings.useDefaultAudio {
+                                                audioManager.playAzan(useDefault: true, volume: settingsManager.settings.appVolume)
+                                            } else if let id = settingsManager.settings.selectedAudioFileId {
+                                                audioManager.playAzan(useDefault: false, customFileId: id, volume: settingsManager.settings.appVolume)
                                             }
                                         }
-                                    }) {
-                                        Image(systemName: audioManager.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                                            .font(.system(size: 24, weight: .medium))
-                                            .foregroundColor(.white.opacity(0.8))
                                     }
+                                }) {
+                                    Image(systemName: audioManager.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                                        .font(.system(size: 24, weight: .medium))
+                                        .foregroundColor(.white.opacity(0.8))
                                 }
+                            }
+                            
+                            // Volume Level Row
+                            HStack {
+                                Text("App Volume Level")
+                                    .font(.system(size: 16, weight: .regular, design: .default))
+                                    .foregroundColor(.white.opacity(0.85))
                                 
-                                // Volume Level Row
-                                HStack {
-                                    Text("App Volume Level")
-                                        .font(.system(size: 16, weight: .regular, design: .default))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    
-                                    Spacer()
-                                    
-                                    Text("\(Int(settingsManager.settings.appVolume * 100))%")
-                                        .font(.system(size: 14, weight: .medium, design: .default))
-                                        .foregroundColor(.white.opacity(0.7))
-                                }
+                                Spacer()
                                 
-                                // Volume Slider
-                                HStack {
-                                    Image(systemName: "speaker.fill")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.white.opacity(0.6))
-                                    
-                                    Slider(value: Binding(
-                                        get: { Double(settingsManager.settings.appVolume) },
-                                        set: { newValue in
-                                            settingsManager.settings.appVolume = Float(newValue)
-                                            // Update volume of currently playing audio
-                                            audioManager.updateVolume(Float(newValue))
-                                        }
-                                    ), in: 0...1)
-                                        .accentColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 4)
-                                                .fill(Color.white.opacity(0.1))
-                                                .frame(height: 6)
-                                        )
-                                    
-                                    Image(systemName: "speaker.wave.3.fill")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.white.opacity(0.6))
-                                }
+                                Text("\(Int(settingsManager.settings.appVolume * 100))%")
+                                    .font(.system(size: 14, weight: .medium, design: .default))
+                                    .foregroundColor(.white.opacity(0.7))
+                            }
+                            
+                            // Volume Slider
+                            HStack {
+                                Image(systemName: "speaker.fill")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.white.opacity(0.6))
                                 
-                                // Volume Description
-                                Text("Controls volume for azan playback. System notifications use device volume.")
-                                    .font(.system(size: 12, weight: .regular, design: .default))
+                                Slider(value: Binding(
+                                    get: { Double(settingsManager.settings.appVolume) },
+                                    set: { newValue in
+                                        settingsManager.settings.appVolume = Float(newValue)
+                                        // Update volume of currently playing audio
+                                        audioManager.updateVolume(Float(newValue))
+                                    }
+                                ), in: 0...1)
+                                    .accentColor(Color(red: 0.3, green: 0.72, blue: 1.0)) // #4DB8FF
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .fill(Color.white.opacity(0.1))
+                                            .frame(height: 6)
+                                    )
+                                
+                                Image(systemName: "speaker.wave.3.fill")
+                                    .font(.system(size: 14))
                                     .foregroundColor(.white.opacity(0.6))
                             }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 20)
+                            
+                            // Volume Description
+                            Text("Controls volume for azan playback. System notifications use device volume.")
+                                .font(.system(size: 12, weight: .regular, design: .default))
+                                .foregroundColor(.white.opacity(0.6))
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 20)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.clear)
+                        )
+                        .glassedEffect(in: RoundedRectangle(cornerRadius: 20), interactive: false)
                         
-                        // Notifications Card
-                        EnhancedLiquidGlassCard(cardIndex: 1, cardsScale: cardsScale, cardsOpacity: cardsOpacity, cardsBlur: cardsBlur) {
-                            VStack(alignment: .leading, spacing: 20) {
-                                Text("Notifications")
-                                    .font(.system(size: 18, weight: .semibold, design: .default))
-                                    .foregroundColor(.white.opacity(0.9))
-                                
-                                // Prayer Time Alerts Toggle
-                                HStack {
-                                    Text("Prayer Time Alerts")
-                                        .font(.system(size: 16, weight: .regular, design: .default))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    Spacer()
-                                    Toggle(isOn: Binding(
-                                        get: { settingsManager.settings.azanEnabled },
-                                        set: { settingsManager.updateAzanEnabled($0) }
-                                    )) {
-                                        EmptyView()
-                                    }
-                                    .labelsHidden()
-                                    .toggleStyle(.automatic)
+                        // Notifications Card (basic rounded rectangle + glassedEffect)
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Notifications")
+                                .font(.system(size: 18, weight: .semibold, design: .default))
+                                .foregroundColor(.white.opacity(0.9))
+                            
+                            // Prayer Time Alerts Toggle
+                            HStack {
+                                Text("Prayer Time Alerts")
+                                    .font(.system(size: 16, weight: .regular, design: .default))
+                                    .foregroundColor(.white.opacity(0.85))
+                                Spacer()
+                                Toggle(isOn: Binding(
+                                    get: { settingsManager.settings.azanEnabled },
+                                    set: { settingsManager.updateAzanEnabled($0) }
+                                )) {
+                                    EmptyView()
                                 }
-                                
-                                // Pre-Azan Reminder Toggle
-                                HStack {
-                                    Text("Pre-Azan Reminder (5 min before)")
-                                        .font(.system(size: 16, weight: .regular, design: .default))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    Spacer()
-                                    Toggle(isOn: Binding(
-                                        get: { settingsManager.settings.reminderEnabled },
-                                        set: { settingsManager.updateReminderEnabled($0) }
-                                    )) {
-                                        EmptyView()
-                                    }
-                                    .labelsHidden()
-                                    .toggleStyle(.automatic)
+                                .labelsHidden()
+                                .toggleStyle(.automatic)
+                            }
+                            
+                            // Pre-Azan Reminder Toggle
+                            HStack {
+                                Text("Pre-Azan Reminder (5 min before)")
+                                    .font(.system(size: 16, weight: .regular, design: .default))
+                                    .foregroundColor(.white.opacity(0.85))
+                                Spacer()
+                                Toggle(isOn: Binding(
+                                    get: { settingsManager.settings.reminderEnabled },
+                                    set: { settingsManager.updateReminderEnabled($0) }
+                                )) {
+                                    EmptyView()
                                 }
-                                
-                                
-                                // Vibration Only During Meetings Toggle
-                                HStack {
-                                    Text("Vibration Only During Meetings")
-                                        .font(.system(size: 16, weight: .regular, design: .default))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    Spacer()
-                                    Toggle(isOn: Binding(
-                                        get: { settingsManager.settings.vibrationOnlyDuringMeetings },
-                                        set: { newValue in
-                                            if newValue {
-                                                requestCalendarPermission()
-                                            } else {
-                                                settingsManager.updateVibrationOnlyDuringMeetings(false)
-                                            }
+                                .labelsHidden()
+                                .toggleStyle(.automatic)
+                            }
+                            
+                            
+                            // Vibration Only During Meetings Toggle
+                            HStack {
+                                Text("Vibration Only During Meetings")
+                                    .font(.system(size: 16, weight: .regular, design: .default))
+                                    .foregroundColor(.white.opacity(0.85))
+                                Spacer()
+                                Toggle(isOn: Binding(
+                                    get: { settingsManager.settings.vibrationOnlyDuringMeetings },
+                                    set: { newValue in
+                                        if newValue {
+                                            requestCalendarPermission()
+                                        } else {
+                                            settingsManager.updateVibrationOnlyDuringMeetings(false)
                                         }
-                                    )) {
-                                        EmptyView()
                                     }
-                                    .labelsHidden()
-                                    .toggleStyle(.automatic)
+                                )) {
+                                    EmptyView()
+                                }
+                                .labelsHidden()
+                                .toggleStyle(.automatic)
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 20)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.clear)
+                        )
+                        .glassedEffect(in: RoundedRectangle(cornerRadius: 20), interactive: false)
+                        
+                        // Live Activities Card (basic rounded rectangle + glassedEffect)
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Live Activities")
+                                .font(.system(size: 18, weight: .semibold, design: .default))
+                                .foregroundColor(.white.opacity(0.9))
+                            
+                            // Live Activity Toggle
+                            HStack {
+                                Text("Live Activity")
+                                    .font(.system(size: 16, weight: .regular, design: .default))
+                                    .foregroundColor(.white.opacity(0.85))
+                                Spacer()
+                                Toggle(isOn: Binding(
+                                    get: { settingsManager.settings.liveActivityEnabled },
+                                    set: { settingsManager.updateLiveActivityEnabled($0) }
+                                )) {
+                                    EmptyView()
+                                }
+                                .labelsHidden()
+                                .toggleStyle(.automatic)
+                            }
+                            
+                            // Live Activity Gallery Button
+                            if settingsManager.settings.liveActivityEnabled {
+                                NavigationLink(destination: LiveActivityGalleryView(initialDesign: settingsManager.settings.liveActivityDesign).environmentObject(settingsManager)) {
+                                    HStack {
+                                        Image(systemName: "rectangle.and.text.magnifyingglass")
+                                            .font(.system(size: 16, weight: .medium))
+                                            .foregroundColor(.white.opacity(0.7))
+                                        
+                                        Text("Live Activity Gallery")
+                                            .font(.system(size: 16, weight: .regular, design: .default))
+                                            .foregroundColor(.white.opacity(0.85))
+                                        
+                                        Spacer()
+                                        
+                                        Image(systemName: "chevron.right")
+                                            .font(.system(size: 12, weight: .medium))
+                                            .foregroundColor(.white.opacity(0.5))
+                                    }
+                                    .padding(.vertical, 4)
                                 }
                             }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 20)
                         }
-                        
-                        // Live Activities Card
-                        EnhancedLiquidGlassCard(cardIndex: 2, cardsScale: cardsScale, cardsOpacity: cardsOpacity, cardsBlur: cardsBlur) {
-                            VStack(alignment: .leading, spacing: 20) {
-                                Text("Live Activities")
-                                    .font(.system(size: 18, weight: .semibold, design: .default))
-                                    .foregroundColor(.white.opacity(0.9))
-                                
-                                // Live Activity Toggle
-                                HStack {
-                                    Text("Live Activity")
-                                        .font(.system(size: 16, weight: .regular, design: .default))
-                                        .foregroundColor(.white.opacity(0.85))
-                                    Spacer()
-                                    Toggle(isOn: Binding(
-                                        get: { settingsManager.settings.liveActivityEnabled },
-                                        set: { settingsManager.updateLiveActivityEnabled($0) }
-                                    )) {
-                                        EmptyView()
-                                    }
-                                    .labelsHidden()
-                                    .toggleStyle(.automatic)
-                                }
-                                
-                                // Live Activity Gallery Button
-                                if settingsManager.settings.liveActivityEnabled {
-                                    NavigationLink(destination: LiveActivityGalleryView(initialDesign: settingsManager.settings.liveActivityDesign).environmentObject(settingsManager)) {
-                                        HStack {
-                                            Image(systemName: "rectangle.and.text.magnifyingglass")
-                                                .font(.system(size: 16, weight: .medium))
-                                                .foregroundColor(.white.opacity(0.7))
-                                            
-                                            Text("Live Activity Gallery")
-                                                .font(.system(size: 16, weight: .regular, design: .default))
-                                                .foregroundColor(.white.opacity(0.85))
-                                            
-                                            Spacer()
-                                            
-                                            Image(systemName: "chevron.right")
-                                                .font(.system(size: 12, weight: .medium))
-                                                .foregroundColor(.white.opacity(0.5))
-                                        }
-                                        .padding(.vertical, 4)
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 20)
-                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 20)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.clear)
+                        )
+                        .glassedEffect(in: RoundedRectangle(cornerRadius: 20), interactive: false)
                         
                         // Footer Section
                         VStack(spacing: 16) {
@@ -322,15 +340,7 @@ struct SettingsView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.white)
-                    }
-                }
-            }
+            .toolbarBackground(.hidden, for: .navigationBar)
         }
     }
     

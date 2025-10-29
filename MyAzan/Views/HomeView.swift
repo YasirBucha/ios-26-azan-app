@@ -223,7 +223,7 @@ struct HomeView: View {
                                     }) {
                                         Image(systemName: "bell.slash")
                                             .font(.system(size: 18, weight: .medium))
-                                            .foregroundColor(masterState == .off ? .gray : .gray.opacity(0.5))
+                                            .foregroundColor(.gray.opacity(0.5))
                                             .overlay(
                                                 masterState == .off ? 
                                                 Circle()
@@ -254,8 +254,8 @@ struct HomeView: View {
                                     }) {
                                         Image(systemName: "bell.badge")
                                             .font(.system(size: 20, weight: .bold))
-                                            .foregroundColor(masterState == .vibrate ? .orange : .orange.opacity(0.5))
-                                            .shadow(color: masterState == .vibrate ? .orange.opacity(0.8) : .orange.opacity(0.4), radius: 6, x: 0, y: 0)
+                                            .foregroundColor(.orange.opacity(0.5))
+                                            .shadow(color: .orange.opacity(0.4), radius: 6, x: 0, y: 0)
                                             .overlay(
                                                 masterState == .vibrate ? 
                                                 Circle()
@@ -286,7 +286,7 @@ struct HomeView: View {
                                     }) {
                                         Image(systemName: "bell.fill")
                                             .font(.system(size: 18, weight: .medium))
-                                            .foregroundColor(masterState == .sound ? .blue : .blue.opacity(0.5))
+                                            .foregroundColor(.blue.opacity(0.5))
                                             .overlay(
                                                 masterState == .sound ? 
                                                 Circle()

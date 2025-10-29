@@ -80,8 +80,17 @@ struct LiveActivityGalleryView: View {
                 .ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    // Header
+                    // Header with Back Button
                     VStack(spacing: 8) {
+                        HStack {
+                            Button(action: { dismiss() }) {
+                                LiquidGlassIconButton(systemName: "chevron.left", interactive: false)
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding(.horizontal, 20)
+                        
                         Text("Live Activity Gallery")
                             .font(.system(size: 26, weight: .semibold, design: .rounded))
                             .foregroundColor(.white.opacity(0.9))
@@ -166,17 +175,7 @@ struct LiveActivityGalleryView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.white)
-                            .frame(width: 32, height: 32)
-                            .glassedEffect(in: Circle(), interactive: true)
-                    }
-                }
-            }
+            .toolbarBackground(.hidden, for: .navigationBar)
         }
         .onAppear {
             let currentDesign = settingsManager.settings.liveActivityDesign
@@ -379,14 +378,20 @@ struct CompactDesignDetailsCard: View {
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(.ultraThinMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                )
+            RoundedRectangle(cornerRadius: 20)
+                .fill(designAccent.opacity(0.5))
         )
-        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+        .glassedEffect(in: RoundedRectangle(cornerRadius: 20), interactive: false)
+    }
+
+    private var designAccent: Color {
+        switch design.accentColor {
+        case "blue": return .blue
+        case "orange": return .orange
+        case "green": return .green
+        case "cyan": return .cyan
+        default: return .blue
+        }
     }
 }
 
