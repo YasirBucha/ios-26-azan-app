@@ -1,5 +1,7 @@
 import SwiftUI
 import EventKit
+import ActivityKit
+import UIKit
 
 struct SettingsView: View {
     @EnvironmentObject var settingsManager: SettingsManager
@@ -18,6 +20,11 @@ struct SettingsView: View {
     @State private var cardsBlur: [Double] = [0.0, 0.0, 0.0, 0.0]
     @State private var contentOffset: Double = 100
     @Namespace private var liquidBackground
+    
+    // Live Activity health check state
+    @State private var showLiveActivityAlert = false
+    @State private var liveActivitiesEnabledSystemwide = true
+    @State private var showLiveActivityHelp = false
     
     enum ThemeMode: String, CaseIterable {
         case light = "Light"
@@ -260,12 +267,46 @@ struct SettingsView: View {
                                 Spacer()
                                 Toggle(isOn: Binding(
                                     get: { settingsManager.settings.liveActivityEnabled },
-                                    set: { settingsManager.updateLiveActivityEnabled($0) }
+                                    set: { value in
+                                        settingsManager.updateLiveActivityEnabled(value)
+                                        if value {
+                                            checkLiveActivityHealth()
+                                        }
+                                    }
                                 )) {
                                     EmptyView()
                                 }
                                 .labelsHidden()
                                 .toggleStyle(.automatic)
+                            }
+                            
+                            // Health check + Help row
+                            HStack(spacing: 12) {
+                                Button(action: { checkLiveActivityHealth() }) {
+                                    HStack(spacing: 6) {
+                                        Image(systemName: "bolt.heart.fill")
+                                            .font(.system(size: 14, weight: .medium))
+                                        Text("Check Live Activity Status")
+                                            .font(.system(size: 14, weight: .semibold))
+                                    }
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.blue.opacity(0.7)))
+                                }
+                                
+                                Button(action: { showLiveActivityHelp = true }) {
+                                    HStack(spacing: 6) {
+                                        Image(systemName: "questionmark.circle.fill")
+                                            .font(.system(size: 14, weight: .medium))
+                                        Text("Live Activity Help")
+                                            .font(.system(size: 14, weight: .semibold))
+                                    }
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.15)))
+                                }
                             }
                             
                             // Live Activity Gallery Button
@@ -338,6 +379,19 @@ struct SettingsView: View {
             .sheet(isPresented: $showingAudioManagement) {
                 AudioManagementView()
             }
+            .sheet(isPresented: $showLiveActivityHelp) {
+                LiveActivityHelpSheet()
+            }
+            .alert("Enable Live Activities", isPresented: $showLiveActivityAlert) {
+                Button("Open Settings") {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Live Activities appear disabled by system settings or Focus. Please enable: 1) Face ID & Passcode > Live Activities, 2) MyAzan > Live Activities, 3) In Focus, allow Lock Screen notifications.")
+            }
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbarBackground(.hidden, for: .navigationBar)
@@ -390,6 +444,14 @@ struct SettingsView: View {
                     calendarAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
                 }
             }
+        }
+    }
+    
+    private func checkLiveActivityHealth() {
+        let enabled = ActivityAuthorizationInfo().areActivitiesEnabled
+        liveActivitiesEnabledSystemwide = enabled
+        if !enabled {
+            showLiveActivityAlert = true
         }
     }
 }
@@ -467,6 +529,28 @@ struct CustomToggle: View {
         }
         .onAppear {
             animationOffset = isOn ? 20 : 0
+        }
+    }
+}
+
+// Help sheet describing Live Activity requirements
+struct LiveActivityHelpSheet: View {
+    var body: some View {
+        NavigationStack {
+            List {
+                Section(header: Text("Required Settings")) {
+                    Label("Face ID & Passcode → Live Activities ON", systemImage: "lock.fill")
+                    Label("Settings → MyAzan → Live Activities ON", systemImage: "app.fill")
+                    Label("Focus → Allow on Lock Screen", systemImage: "moon.fill")
+                }
+                Section(header: Text("Troubleshooting")) {
+                    Label("Use a real device (not Simulator)", systemImage: "iphone")
+                    Label("Wait 2–3s after toggling before locking", systemImage: "clock")
+                    Label("Ensure notifications are allowed on Lock Screen", systemImage: "bell.fill")
+                }
+            }
+            .navigationTitle("Live Activity Help")
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Close") { UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil) } } }
         }
     }
 }
