@@ -63,7 +63,7 @@ struct MyAzanApp: App {
                         // If an activity is active, design change will be picked up by restart logic
                         maybeStartOrUpdateLiveActivity()
                     }
-                    .onChange(of: prayerTimeService.nextPrayer) { _ in
+                    .onChange(of: prayerTimeService.nextPrayer?.id) { _ in
                         // Keep activity updated across prayer transitions
                         maybeStartOrUpdateLiveActivity()
                     }
