@@ -5,10 +5,13 @@ import UserNotifications
 @MainActor
 class BackgroundTaskManager {
     static let shared = BackgroundTaskManager()
+    private static var didRegister = false
     
     private init() {}
     
     func registerBackgroundTasks() {
+        guard !Self.didRegister else { return }
+        Self.didRegister = true
         // Register background app refresh task
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.myazan.refresh", using: nil) { task in
             self.handleAppRefresh(task: task as! BGAppRefreshTask)
