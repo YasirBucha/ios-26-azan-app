@@ -146,7 +146,7 @@ struct LiveActivityGalleryView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 20)
                         
-                        HStack(spacing: 4) {
+                        HStack(spacing: 12) {
                             ForEach(LiveActivityDesign.allCases.filter { $0 != .circular }, id: \.self) { design in
                                 CompactDesignCard(
                                     design: design,
@@ -158,9 +158,10 @@ struct LiveActivityGalleryView: View {
                                     }
                                 )
                                 .frame(maxWidth: .infinity)
+                                .fixedSize(horizontal: false, vertical: true)
                             }
                         }
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, 16)
                     }
                     .padding(.bottom, 24)
                     
@@ -214,6 +215,7 @@ struct LiveActivityGalleryView: View {
     private var selectedDesignAccentColor: Color {
         switch selectedDesign.accentColor {
         case "blue": return .blue
+        case "teal": return .teal
         case "orange": return .orange
         case "green": return .green
         case "cyan": return .cyan
@@ -249,11 +251,11 @@ struct CompactDesignCard: View {
                             .foregroundColor(designAccentColor)
                     }
                 }
-                .frame(width: 50, height: 50)
+                .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 50)
                 .padding(4)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(.ultraThinMaterial)
+                        .fill(.clear)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
                                 .stroke(
@@ -279,6 +281,7 @@ struct CompactDesignCard: View {
     private var designAccentColor: Color {
         switch design.accentColor {
         case "blue": return .blue
+        case "teal": return .teal
         case "orange": return .orange
         case "green": return .green
         case "cyan": return .cyan
@@ -387,6 +390,7 @@ struct CompactDesignDetailsCard: View {
     private var designAccent: Color {
         switch design.accentColor {
         case "blue": return .blue
+        case "teal": return .teal
         case "orange": return .orange
         case "green": return .green
         case "cyan": return .cyan

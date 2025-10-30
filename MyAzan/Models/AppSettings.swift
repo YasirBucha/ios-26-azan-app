@@ -71,7 +71,7 @@ enum LiveActivityDesign: String, CaseIterable {
     var accentColor: String {
         switch self {
         case .liquidGlass: return "blue"
-        case .minimalist: return "blue"
+        case .minimalist: return "teal"
         case .islamicArt: return "orange"
         case .timeline: return "green"
         case .circular: return "cyan"
