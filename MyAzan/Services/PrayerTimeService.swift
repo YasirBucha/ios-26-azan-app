@@ -14,6 +14,7 @@ class PrayerTimeService: ObservableObject {
     private var settingsManager: SettingsManager?
     
     init() {
+        PerformanceLogger.event("PrayerTimeService init")
         // Load cached data immediately for faster startup
         loadCachedPrayerTimes()
         
@@ -52,6 +53,7 @@ class PrayerTimeService: ObservableObject {
         // TODO: Add location-based calculation when Adhan library is integrated
         
         isLoading = true
+        PerformanceLogger.event("PrayerTimeService calculation started")
         
         Task.detached { [weak self] in
             guard let self = self else { return }
@@ -87,6 +89,7 @@ class PrayerTimeService: ObservableObject {
                     self.isLoading = false
                     self.savePrayerTimes()
                     self.scheduleNotifications()
+                    PerformanceLogger.event("PrayerTimeService calculation completed with next prayer \(nextPrayer.name)")
                 }
             } else {
                 // If no prayers left today, get first prayer of tomorrow
@@ -99,6 +102,7 @@ class PrayerTimeService: ObservableObject {
                     self.isLoading = false
                     self.savePrayerTimes()
                     self.scheduleNotifications()
+                    PerformanceLogger.event("PrayerTimeService calculation completed with tomorrow fallback")
                 }
             }
         }

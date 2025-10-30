@@ -87,16 +87,10 @@ struct LiveActivityGalleryView: View {
                                 LiquidGlassIconButton(systemName: "chevron.left", interactive: false)
                             }
                             
-                            VStack(alignment: .center, spacing: 4) {
-                                Text("Live Activity Gallery")
-                                    .font(.system(size: 26, weight: .semibold, design: .rounded))
-                                    .foregroundColor(.white.opacity(0.9))
-                                
-                                Text("Choose your preferred Live Activity design")
-                                    .font(.system(size: 15, weight: .regular, design: .default))
-                                    .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7)) // #BFD3D8
-                            }
-                            .frame(maxWidth: .infinity)
+                            Text("Live Activity Gallery")
+                                .font(.system(size: 26, weight: .semibold, design: .rounded))
+                                .foregroundColor(.white.opacity(0.9))
+                                .frame(maxWidth: .infinity)
                             
                             Spacer()
                         }

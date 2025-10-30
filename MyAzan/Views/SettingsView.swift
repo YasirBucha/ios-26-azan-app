@@ -18,13 +18,13 @@ struct SettingsView: View {
     @State private var calendarAuthorizationStatus: EKAuthorizationStatus = .notDetermined
     @State private var cardsOpacity: [Double] = [0.0, 0.0, 0.0, 0.0]
     @State private var cardsBlur: [Double] = [0.0, 0.0, 0.0, 0.0]
-    @State private var contentOffset: Double = 100
     @Namespace private var liquidBackground
     
     // Live Activity health check state
     @State private var showLiveActivityAlert = false
     @State private var liveActivitiesEnabledSystemwide = true
     @State private var showLiveActivityHelp = false
+    @State private var hasCheckedHealth = false
     
     enum ThemeMode: String, CaseIterable {
         case light = "Light"
@@ -85,16 +85,10 @@ struct SettingsView: View {
                                 LiquidGlassIconButton(systemName: "chevron.left", interactive: false)
                             }
                             
-                            VStack(alignment: .center, spacing: 4) {
-                                Text("Settings")
-                                    .font(.system(size: 26, weight: .semibold, design: .rounded))
-                                    .foregroundColor(.white.opacity(0.9))
-                                
-                                Text("Customize your prayer experience")
-                                    .font(.system(size: 15, weight: .regular, design: .default))
-                                    .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7)) // #BFD3D8
-                            }
-                            .frame(maxWidth: .infinity)
+                            Text("Settings")
+                                .font(.system(size: 26, weight: .semibold, design: .rounded))
+                                .foregroundColor(.white.opacity(0.9))
+                                .frame(maxWidth: .infinity)
                             
                             Spacer()
                         }
@@ -105,7 +99,7 @@ struct SettingsView: View {
                     
                     // Scrollable Content
                     ScrollView {
-                        VStack(spacing: 24) {
+                        LazyVStack(spacing: 24, pinnedViews: []) {
                         
                         // Audio Settings Card (basic rounded rectangle + glassedEffect)
                         VStack(alignment: .leading, spacing: 20) {
@@ -277,6 +271,7 @@ struct SettingsView: View {
                                         settingsManager.updateLiveActivityEnabled(value)
                                         if value {
                                             checkLiveActivityHealth()
+                                            hasCheckedHealth = true
                                         }
                                     }
                                 )) {
@@ -286,37 +281,58 @@ struct SettingsView: View {
                                 .toggleStyle(.automatic)
                             }
                             
-                            // Health check + Help row
-                            HStack(spacing: 12) {
-                                Button(action: { checkLiveActivityHealth() }) {
-                                    HStack(spacing: 6) {
-                                        Image(systemName: "bolt.heart.fill")
-                                            .font(.system(size: 14, weight: .medium))
-                                        Text("Check Live Activity Status")
-                                            .font(.system(size: 14, weight: .semibold))
-                                    }
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 8)
-                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.blue.opacity(0.7)))
-                                }
-                                
-                                Button(action: { showLiveActivityHelp = true }) {
-                                    HStack(spacing: 6) {
-                                        Image(systemName: "questionmark.circle.fill")
-                                            .font(.system(size: 14, weight: .medium))
-                                        Text("Live Activity Help")
-                                            .font(.system(size: 14, weight: .semibold))
-                                    }
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 8)
-                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.15)))
-                                }
-                            }
-                            
-                            // Live Activity Gallery Button
+                            // Live Activity Status Button - only show when toggle is on
                             if settingsManager.settings.liveActivityEnabled {
+                                Button(action: {
+                                    if !liveActivitiesEnabledSystemwide {
+                                        showLiveActivityHelp = true
+                                    }
+                                }) {
+                                    HStack(spacing: 8) {
+                                        if liveActivitiesEnabledSystemwide {
+                                            // Green checkmark with transparent glass
+                                            Image(systemName: "checkmark.circle.fill")
+                                                .font(.system(size: 16, weight: .medium))
+                                                .foregroundColor(Color(red: 0.67, green: 0.79, blue: 0.32)) // #aaca52
+                                            
+                                            Text("All Good")
+                                                .font(.system(size: 14, weight: .semibold))
+                                                .foregroundColor(.white.opacity(0.9))
+                                        } else {
+                                            // Red warning
+                                            Image(systemName: "exclamationmark.triangle.fill")
+                                                .font(.system(size: 16, weight: .medium))
+                                                .foregroundColor(.red)
+                                            
+                                            Text("Issues Found")
+                                                .font(.system(size: 14, weight: .semibold))
+                                                .foregroundColor(.white)
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 12)
+                                    .background(
+                                        Group {
+                                            if liveActivitiesEnabledSystemwide {
+                                                // Transparent glass effect for healthy state
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(.clear)
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 12)
+                                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                                    )
+                                            } else {
+                                                // Red background for issues
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(Color.red.opacity(0.7))
+                                            }
+                                        }
+                                    )
+                                }
+                                .disabled(liveActivitiesEnabledSystemwide) // Only clickable when red
+                                
+                                // Live Activity Gallery Button
                                 NavigationLink(destination: LiveActivityGalleryView(initialDesign: settingsManager.settings.liveActivityDesign).environmentObject(settingsManager)) {
                                     HStack {
                                         Image(systemName: "rectangle.and.text.magnifyingglass")
@@ -377,10 +393,14 @@ struct SettingsView: View {
                     .padding(.horizontal, 20)
                     }
                 }
-                .offset(y: contentOffset)
                 .onAppear {
                     startSettingsEntranceAnimation()
                     checkCalendarAuthorization()
+                    if settingsManager.settings.liveActivityEnabled && !hasCheckedHealth {
+                        checkLiveActivityHealth()
+                        hasCheckedHealth = true
+                    }
+                    PerformanceLogger.event("SettingsView onAppear")
                 }
             }
             .sheet(isPresented: $showingAudioManagement) {
@@ -406,11 +426,6 @@ struct SettingsView: View {
     }
     
     private func startSettingsEntranceAnimation() {
-        // Liquid rise motion - slide up from bottom
-        withAnimation(.easeInOut(duration: 0.6)) {
-            contentOffset = 0
-        }
-        
         // Cards settle into place with staggered bounce
         for i in 0..<cardsScale.count {
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.05) {
@@ -518,8 +533,7 @@ struct CustomToggle: View {
                                 lineWidth: 1
                             )
                     )
-                    .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
-                    .shadow(color: .white.opacity(0.3), radius: 2, x: 0, y: 1)
+                    .shadow(color: .black.opacity(0.12), radius: 8, x: 0, y: 4)
                 
                 // Toggle knob with lifted effect
                 Circle()
@@ -530,8 +544,7 @@ struct CustomToggle: View {
                         Circle()
                             .stroke(Color.white.opacity(0.4), lineWidth: 0.5)
                     )
-                    .shadow(color: .black.opacity(0.3), radius: 6, x: 0, y: 3)
-                    .shadow(color: .white.opacity(0.4), radius: 1, x: 0, y: 1)
+                    .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 3)
             }
         }
         .onAppear {
@@ -542,6 +555,8 @@ struct CustomToggle: View {
 
 // Help sheet describing Live Activity requirements
 struct LiveActivityHelpSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         NavigationStack {
             List {
@@ -557,7 +572,20 @@ struct LiveActivityHelpSheet: View {
                 }
             }
             .navigationTitle("Live Activity Help")
-            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Close") { UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil) } } }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Open Settings") {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                }
+            }
         }
     }
 }

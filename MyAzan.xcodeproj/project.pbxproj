@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05622BBA6E7A4C49B722BA50 /* LiveActivityGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5CC2DD4E3D46E19DDA9236 /* LiveActivityGalleryView.swift */; };
 		05CE1FE1305FDE5A54368B1A /* SharedDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0AB7FEE4AD9CE5453B0C3D9 /* SharedDefaults.swift */; };
 		3821DE7E2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3821DE7D2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift */; };
+		38A61EB22EB3A24D00ACE7BD /* PerformanceLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A61EB12EB3A24D00ACE7BD /* PerformanceLogger.swift */; };
 		38B846FF2EAECEA20055EDCB /* AudioManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */; };
 		38B847012EAECEAD0055EDCB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847002EAECEAD0055EDCB /* HomeView.swift */; };
-		05622BBA6E7A4C49B722BA50 /* LiveActivityGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5CC2DD4E3D46E19DDA9236 /* LiveActivityGalleryView.swift */; };
 		38B847032EAECEB80055EDCB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847022EAECEB80055EDCB /* SettingsView.swift */; };
 		38B847042EAECEB90055EDCB /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847032EAECEB90055EDCB /* SplashScreenView.swift */; };
 		38B847052EAECF020055EDCB /* AudioFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B847042EAECF020055EDCB /* AudioFileManager.swift */; };
@@ -34,12 +35,32 @@
 		A1234567890ABCDEF046 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF047 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		389FFEF22EB3971C002AEDC8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 389FFEEE2EB3971B002AEDC8 /* MyAzanWidget.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B1234567890ABCDEF007;
+			remoteInfo = MyAzanWidget;
+		};
+		389FFEF82EB3972F002AEDC8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 389FFEF42EB3972E002AEDC8 /* MyAzanLiveActivity.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C1234567890ABCDEF007;
+			remoteInfo = MyAzanLiveActivity;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		1F5CC2DD4E3D46E19DDA9236 /* LiveActivityGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityGalleryView.swift; sourceTree = "<group>"; };
 		3821DE7D2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassIconButton.swift; sourceTree = "<group>"; };
+		389FFEEE2EB3971B002AEDC8 /* MyAzanWidget.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = MyAzanWidget.xcodeproj; sourceTree = "<group>"; };
+		389FFEF42EB3972E002AEDC8 /* MyAzanLiveActivity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = MyAzanLiveActivity.xcodeproj; sourceTree = "<group>"; };
+		38A61EB12EB3A24D00ACE7BD /* PerformanceLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PerformanceLogger.swift; path = MyAzan/Services/PerformanceLogger.swift; sourceTree = "<group>"; };
 		38B846F92EAEC66F0055EDCB /* MyAzan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyAzan.entitlements; sourceTree = "<group>"; };
 		38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManagementView.swift; sourceTree = "<group>"; };
 		38B847002EAECEAD0055EDCB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		1F5CC2DD4E3D46E19DDA9236 /* LiveActivityGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityGalleryView.swift; sourceTree = "<group>"; };
 		38B847022EAECEB80055EDCB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		38B847032EAECEB90055EDCB /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		38B847042EAECF020055EDCB /* AudioFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileManager.swift; sourceTree = "<group>"; };
@@ -76,9 +97,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		389FFEEF2EB3971B002AEDC8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				389FFEF32EB3971C002AEDC8 /* MyAzanWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		389FFEF52EB3972E002AEDC8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				389FFEF92EB3972F002AEDC8 /* MyAzanLiveActivity.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		A1234567890ABCDEF014 = {
 			isa = PBXGroup;
 			children = (
+				38A61EB12EB3A24D00ACE7BD /* PerformanceLogger.swift */,
+				389FFEF42EB3972E002AEDC8 /* MyAzanLiveActivity.xcodeproj */,
+				389FFEEE2EB3971B002AEDC8 /* MyAzanWidget.xcodeproj */,
 				38B8471A2EAEE8800055EDCB /* azan_notification.mp3 */,
 				A1234567890ABCDEF015 /* MyAzan */,
 				A1234567890ABCDEF016 /* Products */,
@@ -140,7 +180,7 @@
 				38B847022EAECEB80055EDCB /* SettingsView.swift */,
 				38B847032EAECEB90055EDCB /* SplashScreenView.swift */,
 				38B847002EAECEAD0055EDCB /* HomeView.swift */,
-			1F5CC2DD4E3D46E19DDA9236 /* LiveActivityGalleryView.swift */,
+				1F5CC2DD4E3D46E19DDA9236 /* LiveActivityGalleryView.swift */,
 				38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */,
 				A1234567890ABCDEF032 /* Components */,
 			);
@@ -217,12 +257,39 @@
 			);
 			productRefGroup = A1234567890ABCDEF016 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 389FFEF52EB3972E002AEDC8 /* Products */;
+					ProjectRef = 389FFEF42EB3972E002AEDC8 /* MyAzanLiveActivity.xcodeproj */;
+				},
+				{
+					ProductGroup = 389FFEEF2EB3971B002AEDC8 /* Products */;
+					ProjectRef = 389FFEEE2EB3971B002AEDC8 /* MyAzanWidget.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				A1234567890ABCDEF035 /* MyAzan */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		389FFEF32EB3971C002AEDC8 /* MyAzanWidget.appex */ = {
+			isa = PBXReferenceProxy;
+			fileType = "wrapper.app-extension";
+			path = MyAzanWidget.appex;
+			remoteRef = 389FFEF22EB3971C002AEDC8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		389FFEF92EB3972F002AEDC8 /* MyAzanLiveActivity.appex */ = {
+			isa = PBXReferenceProxy;
+			fileType = "wrapper.app-extension";
+			path = MyAzanLiveActivity.appex;
+			remoteRef = 389FFEF82EB3972F002AEDC8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A1234567890ABCDEF038 /* Resources */ = {
@@ -254,7 +321,7 @@
 				05CE1FE1305FDE5A54368B1A /* SharedDefaults.swift in Sources */,
 				38B847192EAED1430055EDCB /* PrayerCard.swift in Sources */,
 				38B847012EAECEAD0055EDCB /* HomeView.swift in Sources */,
-			05622BBA6E7A4C49B722BA50 /* LiveActivityGalleryView.swift in Sources */,
+				05622BBA6E7A4C49B722BA50 /* LiveActivityGalleryView.swift in Sources */,
 				38B847042EAECEB90055EDCB /* SplashScreenView.swift in Sources */,
 				38B8470D2EAECFE50055EDCB /* BackgroundTaskManager.swift in Sources */,
 				38B847092EAECF5B0055EDCB /* SettingsManager.swift in Sources */,
@@ -263,6 +330,7 @@
 				A1234567890ABCDEF001 /* MyAzanApp.swift in Sources */,
 				38B8470F2EAECFEF0055EDCB /* LiveActivityManager.swift in Sources */,
 				38B847052EAECF020055EDCB /* AudioFileManager.swift in Sources */,
+				38A61EB22EB3A24D00ACE7BD /* PerformanceLogger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

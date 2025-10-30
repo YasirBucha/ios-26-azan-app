@@ -16,7 +16,7 @@ struct SplashScreenView: View {
     let minimumDisplayDuration: Double
     let onTransitionComplete: () -> Void
 
-    init(namespace: Namespace.ID, minimumDisplayDuration: Double = 1.6, onTransitionComplete: @escaping () -> Void) {
+    init(namespace: Namespace.ID, minimumDisplayDuration: Double = 0.6, onTransitionComplete: @escaping () -> Void) {
         self.namespace = namespace
         self.minimumDisplayDuration = minimumDisplayDuration
         self.onTransitionComplete = onTransitionComplete
@@ -132,9 +132,11 @@ struct SplashScreenView: View {
         }
         .onAppear {
             beginAnimationSequence()
+            PerformanceLogger.event("SplashScreenView onAppear")
         }
         .onDisappear {
             animationTask?.cancel()
+            PerformanceLogger.event("SplashScreenView onDisappear")
         }
     }
     
@@ -142,25 +144,26 @@ struct SplashScreenView: View {
         animationTask?.cancel()
         transitionTriggered = false
         let startTime = Date()
+        PerformanceLogger.event("Splash animation sequence started")
         
         animationTask = Task { @MainActor in
-            withAnimation(.easeInOut(duration: 0.6)) {
+            withAnimation(.easeInOut(duration: 0.4)) {
                 gradientOpacity = 1.0
             }
             
-            try? await Task.sleep(nanoseconds: 150_000_000)
+            try? await Task.sleep(nanoseconds: 80_000_000)
             guard !Task.isCancelled else { return }
             
-            withAnimation(.spring(response: 0.7, dampingFraction: 0.75, blendDuration: 0)) {
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.78, blendDuration: 0)) {
                 logoScale = 1.0
                 logoOpacity = 1.0
                 haloOpacity = 1.0
             }
             
-            try? await Task.sleep(nanoseconds: 220_000_000)
+            try? await Task.sleep(nanoseconds: 120_000_000)
             guard !Task.isCancelled else { return }
             
-            withAnimation(.easeOut(duration: 0.4)) {
+            withAnimation(.easeOut(duration: 0.3)) {
                 subtitleOffset = 0.0
                 subtitleOpacity = 1.0
             }
@@ -183,6 +186,7 @@ struct SplashScreenView: View {
     private func performTransition(immediate: Bool = false) async {
         guard !transitionTriggered else { return }
         transitionTriggered = true
+        PerformanceLogger.event("Splash performTransition invoked immediate=\(immediate)")
         
         if immediate {
             onTransitionComplete()
@@ -190,15 +194,15 @@ struct SplashScreenView: View {
             return
         }
         
-        withAnimation(.easeInOut(duration: 0.25)) {
+        withAnimation(.easeInOut(duration: 0.2)) {
             shimmerOpacity = 1.0
             shimmerOffset = 200
         }
         
-        try? await Task.sleep(nanoseconds: 150_000_000)
+        try? await Task.sleep(nanoseconds: 100_000_000)
         guard !Task.isCancelled else { return }
         
-        withAnimation(.easeOut(duration: 0.35)) {
+        withAnimation(.easeOut(duration: 0.25)) {
             isTransitioning = true
             logoScale = 1.08
             logoOpacity = 0.0
@@ -208,9 +212,10 @@ struct SplashScreenView: View {
             shimmerOpacity = 0.0
         }
         
-        try? await Task.sleep(nanoseconds: 250_000_000)
+        try? await Task.sleep(nanoseconds: 120_000_000)
         guard !Task.isCancelled else { return }
         
+        PerformanceLogger.event("Splash transition completed, dismissing splash")
         onTransitionComplete()
         animationTask = nil
     }

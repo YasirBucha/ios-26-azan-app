@@ -51,7 +51,11 @@ class LiveActivityManager: ObservableObject {
     }
     
     func startPrayerActivity(prayer: PrayerTime, nextPrayer: PrayerTime, cityName: String, isAzanEnabled: Bool) {
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        if #available(iOS 16.1, *) {
+            guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        } else {
+            return
+        }
         
         let attributes = PrayerActivityAttributes(
             initialPrayerName: prayer.name,

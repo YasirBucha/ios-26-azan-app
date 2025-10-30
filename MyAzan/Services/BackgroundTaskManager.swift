@@ -129,9 +129,9 @@ class BackgroundTaskManager {
     
     private func reassertLiveActivityFromCache() {
         // Only proceed if user has Live Activities enabled
-        let liveEnabled = UserDefaults.standard.object(forKey: "liveActivityEnabled") as? Bool ?? true
+        let liveEnabled = SharedDefaults.bool(forKey: "liveActivityEnabled", default: true)
         guard liveEnabled else { return }
-        let azanEnabled = UserDefaults.standard.object(forKey: "azanEnabled") as? Bool ?? true
+        let azanEnabled = SharedDefaults.bool(forKey: "azanEnabled", default: true)
         
         // Load cached prayers written by PrayerTimeService
         let decoder = JSONDecoder()

@@ -14,6 +14,7 @@ class NotificationManager: ObservableObject {
 
     init() {
         NotificationManager.current = self
+        PerformanceLogger.event("NotificationManager init")
         setupNotificationCategories()
         // Defer heavy authorization check
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -28,8 +29,10 @@ class NotificationManager: ObservableObject {
     }
     
     func requestNotificationPermission() {
+        PerformanceLogger.event("Requesting notification permission")
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, error in
             DispatchQueue.main.async {
+                PerformanceLogger.event("Notification permission response (granted=\(granted))")
                 if granted {
                     self?.authorizationStatus = .authorized
                     self?.setupNotificationCategories()
@@ -41,6 +44,7 @@ class NotificationManager: ObservableObject {
     }
     
     private func setupNotificationCategories() {
+        PerformanceLogger.event("Setting notification categories")
         let prayerCategory = UNNotificationCategory(
             identifier: "PRAYER_NOTIFICATION",
             actions: [],
@@ -52,10 +56,12 @@ class NotificationManager: ObservableObject {
     }
     
     private func checkAuthorizationStatus() {
+        PerformanceLogger.event("Checking notification authorization status")
         UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
             let status = settings.authorizationStatus
             Task { @MainActor in
                 self?.authorizationStatus = status
+                PerformanceLogger.event("Notification authorization status updated: \(status.rawValue)")
             }
         }
     }

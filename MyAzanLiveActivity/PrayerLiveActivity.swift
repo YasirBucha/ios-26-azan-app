@@ -586,4 +586,3 @@ private func formatTimeRemaining(_ timeInterval: TimeInterval) -> String {
         return "\(minutes)m"
     }
 }
-}

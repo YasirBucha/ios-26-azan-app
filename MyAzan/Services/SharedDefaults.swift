@@ -33,6 +33,16 @@ enum SharedDefaults {
         return UserDefaults.standard.data(forKey: key)
     }
 
+    static func bool(forKey key: String, default defaultValue: Bool = false) -> Bool {
+        if let container = sharedContainer, container.object(forKey: key) != nil {
+            return container.bool(forKey: key)
+        }
+        if UserDefaults.standard.object(forKey: key) != nil {
+            return UserDefaults.standard.bool(forKey: key)
+        }
+        return defaultValue
+    }
+
     static func set(_ value: Any?, forKey key: String) {
         if let value {
             UserDefaults.standard.set(value, forKey: key)

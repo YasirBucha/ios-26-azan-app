@@ -20,6 +20,7 @@ class AudioFileManager: ObservableObject {
     }
     
     private init() {
+        PerformanceLogger.event("AudioFileManager init")
         loadCustomAudioFiles()
     }
     
@@ -72,6 +73,7 @@ class AudioFileManager: ObservableObject {
     
     // MARK: - Custom Audio Files
     func loadCustomAudioFiles() {
+        PerformanceLogger.event("AudioFileManager loadCustomAudioFiles dispatched")
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self else { return }
             
@@ -88,6 +90,7 @@ class AudioFileManager: ObservableObject {
             DispatchQueue.main.async {
                 self.customAudioFiles = loadedFiles
                 self.saveCustomAudioFiles()
+                PerformanceLogger.event("AudioFileManager loadCustomAudioFiles completed with \(loadedFiles.count) files")
             }
         }
     }

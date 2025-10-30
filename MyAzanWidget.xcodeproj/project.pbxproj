@@ -7,16 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		38A61EAC2EB39DFB00ACE7BD /* PrayerTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A61EAB2EB39DFB00ACE7BD /* PrayerTime.swift */; };
 		B1234567890ABCDEF001 /* PrayerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1234567890ABCDEF002 /* PrayerWidget.swift */; };
 		B1234567890ABCDEF003 /* MyAzanWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1234567890ABCDEF004 /* MyAzanWidgetBundle.swift */; };
 		B1234567890ABCDEF005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1234567890ABCDEF006 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B1234567890ABCDEF007 /* MyAzanWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MyAzanWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		38A61EAB2EB39DFB00ACE7BD /* PrayerTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PrayerTime.swift; path = MyAzan/Models/PrayerTime.swift; sourceTree = "<group>"; };
 		B1234567890ABCDEF002 /* PrayerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerWidget.swift; sourceTree = "<group>"; };
 		B1234567890ABCDEF004 /* MyAzanWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAzanWidgetBundle.swift; sourceTree = "<group>"; };
 		B1234567890ABCDEF006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B1234567890ABCDEF007 /* MyAzanWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MyAzanWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1234567890ABCDEF008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -34,6 +36,7 @@
 		B1234567890ABCDEF010 = {
 			isa = PBXGroup;
 			children = (
+				38A61EAB2EB39DFB00ACE7BD /* PrayerTime.swift */,
 				B1234567890ABCDEF011 /* MyAzanWidget */,
 				B1234567890ABCDEF012 /* Products */,
 			);
@@ -128,6 +131,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1234567890ABCDEF003 /* MyAzanWidgetBundle.swift in Sources */,
+				38A61EAC2EB39DFB00ACE7BD /* PrayerTime.swift in Sources */,
 				B1234567890ABCDEF001 /* PrayerWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -257,9 +261,10 @@
 		B1234567890ABCDEF021 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6B73TN8L6S;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyAzanWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "My Azan Widget";
@@ -282,9 +287,10 @@
 		B1234567890ABCDEF022 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6B73TN8L6S;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyAzanWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "My Azan Widget";
@@ -307,20 +313,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B1234567890ABCDEF018 /* Build configuration list for PBXProject "MyAzanWidget" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B1234567890ABCDEF019 /* Debug */,
-				B1234567890ABCDEF020 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		B1234567890ABCDEF014 /* Build configuration list for PBXNativeTarget "MyAzanWidget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B1234567890ABCDEF021 /* Debug */,
 				B1234567890ABCDEF022 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B1234567890ABCDEF018 /* Build configuration list for PBXProject "MyAzanWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1234567890ABCDEF019 /* Debug */,
+				B1234567890ABCDEF020 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

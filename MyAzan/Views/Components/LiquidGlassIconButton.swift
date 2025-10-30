@@ -44,8 +44,7 @@ extension View {
                             lineWidth: 1
                         )
                     )
-                    .shadow(color: .white.opacity(0.2), radius: 6, x: 0, y: 2)
-                    .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 6)
+                    .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: 6)
             }
         }
     }

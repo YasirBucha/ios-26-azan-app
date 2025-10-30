@@ -9,6 +9,11 @@ struct MyAzanApp: App {
     @Namespace private var namespace
     @State private var showSplash = true
     @StateObject private var liveActivityManager = LiveActivityManager()
+
+    init() {
+        PerformanceLogger.resetBaseline("MyAzanApp init")
+        PerformanceLogger.event("MyAzanApp initialised")
+    }
     
     var body: some Scene {
         WindowGroup {
@@ -16,6 +21,7 @@ struct MyAzanApp: App {
                 SplashScreenView(namespace: namespace) {
                     withAnimation(.easeInOut(duration: 0.5)) {
                         showSplash = false
+                        PerformanceLogger.event("Splash dismissed")
                     }
                 }
             } else {
