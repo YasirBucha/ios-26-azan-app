@@ -77,29 +77,35 @@ struct SettingsView: View {
                     .ignoresSafeArea()
                 }
                 
-                ScrollView {
-                    VStack(spacing: 24) {
-                        // Header Section with Back Button
-                        VStack(spacing: 8) {
-                            HStack {
-                                Button(action: { dismiss() }) {
-                                    LiquidGlassIconButton(systemName: "chevron.left", interactive: false)
-                                }
-                                
-                                Spacer()
+                VStack(spacing: 0) {
+                    // Header Section with Back Button (Fixed)
+                    VStack(spacing: 8) {
+                        HStack(spacing: 12) {
+                            Button(action: { dismiss() }) {
+                                LiquidGlassIconButton(systemName: "chevron.left", interactive: false)
                             }
                             
-                            Text("Settings")
-                                .font(.system(size: 26, weight: .semibold, design: .rounded))
-                                .foregroundColor(.white.opacity(0.9))
+                            VStack(alignment: .center, spacing: 4) {
+                                Text("Settings")
+                                    .font(.system(size: 26, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.9))
+                                
+                                Text("Customize your prayer experience")
+                                    .font(.system(size: 15, weight: .regular, design: .default))
+                                    .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7)) // #BFD3D8
+                            }
+                            .frame(maxWidth: .infinity)
                             
-                            Text("Customize your prayer experience")
-                                .font(.system(size: 15, weight: .regular, design: .default))
-                                .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7)) // #BFD3D8
+                            Spacer()
                         }
-                        .padding(.top, 40)
-                        .padding(.bottom, 20)
                         .padding(.horizontal, 20)
+                    }
+                    .padding(.top, 40)
+                    .padding(.bottom, 40)
+                    
+                    // Scrollable Content
+                    ScrollView {
+                        VStack(spacing: 24) {
                         
                         // Audio Settings Card (basic rounded rectangle + glassedEffect)
                         VStack(alignment: .leading, spacing: 20) {
@@ -369,6 +375,7 @@ struct SettingsView: View {
                         .padding(.bottom, 40)
                     }
                     .padding(.horizontal, 20)
+                    }
                 }
                 .offset(y: contentOffset)
                 .onAppear {

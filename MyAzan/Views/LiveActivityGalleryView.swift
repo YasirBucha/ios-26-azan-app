@@ -82,25 +82,28 @@ struct LiveActivityGalleryView: View {
                 VStack(spacing: 0) {
                     // Header with Back Button
                     VStack(spacing: 8) {
-                        HStack {
+                        HStack(spacing: 12) {
                             Button(action: { dismiss() }) {
                                 LiquidGlassIconButton(systemName: "chevron.left", interactive: false)
                             }
                             
+                            VStack(alignment: .center, spacing: 4) {
+                                Text("Live Activity Gallery")
+                                    .font(.system(size: 26, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.9))
+                                
+                                Text("Choose your preferred Live Activity design")
+                                    .font(.system(size: 15, weight: .regular, design: .default))
+                                    .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7)) // #BFD3D8
+                            }
+                            .frame(maxWidth: .infinity)
+                            
                             Spacer()
                         }
                         .padding(.horizontal, 20)
-                        
-                        Text("Live Activity Gallery")
-                            .font(.system(size: 26, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white.opacity(0.9))
-                        
-                        Text("Choose your preferred Live Activity design")
-                            .font(.system(size: 15, weight: .regular, design: .default))
-                            .foregroundColor(Color(red: 0.75, green: 0.83, blue: 0.85).opacity(0.7)) // #BFD3D8
                     }
                     .padding(.top, 40)
-                    .padding(.bottom, 24)
+                    .padding(.bottom, 40)
                     
                     // Large Preview Section
                     VStack(spacing: 16) {
@@ -161,7 +164,7 @@ struct LiveActivityGalleryView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                             }
                         }
-                        .padding(.horizontal, 16)
+                        .padding(.horizontal, 20)
                     }
                     .padding(.bottom, 24)
                     

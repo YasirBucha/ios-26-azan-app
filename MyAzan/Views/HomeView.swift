@@ -135,6 +135,8 @@ struct HomeView: View {
                                     Text(nextPrayer.name)
                                         .font(.system(size: 32, weight: .semibold, design: .rounded))
                                         .foregroundColor(.white.opacity(0.85))
+                                        .minimumScaleFactor(0.7)
+                                        .lineLimit(1)
                                 }
                             }
                             
