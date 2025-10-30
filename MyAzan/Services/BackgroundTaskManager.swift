@@ -95,6 +95,9 @@ class BackgroundTaskManager {
             // Simulate prayer time update
             let success = true // Replace with actual implementation
             
+            // After any updates, attempt to reassert Live Activity using cached data
+            self.reassertLiveActivityFromCache()
+            
             DispatchQueue.main.async {
                 completion(success)
             }
@@ -112,9 +115,38 @@ class BackgroundTaskManager {
             // Simulate daily update
             let success = true // Replace with actual implementation
             
+            // After any updates, attempt to reassert Live Activity using cached data
+            self.reassertLiveActivityFromCache()
+            
             DispatchQueue.main.async {
                 completion(success)
             }
+        }
+    }
+    
+    private func reassertLiveActivityFromCache() {
+        // Only proceed if user has Live Activities enabled
+        let liveEnabled = UserDefaults.standard.object(forKey: "liveActivityEnabled") as? Bool ?? true
+        guard liveEnabled else { return }
+        let azanEnabled = UserDefaults.standard.object(forKey: "azanEnabled") as? Bool ?? true
+        
+        // Load cached prayers written by PrayerTimeService
+        let decoder = JSONDecoder()
+        var cachedPrayers: [PrayerTime] = []
+        var cachedNext: PrayerTime? = nil
+        
+        if let data = SharedDefaults.data(forKey: "cachedPrayerTimes"),
+           let prayers = try? decoder.decode([PrayerTime].self, from: data) {
+            cachedPrayers = prayers
+        }
+        if let nextData = SharedDefaults.data(forKey: "cachedNextPrayer"),
+           let next = try? decoder.decode(PrayerTime.self, from: nextData) {
+            cachedNext = next
+        }
+        
+        // Update or start the activity on the main actor
+        Task { @MainActor in
+            LiveActivityManager.shared.ensureActive(prayers: cachedPrayers, nextPrayer: cachedNext, cityName: "", isAzanEnabled: azanEnabled)
         }
     }
 }

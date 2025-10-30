@@ -27,6 +27,8 @@ struct PrayerActivityAttributes: ActivityAttributes {
 
 @MainActor
 class LiveActivityManager: ObservableObject {
+    static let shared = LiveActivityManager()
+    
     @Published var currentActivity: Activity<PrayerActivityAttributes>?
     private var currentDesign: LiveActivityDesign = .liquidGlass
     
@@ -133,6 +135,28 @@ class LiveActivityManager: ObservableObject {
             await MainActor.run {
                 self.currentActivity = nil
             }
+        }
+    }
+    
+    func resumeExistingActivityIfNeeded() {
+        if currentActivity != nil { return }
+        // Adopt the first existing activity if present
+        if let existing = Activity<PrayerActivityAttributes>.activities.first {
+            currentActivity = existing
+        }
+    }
+    
+    func ensureActive(prayers: [PrayerTime], nextPrayer: PrayerTime?, cityName: String, isAzanEnabled: Bool) {
+        let sorted = prayers.sorted { $0.time < $1.time }
+        let upcoming = nextPrayer ?? sorted.first(where: { $0.time > Date() })
+        guard let next = upcoming else { return }
+        let current = sorted.last(where: { $0.time <= Date() }) ?? next
+        
+        resumeExistingActivityIfNeeded()
+        if currentActivity != nil {
+            updatePrayerActivity(prayer: current, nextPrayer: next, cityName: cityName, isAzanEnabled: isAzanEnabled)
+        } else {
+            startPrayerActivity(prayer: current, nextPrayer: next, cityName: cityName, isAzanEnabled: isAzanEnabled)
         }
     }
     
