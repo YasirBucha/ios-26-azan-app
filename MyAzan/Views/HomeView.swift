@@ -5,7 +5,6 @@ struct HomeView: View {
     @EnvironmentObject var prayerTimeService: PrayerTimeService
     @EnvironmentObject var notificationManager: NotificationManager
     @EnvironmentObject var settingsManager: SettingsManager
-    @EnvironmentObject var liveActivityManager: LiveActivityManager
     @StateObject private var audioManager = AudioManager()
     @Environment(\.colorScheme) var colorScheme
     @State private var breathingOpacity: Double = 0.7
@@ -338,24 +337,8 @@ struct HomeView: View {
                 PerformanceLogger.event("HomeView onAppear")
                 // Start home screen entrance animation
                 startHomeEntranceAnimation()
-                
-                Task { @MainActor in
-                    await Task.yield()
-                    notificationManager.requestNotificationPermissionIfNeeded()
-                    prayerTimeService.setManagers(notificationManager: notificationManager, settingsManager: settingsManager)
-                    liveActivityManager.setDesign(settingsManager.settings.liveActivityDesign)
-                    
-                    await Task.yield()
-                    maybeStartOrUpdateLiveActivity()
-                    
-                    await Task.yield()
-                    BackgroundTaskManager.shared.registerBackgroundTasks()
-                    BackgroundTaskManager.shared.scheduleBackgroundTasks()
-                    
-                    PerformanceLogger.event("HomeView startup tasks completed")
-                }
-                
-                // Defer location services initialization
+
+                // Defer location services initialization slightly to avoid competing with animations
                 Task { @MainActor in
                     try? await Task.sleep(nanoseconds: 500_000_000)
                     locationManager.refreshLocationIfNeeded(force: false)
@@ -369,20 +352,6 @@ struct HomeView: View {
             }
         }
     }
-    
-    private func maybeStartOrUpdateLiveActivity() {
-        guard settingsManager.settings.liveActivityEnabled else { return }
-        let prayers = prayerTimeService.prayerTimes.sorted { $0.time < $1.time }
-        guard let next = prayerTimeService.nextPrayer ?? prayers.first(where: { $0.isUpcoming }) else { return }
-        let current = prayers.last(where: { $0.time <= Date() }) ?? next
-        let cityName = locationManager.cityName
-        if liveActivityManager.currentActivity != nil {
-            liveActivityManager.updatePrayerActivity(prayer: current, nextPrayer: next, cityName: cityName, isAzanEnabled: settingsManager.settings.azanEnabled)
-        } else {
-            liveActivityManager.startPrayerActivity(prayer: current, nextPrayer: next, cityName: cityName, isAzanEnabled: settingsManager.settings.azanEnabled)
-        }
-    }
-    
     private func startHomeEntranceAnimation() {
         // Home screen content fades in with scale and blur fade out (faster ramp to keep interaction snappy)
         withAnimation(.easeOut(duration: 0.35)) {

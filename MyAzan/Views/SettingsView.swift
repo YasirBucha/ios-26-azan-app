@@ -470,10 +470,15 @@ struct SettingsView: View {
     }
     
     private func checkLiveActivityHealth() {
-        let enabled = ActivityAuthorizationInfo().areActivitiesEnabled
-        liveActivitiesEnabledSystemwide = enabled
-        if !enabled {
-            showLiveActivityAlert = true
+        Task(priority: .userInitiated) {
+            let enabled = ActivityAuthorizationInfo().areActivitiesEnabled
+            await MainActor.run {
+                liveActivitiesEnabledSystemwide = enabled
+                if !enabled {
+                    showLiveActivityAlert = true
+                }
+            }
+            PerformanceLogger.event("Live Activity health evaluated")
         }
     }
 }

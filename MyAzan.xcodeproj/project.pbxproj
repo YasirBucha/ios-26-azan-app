@@ -57,7 +57,7 @@
 		3821DE7D2EB01AFA00DC82B6 /* LiquidGlassIconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassIconButton.swift; sourceTree = "<group>"; };
 		389FFEEE2EB3971B002AEDC8 /* MyAzanWidget.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = MyAzanWidget.xcodeproj; sourceTree = "<group>"; };
 		389FFEF42EB3972E002AEDC8 /* MyAzanLiveActivity.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = MyAzanLiveActivity.xcodeproj; sourceTree = "<group>"; };
-		38A61EB12EB3A24D00ACE7BD /* PerformanceLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PerformanceLogger.swift; path = MyAzan/Services/PerformanceLogger.swift; sourceTree = "<group>"; };
+		38A61EB12EB3A24D00ACE7BD /* PerformanceLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PerformanceLogger.swift; path = PerformanceLogger.swift; sourceTree = "<group>"; };
 		38B846F92EAEC66F0055EDCB /* MyAzan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyAzan.entitlements; sourceTree = "<group>"; };
 		38B846FE2EAECEA20055EDCB /* AudioManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManagementView.swift; sourceTree = "<group>"; };
 		38B847002EAECEAD0055EDCB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -116,13 +116,22 @@
 		A1234567890ABCDEF014 = {
 			isa = PBXGroup;
 			children = (
-				38A61EB12EB3A24D00ACE7BD /* PerformanceLogger.swift */,
+				38A61EB42EB3A2AB00ACE7BD /* Utilities */,
 				389FFEF42EB3972E002AEDC8 /* MyAzanLiveActivity.xcodeproj */,
 				389FFEEE2EB3971B002AEDC8 /* MyAzanWidget.xcodeproj */,
 				38B8471A2EAEE8800055EDCB /* azan_notification.mp3 */,
 				A1234567890ABCDEF015 /* MyAzan */,
 				A1234567890ABCDEF016 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		38A61EB42EB3A2AB00ACE7BD /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				38A61EB12EB3A24D00ACE7BD /* PerformanceLogger.swift */,
+			);
+			name = Utilities;
+			path = MyAzan/Utilities;
 			sourceTree = "<group>";
 		};
 		A1234567890ABCDEF015 /* MyAzan */ = {

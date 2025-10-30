@@ -30,21 +30,14 @@ extension View {
             // Fallback glass-like implementation for pre-iOS 26
             self.background {
                 shape
-                    .fill(.ultraThinMaterial)
+                    .fill(.thinMaterial)
                     .overlay(
                         shape.stroke(
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(0.4),
-                                    Color.white.opacity(0.2)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 1
+                            Color.white.opacity(0.25),
+                            lineWidth: 0.8
                         )
                     )
-                    .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: 6)
+                    .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
             }
         }
     }

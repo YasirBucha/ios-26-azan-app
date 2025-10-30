@@ -9,6 +9,7 @@ struct MyAzanApp: App {
     @Namespace private var namespace
     @State private var showSplash = true
     @StateObject private var liveActivityManager = LiveActivityManager()
+    @State private var hasPerformedInitialSetup = false
 
     init() {
         PerformanceLogger.resetBaseline("MyAzanApp init")
@@ -19,6 +20,9 @@ struct MyAzanApp: App {
         WindowGroup {
             if showSplash {
                 SplashScreenView(namespace: namespace) {
+                    Task {
+                        await performInitialSetupIfNeeded()
+                    }
                     withAnimation(.easeInOut(duration: 0.5)) {
                         showSplash = false
                         PerformanceLogger.event("Splash dismissed")
@@ -38,23 +42,6 @@ struct MyAzanApp: App {
                                 longitude: location.coordinate.longitude
                             )
                         }
-                    }
-                    .onAppear {
-                        // Request notification permissions on app launch
-                        notificationManager.requestNotificationPermissionIfNeeded()
-                        
-                        // Set managers in PrayerTimeService for notification scheduling
-                        prayerTimeService.setManagers(notificationManager: notificationManager, settingsManager: settingsManager)
-                        
-                        // Apply initial design to Live Activity
-                        liveActivityManager.setDesign(settingsManager.settings.liveActivityDesign)
-                        
-                        // Attempt to start or resume Live Activity if enabled
-                        maybeStartOrUpdateLiveActivity()
-                        
-                        // Register and schedule background tasks
-                        BackgroundTaskManager.shared.registerBackgroundTasks()
-                        BackgroundTaskManager.shared.scheduleBackgroundTasks()
                     }
                     .onChange(of: settingsManager.settings.liveActivityEnabled) { _ in
                         // Start or stop based on toggle
@@ -87,6 +74,33 @@ struct MyAzanApp: App {
     }
     
     @Environment(\.scenePhase) private var scenePhase
+    
+    @MainActor
+    private func performInitialSetupIfNeeded() async {
+        guard !hasPerformedInitialSetup else { return }
+        hasPerformedInitialSetup = true
+        PerformanceLogger.event("Initial setup started")
+        
+        // Wire up managers for shared services
+        prayerTimeService.setManagers(notificationManager: notificationManager, settingsManager: settingsManager)
+        liveActivityManager.setDesign(settingsManager.settings.liveActivityDesign)
+        
+        // Kick off user-facing permissions and Live Activity refresh without blocking UI
+        Task { @MainActor in
+            await Task.yield()
+            notificationManager.requestNotificationPermissionIfNeeded()
+            maybeStartOrUpdateLiveActivity()
+            PerformanceLogger.event("Notification + Live Activity setup triggered")
+        }
+        
+        // Register background tasks asynchronously on the main actor
+        Task { @MainActor in
+            await Task.yield()
+            BackgroundTaskManager.shared.registerBackgroundTasks()
+            BackgroundTaskManager.shared.scheduleBackgroundTasks()
+            PerformanceLogger.event("Background tasks registered & scheduled")
+        }
+    }
     
     private func maybeStartOrUpdateLiveActivity() {
         guard settingsManager.settings.liveActivityEnabled else { return }

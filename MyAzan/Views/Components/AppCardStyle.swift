@@ -37,24 +37,20 @@ extension View {
 // MARK: - Alternative Card Style (Ultra Thin Material)
 struct AppCardStyleMaterial: ViewModifier {
     func body(content: Content) -> some View {
-        content
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(
-                        LinearGradient(
-                            colors: [
-                                Color.white.opacity(0.4),
-                                Color.white.opacity(0.2)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1.5
-                    )
-            )
-            .shadow(color: .white.opacity(0.2), radius: 8, x: 0, y: 4)
-            .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 6)
+        if #available(iOS 26.0, *) {
+            content
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.white.opacity(0.06))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                )
+                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+        } else {
+            content
+        }
     }
 }
 
